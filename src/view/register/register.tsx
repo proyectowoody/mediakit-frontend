@@ -1,31 +1,16 @@
-import { useState } from "react";
+import { useContext } from "react";
 import authRedirectToken from "../../validation/authRedirectToken";
-import Handle from "../../validation/register/handle";
 import Message from "../../components/message";
+import { AppContext } from "../../common/context/AppContext/AppContext.tsx";
+import useScrenRegister from '../../common/hooks/useScreenRegister';
 
 function Register() {
-  const [showPassword, setShowPassword] = useState(false);
-  const [isTermsAccepted, setIsTermsAccepted] = useState(false);
-  const [name, setName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [isVerified, setisVerified] = useState(false);
 
+  const { state } = useContext(AppContext) || { state: null };
+  const registerHook = useScrenRegister();
+
+  
   authRedirectToken("/");
-
-  const { handleSubmit, isLoading } = Handle(
-    name,
-    lastName,
-    email,
-    password,
-    isVerified,
-    setName,
-    setLastName,
-    setEmail,
-    setPassword,
-    setisVerified
-  );
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#F5F5DC]">
@@ -37,8 +22,8 @@ function Register() {
           Completa los campos para crear una cuenta.
         </p>
         <Message />
-        <form onSubmit={handleSubmit} className="mt-6">
-          <div className="mb-4">
+        <form onSubmit={registerHook.handleSubmitRegister} className="mt-6">
+        <div className="mb-4">
             <label
               htmlFor="nombre"
               className="block text-sm font-medium text-[#4E6E5D]"
@@ -50,8 +35,13 @@ function Register() {
               id="nombre"
               className="w-full px-3 py-2 border border-[#B2C9AB] rounded-md shadow-sm focus:outline-none focus:ring-[#6E9475] focus:border-[#6E9475]"
               placeholder="Nombre"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
+              value={state?.screenRegister.name}
+              onChange={e =>
+                registerHook.updateRegisterField(
+                  'name',
+                  e.target.value
+                )
+              }
             />
           </div>
 
@@ -67,8 +57,13 @@ function Register() {
               id="apellido"
               className="w-full px-3 py-2 border border-[#B2C9AB] rounded-md shadow-sm focus:outline-none focus:ring-[#6E9475] focus:border-[#6E9475]"
               placeholder="Apellido"
-              value={lastName}
-              onChange={(e) => setLastName(e.target.value)}
+              value={state?.screenRegister.lastName}
+              onChange={e =>
+                registerHook.updateRegisterField(
+                  'lastName',
+                  e.target.value
+                )
+              }
             />
           </div>
 
@@ -84,8 +79,13 @@ function Register() {
               id="email"
               className="w-full px-3 py-2 border border-[#B2C9AB] rounded-md shadow-sm focus:outline-none focus:ring-[#6E9475] focus:border-[#6E9475]"
               placeholder="Correo Electrónico"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              value={state?.screenRegister.email}
+              onChange={e =>
+                registerHook.updateRegisterField(
+                  'email',
+                  e.target.value
+                )
+              }
             />
           </div>
 
@@ -98,19 +98,29 @@ function Register() {
             </label>
             <div className="relative">
               <input
-                type={showPassword ? "text" : "password"}
+                type={state?.screenRegister.showPassword ? "text" : "password"}
                 id="password"
                 className="w-full px-3 py-2 border border-[#B2C9AB] rounded-md shadow-sm focus:outline-none focus:ring-[#6E9475] focus:border-[#6E9475]"
                 placeholder="Contraseña"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                value={state?.screenRegister.password}
+                onChange={e =>
+                  registerHook.updateRegisterField(
+                    'password',
+                    e.target.value
+                  )
+                }
               />
               <button
                 type="button"
                 className="absolute right-2 top-2 text-sm text-[#6E9475] hover:text-[#4E6E5D]"
-                onClick={() => setShowPassword(!showPassword)}
+                onClick={() =>
+                  registerHook.updateRegisterField(
+                    'showPassword',
+                    !state?.screenRegister.showPassword
+                  )
+                }
               >
-                {showPassword ? "Ocultar" : "Mostrar"}
+                {state?.screenRegister.showPassword ? "Ocultar" : "Mostrar"}
               </button>
             </div>
           </div>
@@ -120,8 +130,13 @@ function Register() {
               <input
                 type="checkbox"
                 className="mr-2 h-4 w-4 border-[#B2C9AB] rounded focus:ring-[#6E9475]"
-                checked={isTermsAccepted}
-                onChange={(e) => setIsTermsAccepted(e.target.checked)}
+                checked={state?.screenRegister.isTermsAccepted}
+                onChange={e =>
+                  registerHook.updateRegisterField(
+                    'isTermsAccepted',
+                    e.target.checked
+                  )
+                }
               />
               Acepto los{" "}
               <a
@@ -135,14 +150,14 @@ function Register() {
 
           <button
             type="submit"
-            disabled={!isTermsAccepted || isLoading}
+            disabled={!state?.screenRegister.isTermsAccepted || state?.screenRegister.isLoading}
             className={`w-full py-2 px-4 text-white font-medium rounded-md focus:outline-none focus:ring-2 ${
-              isTermsAccepted && !isLoading
+              state?.screenRegister.isTermsAccepted && !state?.screenRegister.isLoading
                 ? "bg-[#6E9475] hover:bg-[#5C8465] focus:ring-[#6E9475]"
                 : "bg-gray-400 cursor-not-allowed"
             }`}
           >
-            {isLoading ? "Registrando..." : "Regístrate"}
+            {state?.screenRegister.isLoading ? "Registrando..." : "Regístrate"}
           </button>
         </form>
 

@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext ,useEffect} from "react";
 import authRedirectToken from "../../validation/authRedirectToken";
 import Message from "../../components/message";
 import { AppContext } from "../../common/context/AppContext/AppContext.tsx";
@@ -8,7 +8,6 @@ function Register() {
 
   const { state } = useContext(AppContext) || { state: null };
   const registerHook = useScrenRegister();
-
   
   authRedirectToken("/");
 

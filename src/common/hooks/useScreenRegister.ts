@@ -24,13 +24,10 @@ function useScreenRegister() {
     });
   };
 
-  const updateRegisterFields = ({ path, ...rest }: { path: string; [key: string]: any }): void => {
+  const updateRegisterFields = ({ path, ...values }: { path: string; [key: string]: any }): void => {
     dispatch({
       type: "UPDATE-MULTIPLE-FIELDS-REGISTER",
-      payload: {
-        path,
-        values: rest,
-      },
+      payload: { path, values },
     });
   };
   

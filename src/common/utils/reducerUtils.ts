@@ -1,43 +1,28 @@
-export const setNestedValue = <T extends Record<string, any>>(
-  state: T,
-  path: string,
-  value: any
+export const setMultipleNestedValues = <T extends Record<string, any>>(
+  state: T, 
+  path: string, 
+  values: { [key: string]: any }
 ): T => {
-  const [firstKey, ...rest] = path.split(".");
+  const keys = path.split('.'); // Convertimos el path a un array de claves
 
-  if (rest.length === 0) {
-    return { ...state, [firstKey]: value };
+  if (keys.length === 0) {
+    return { ...state, ...values };
   }
 
-  return {
-    ...state,
-    [firstKey]: setNestedValue(state[firstKey] as Record<string, any>, rest.join("."), value),
-  };
-};
+  const [head, ...rest] = keys;
 
-export const setMultipleNestedValues = <T extends Record<string, any>>(
-  state: T,
-  path: string,
-  values: Record<string, any>
-): T => {
-  const [firstKey, ...rest] = path.split(".");
-
+  // Si estamos en el último nivel de la ruta, actualizamos el objeto con los valores proporcionados
   if (rest.length === 0) {
     return {
       ...state,
-      [firstKey]: {
-        ...state[firstKey],
-        ...values,
-      },
+      [head]: { ...state[head], ...values },
     };
   }
 
+  // Si estamos en un nivel intermedio, seguimos descendiendo
   return {
     ...state,
-    [firstKey]: setMultipleNestedValues(
-      state[firstKey] as Record<string, any>,
-      rest.join("."),
-      values
-    ),
+    [head]: setMultipleNestedValues(state[head], rest.join('.'), values),
   };
 };
+

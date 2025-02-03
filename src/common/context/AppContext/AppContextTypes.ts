@@ -1,10 +1,10 @@
-import { initialRegisterState } from "../states/initialRegisterState";
-import { initialLoginState } from "../states/initialLoginState";
+import { RegisterState } from "../states/initialRegisterState";
+import { LoginState } from "../states/initialLoginState";
 
 export interface AppContextType {
   state: {
-    screenRegister: typeof initialRegisterState;
-    screenLogin: typeof initialLoginState;
+    screenRegister: RegisterState;
+    screenLogin: LoginState;
   };
   dispatch: React.Dispatch<any>;
   apiUrl: string;

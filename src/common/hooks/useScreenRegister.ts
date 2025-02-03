@@ -24,16 +24,17 @@ function useScreenRegister() {
     });
   };
 
-  const updateRegisterFields = ({ key, ...rest }: { key: string; open: boolean }): void => {
+  const updateRegisterFields = ({ path, ...rest }: { path: string; [key: string]: any }): void => {
     dispatch({
       type: "UPDATE-MULTIPLE-FIELDS-REGISTER",
       payload: {
-        key,
+        path,
         values: rest,
       },
     });
   };
-
+  
+  
   const resetForm = () => {
     dispatch({
       type: "RESET-REGISTER-FORM",

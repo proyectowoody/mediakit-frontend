@@ -24,8 +24,6 @@ function Login() {
   const { handleSubmit, isLoading } = Handle(
     email,
     password,
-    setEmail,
-    setPassword
   );
 
   return (

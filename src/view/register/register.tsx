@@ -10,7 +10,6 @@ function Register() {
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [isVerified, setisVerified] = useState(false);
 
   authRedirectToken("/");
 
@@ -18,13 +17,7 @@ function Register() {
     name,
     lastName,
     email,
-    password,
-    isVerified,
-    setName,
-    setLastName,
-    setEmail,
-    setPassword,
-    setisVerified
+    password
   );
 
   return (

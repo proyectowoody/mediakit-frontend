@@ -11,7 +11,6 @@ function Home() {
 
   const logOut = () => {
     localStorage.removeItem("ACCESS_TOKEN");
-    localStorage.removeItem("USER_SESSION");
     setIsLogged(false);
     navigate("/login");
   };

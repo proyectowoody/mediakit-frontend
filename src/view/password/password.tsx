@@ -13,9 +13,7 @@ function Password() {
 
   const { handleSubmit, isLoading } = Handle(
     password,
-    verPassword,
-    setPassword,
-    setVerPassword
+    verPassword
   );
 
   return (

@@ -8,7 +8,7 @@ function Email() {
 
   authRedirectToken("/explorar");
 
-  const { handleSubmit, isLoading } = Handle(email, setEmail);
+  const { handleSubmit, isLoading } = Handle(email);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#F5F5DC]">

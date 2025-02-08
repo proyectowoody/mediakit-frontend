@@ -73,13 +73,15 @@ function useScreenLogin() {
       payload
     );
 
+    console.log(responseSesionLogin);
+
     if (responseSesionLogin?.apiError) {
       mostrarMensaje(responseSesionLogin.apiError.message, MensajeErrUsuario);
       resetForm();
       return false;
     }
 
-    const token = responseSesionLogin.data.token;
+    const token = responseSesionLogin.token;
 
     localStorage.setItem("ACCESS_TOKEN", token);
 

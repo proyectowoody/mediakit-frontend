@@ -73,8 +73,6 @@ function useScreenRegister() {
       lastName: state?.screenRegister.lastName,
       email: state?.screenRegister.email,
       password: state?.screenRegister.password,
-      isVerified: state?.screenRegister.isVerified,
-      role: "client"
     };
   
     const responseRegister = await postData(`${apiUrl}users/register`, payload);

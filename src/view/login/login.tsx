@@ -77,7 +77,7 @@ function Login() {
                   }
                 />
                 <a
-                  href="/email"
+                  href="/recovery-password"
                   className="absolute right-2 top-2 text-sm text-[#6E9475] hover:text-[#4E6E5D]"
                 >
                   Olvidé mi contraseña

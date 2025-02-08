@@ -4,7 +4,7 @@ import AuthGuard from "../guards/guards";
 import Verification from "../view/verification/verification";
 import Login from "../view/login/login";
 import Register from "../view/register/register";
-import Email from "../view/email/email";
+import RecoveryPassword from "../view/recoveryPassword/recoveryPassword.tsx";
 import Password from "../view/password/password";
 import Home from "../view/home";
 import Dashboard from "../view/dashboard/dashboard";
@@ -27,7 +27,7 @@ const router = createBrowserRouter(
     { path: "/", element: <Home /> },
     { path: "/login", element: <Login /> },
     { path: "/register", element: <Register /> },
-    { path: "/email", element: <Email /> },
+    { path: "/recovery-password", element: <RecoveryPassword /> },
     { path: "/password", element: <Password /> },
     { path: "verification", element: <Verification /> },
     { path: "/dashboard", element: <Dashboard /> },
@@ -46,7 +46,7 @@ const router = createBrowserRouter(
     { path: "/blog", element: <Blog /> },
 
     { path: "/authguard", element: <AuthGuard /> },
-    { path: "*", element: <NotFound /> }
+    { path: "*", element: <NotFound /> },
   ],
   {
     future: {

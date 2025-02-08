@@ -73,8 +73,6 @@ function useScreenLogin() {
       payload
     );
 
-    console.log(responseSesionLogin);
-
     if (responseSesionLogin?.apiError) {
       mostrarMensaje(responseSesionLogin.apiError.message, MensajeErrUsuario);
       resetForm();

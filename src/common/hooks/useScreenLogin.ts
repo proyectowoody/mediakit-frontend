@@ -10,7 +10,7 @@ function useScreenLogin() {
 
   const navigate = useNavigate();
 
-  const updateRegisterField = (key: string, value: any): void => {
+  const updateLoginField = (key: string, value: any): void => {
     dispatch({
       type: "UPDATE-SINGLE-FIELD-REGISTER",
       payload: {
@@ -20,7 +20,7 @@ function useScreenLogin() {
     });
   };
 
-  const updateRegisterFields = ({ path, ...values }: { path: string; [key: string]: any }): void => {
+  const updateLoginFields = ({ path, ...values }: { path: string; [key: string]: any }): void => {
     dispatch({
       type: "UPDATE-MULTIPLE-FIELDS-REGISTER",
       payload: { path, values },
@@ -29,14 +29,14 @@ function useScreenLogin() {
   
   const resetForm = () => {
     dispatch({
-      type: "RESET-REGISTER-FORM",
+      type: "RESET-LOGIN-FORM",
     });
   };
   
   const handleSubmitRegister = async (event: FormEvent) => {
     event.preventDefault();
   
-    updateRegisterField('isLoading', true);
+    updateLoginField('isLoading', true);
   
     const MensajeErrUsuario = document.getElementById("err");
     const MensajeActUsuario = document.getElementById("success");
@@ -97,8 +97,8 @@ function useScreenLogin() {
   };
   
   return {
-    updateRegisterField,
-    updateRegisterFields,
+    updateLoginField,
+    updateLoginFields,
     handleSubmitRegister,
   };
 }

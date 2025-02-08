@@ -33,17 +33,17 @@ function useScreenResetPassword() {
     });
   };
 
-  // const resetForm = () => {
-  //   dispatch({
-  //     type: "RESET-RESET-PASSWORD-FORM",
-  //   });
-  // };
+  const resetForm = () => {
+    dispatch({
+      type: "RESET-RESET-PASSWORD-FORM",
+    });
+  };
 
   const handleSubmitResetPassword = async (event: FormEvent) => {
     event.preventDefault();
 
     const MensajeErr = document.getElementById("err");
-    const MensajeAct = document.getElementById("success");
+    //   const MensajeAct = document.getElementById("success");
 
     const validationFields = [
       { key: "password", message: "Ingrese su nueva contraseña" },
@@ -78,19 +78,35 @@ function useScreenResetPassword() {
 
     updateResetPasswordField("isLoading", true);
 
+    const urlParams = new URLSearchParams(window.location.search);
+    const urlToken = urlParams.get("token");
+
+    const localToken = localStorage.getItem("ACCESS_TOKEN");
+
+    const token = urlToken || localToken;
+
+    if (!token) {
+      throw new Error("No se encontró un token válido.");
+      return null;
+    }
+
     alert("por acabar");
 
-    // try {
-    //   const urlParams = new URLSearchParams(window.location.search);
-    //   const urlToken = urlParams.get("token");
+    // const payload = {
+    //   password: state.screenResetPassword.password,
+    //   verPassword: state.screenResetPassword.verPassword,
+    // };
 
-    //   const localToken = localStorage.getItem("ACCESS_TOKEN");
+    // const responseOperation = await postData(
+    //   `${apiUrl}/users/password`,
+    //   payload
+    // );
 
-    //   const token = urlToken || localToken;
-
-    //   if (!token) {
-    //     throw new Error("No se encontró un token válido.");
-    //   }
+    // if (responseOperation?.apiError) {
+    //   mostrarMensaje(responseOperation.apiError.message, MensajeErr);
+    //   resetForm();
+    //   return false;
+    // }
 
     //   const responseSesion = await axios.patch(
     //     `${linkBackend}/users/password`,
@@ -111,23 +127,6 @@ function useScreenResetPassword() {
     //   mostrarMensaje(message, MensajeErr);
     //   return null;
     // }
-
-    // const payload = {
-    //   email: state.screenRecoveryPassword.email,
-    // };
-
-    // const responseOperation = await postData(`${apiUrl}/users/email`, payload);
-
-    // if (responseOperation?.apiError) {
-    //   mostrarMensaje(responseOperation.apiError.message, MensajeErr);
-    //   resetForm();
-    //   return false;
-    // }
-
-    // setTimeout(() => {
-    //   resetForm();
-    //   navigate("/verification");
-    // }, 1000);
   };
 
   return {

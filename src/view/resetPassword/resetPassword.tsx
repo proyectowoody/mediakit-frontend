@@ -82,7 +82,6 @@ function ResetPassword() {
                 }
                 required
               />
-              showConfirmPassword
               <button
                 type="button"
                 onClick={() =>

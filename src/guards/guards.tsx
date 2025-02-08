@@ -46,7 +46,7 @@ export const AuthGuard = () => {
     if (user && !isRedirected) {
       const redirectRoutes: Record<string, string> = {
         client: "/home",
-        admin: "/dashboard", // Ajusta la ruta según tu lógica
+        admin: "/dashboard", 
       };
 
       const { role } = user;

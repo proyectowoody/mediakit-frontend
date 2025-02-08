@@ -1,22 +1,16 @@
 import { FormEvent } from "react";
 import axios from "axios";
 import { mostrarMensaje } from "../../components/toast";
-import { api } from "../url";
+import { linkBackend } from "../url";
 
 export interface upEmailData {
   tokens: string;
-  name: string;
-  email: string;
-  role: string;
-  id: number;
 }
 
 export const Submit = async (
   event: FormEvent,
   password: string,
   verPassword: string,
-  setVerPassword: React.Dispatch<React.SetStateAction<string>>,
-  setPassword: React.Dispatch<React.SetStateAction<string>>
 ): Promise<upEmailData | null> => {
   event.preventDefault();
   const MensajeErr = document.getElementById("err");
@@ -40,11 +34,6 @@ export const Submit = async (
     return null;
   }
 
-  function resetForm() {
-    setPassword("");
-    setVerPassword("");
-  }
-
   try {
     const urlParams = new URLSearchParams(window.location.search);
     const urlToken = urlParams.get("token");
@@ -58,7 +47,7 @@ export const Submit = async (
     }
 
     const responseSesion = await axios.patch(
-      `${api}/users/password`,
+      `${linkBackend}/users/password`,
       { password, verPassword },
       {
         headers: {
@@ -67,19 +56,13 @@ export const Submit = async (
       }
     );
 
-    resetForm();
     mostrarMensaje(responseSesion.data.message, MensajeAct);
     const tokens = responseSesion.data.token;
-    const name = responseSesion.data.name;
-    const emaile = responseSesion.data.email;
-    const role = responseSesion.data.role;
-    const id = responseSesion.data.id;
-    return { tokens, name, email: emaile, role, id };
+    return { tokens };
   } catch (error: any) {
     const message =
       error.response?.data.message || "Ocurrió un error inesperado.";
     mostrarMensaje(message, MensajeErr);
-    resetForm();
     return null;
   }
 };

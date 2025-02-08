@@ -3,7 +3,7 @@ import { AppContextType } from "./AppContextTypes";
 import { initialState } from "./initialState";
 import { combinedReducers } from "./combinedReducers";
 
-export const AppContext = createContext<AppContextType | undefined>(undefined);
+export const AppContext = createContext<AppContextType>(null as any);
 
 interface AppContextProviderProps {
   children: ReactNode;

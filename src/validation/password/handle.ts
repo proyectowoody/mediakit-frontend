@@ -1,19 +1,10 @@
-import { Dispatch, FormEvent, SetStateAction, useState } from "react";
+import { FormEvent, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Submit } from "./submit";
 
-export interface UserData {
-  name: string;
-  email: string;
-  role: string;
-  id: number;
-}
-
 function Handle(
   password: string,
-  verPassword: string,
-  setPassword: Dispatch<SetStateAction<string>>,
-  setVerPassword: Dispatch<SetStateAction<string>>
+  verPassword: string
 ) {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
@@ -25,24 +16,14 @@ function Handle(
     const shipment = await Submit(
       event,
       password,
-      verPassword,
-      setPassword,
-      setVerPassword
+      verPassword
     );
 
     if (shipment) {
-      const { tokens, name, email, role, id } = shipment;
+      const { tokens } = shipment;
       localStorage.setItem("ACCESS_TOKEN", tokens);
-      const sessionData: UserData = {
-        name,
-        email,
-        role,
-        id,
-      };
-
-      localStorage.setItem("USER_SESSION", JSON.stringify(sessionData));
       setTimeout(() => {
-        navigate("/shopping");
+        navigate("/home");
       }, 3000);
     }
     setIsLoading(false);

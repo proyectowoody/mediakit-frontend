@@ -7,10 +7,6 @@ export interface RegisterState {
   password: string;
   isVerified: boolean;
   isLoading: boolean;
-  modal: {
-    open: boolean;
-    item: any;
-  };
 }
 
 export const initialRegisterState: RegisterState = {
@@ -22,8 +18,4 @@ export const initialRegisterState: RegisterState = {
   password: "",
   isVerified: false,
   isLoading: false,
-  modal: {
-    open: false,
-    item: {},
-  },
 };

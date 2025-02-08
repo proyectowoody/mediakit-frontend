@@ -6,13 +6,9 @@ import { postData } from '../../services/ApiService';
 import { mostrarMensaje } from "../../components/toast";
 
 function useScreenRegister() {
-  const {state, dispatch, apiUrl } = useContext(AppContext) ?? {};
+  const {state, dispatch, apiUrl } = useContext(AppContext);
 
   const navigate = useNavigate();
-
-  if (!dispatch) {
-    throw new Error("Dispatch is not available, AppContext is undefined.");
-  }
 
   const updateRegisterField = (key: string, value: any): void => {
     dispatch({

@@ -27,7 +27,6 @@ function useScreenRegister() {
     });
   };
   
-  
   const resetForm = () => {
     dispatch({
       type: "RESET-REGISTER-FORM",

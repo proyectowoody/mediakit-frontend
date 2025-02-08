@@ -5,7 +5,7 @@ import { RecoveryPasswordState } from "../context/states/initialRecoveryPassword
 import { postData } from "../../services/ApiService";
 import { mostrarMensaje } from "../../components/toast";
 
-function useScreenLogin() {
+function useScreenRecoveryPassword() {
   const { state, dispatch, apiUrl } = useContext(AppContext);
 
   const navigate = useNavigate();
@@ -91,4 +91,4 @@ function useScreenLogin() {
   };
 }
 
-export default useScreenLogin;
+export default useScreenRecoveryPassword;

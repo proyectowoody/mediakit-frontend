@@ -1,22 +1,16 @@
-import { useState } from "react";
-import Message from "../../components/message";
+import { useContext } from "react";
 import VerificationUrls from "../../validation/password/verificationUrls";
-import Handle from "../../validation/password/handle";
-import Footer from "../../components/footer";
+import { AppContext } from "../../common/context/AppContext/AppContext";
+import useScreenResetPassword from "../../common/hooks/useScreenResetPassword";
+import Message from "../../components/message";
 import Header from "../../components/header";
+import Footer from "../../components/footer";
 
-function Password() {
-  const [password, setPassword] = useState("");
-  const [verPassword, setVerPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+function ResetPassword() {
+  const { state } = useContext(AppContext);
+  const resetPasswordHook = useScreenResetPassword();
 
   VerificationUrls();
-
-  const { handleSubmit, isLoading } = Handle(
-    password,
-    verPassword
-  );
 
   return (
     <div>
@@ -30,25 +24,40 @@ function Password() {
             Ingresa tu nueva contraseña para restablecer tu cuenta.
           </p>
           <Message />
-          <form onSubmit={handleSubmit} className="mt-6">
+          <form
+            onSubmit={resetPasswordHook.handleSubmitResetPassword}
+            className="mt-6"
+          >
             <div className="mb-4 relative">
               <label className="block text-sm font-medium text-[#4E6E5D]">
                 Nueva Contraseña
               </label>
               <input
-                type={showPassword ? "text" : "password"}
+                type={
+                  state.screenResetPassword.showPassword ? "text" : "password"
+                }
                 className="w-full px-3 py-2 border border-[#B2C9AB] rounded-md shadow-sm focus:outline-none focus:ring-[#6E9475] focus:border-[#6E9475]"
                 placeholder="Nueva Contraseña"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                value={state.screenResetPassword.password}
+                onChange={(e) =>
+                  resetPasswordHook.updateResetPasswordField(
+                    "password",
+                    e.target.value
+                  )
+                }
                 required
               />
               <button
                 type="button"
-                onClick={() => setShowPassword(!showPassword)}
+                onClick={() =>
+                  resetPasswordHook.updateResetPasswordField(
+                    "showPassword",
+                    !state.screenResetPassword.showPassword
+                  )
+                }
                 className="absolute top-9 right-3 text-[#6E9475] hover:text-[#4E6E5D]"
               >
-                {showPassword ? "👁️" : "👁️‍🗨️"}
+                {state.screenResetPassword.showPassword ? "👁️" : "👁️‍🗨️"}
               </button>
             </div>
 
@@ -57,28 +66,45 @@ function Password() {
                 Confirmar Contraseña
               </label>
               <input
-                type={showConfirmPassword ? "text" : "password"}
+                type={
+                  state.screenResetPassword.showConfirmPassword
+                    ? "text"
+                    : "password"
+                }
                 className="w-full px-3 py-2 border border-[#B2C9AB] rounded-md shadow-sm focus:outline-none focus:ring-[#6E9475] focus:border-[#6E9475]"
                 placeholder="Confirmar Contraseña"
-                value={verPassword}
-                onChange={(e) => setVerPassword(e.target.value)}
+                value={state.screenResetPassword.verPassword}
+                onChange={(e) =>
+                  resetPasswordHook.updateResetPasswordField(
+                    "verPassword",
+                    e.target.value
+                  )
+                }
                 required
               />
+              showConfirmPassword
               <button
                 type="button"
-                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                onClick={() =>
+                  resetPasswordHook.updateResetPasswordField(
+                    "showConfirmPassword",
+                    !state.screenResetPassword.showConfirmPassword
+                  )
+                }
                 className="absolute top-9 right-3 text-[#6E9475] hover:text-[#4E6E5D]"
               >
-                {showConfirmPassword ? "👁️" : "👁️‍🗨️"}
+                {state.screenResetPassword.showConfirmPassword ? "👁️" : "👁️‍🗨️"}
               </button>
             </div>
 
             <button
               type="submit"
               className="w-full py-2 px-4 bg-[#6E9475] text-white font-medium rounded-md hover:bg-[#5C8465] focus:outline-none focus:ring-2 focus:ring-[#6E9475]"
-              disabled={isLoading}
+              disabled={state.screenResetPassword.isLoading}
             >
-              {isLoading ? "Procesando..." : "Restablecer Contraseña"}
+              {state.screenResetPassword.isLoading
+                ? "Procesando..."
+                : "Restablecer Contraseña"}
             </button>
           </form>
 
@@ -98,4 +124,4 @@ function Password() {
   );
 }
 
-export default Password;
+export default ResetPassword;

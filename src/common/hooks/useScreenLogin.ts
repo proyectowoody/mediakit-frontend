@@ -86,6 +86,7 @@ function useScreenLogin() {
     localStorage.setItem("ACCESS_TOKEN", token);
 
     setTimeout(() => {
+      resetForm();
       navigate("/authguard");
     }, 3000);
   };

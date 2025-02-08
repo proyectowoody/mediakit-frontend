@@ -93,9 +93,9 @@ function useScreenRegister() {
     }
 
     mostrarMensaje(responseRegister.message, MensajeActUsuario);
-    resetForm();
 
     setTimeout(() => {
+      resetForm();
       navigate("/verification");
     }, 1000);
   };

@@ -56,12 +56,12 @@ function useScreenRegister() {
     const validateForm = (): boolean => {
       for (const field of validationFields) {
         if (field.key === "isTermsAccepted") {
-          if (!state?.screenRegister[field.key as keyof RegisterState]) {
+          if (!state.screenRegister[field.key as keyof RegisterState]) {
             mostrarMensaje(field.message, MensajeErrUsuario);
             return false;
           }
         } else {
-          if (state?.screenRegister[field.key as keyof RegisterState] === "") {
+          if (state.screenRegister[field.key as keyof RegisterState] === "") {
             mostrarMensaje(field.message, MensajeErrUsuario);
             return false;
           }
@@ -81,7 +81,10 @@ function useScreenRegister() {
       password: state?.screenRegister.password,
     };
 
-    const responseRegister = await postData(`${apiUrl}users/register`, payload);
+    const responseRegister = await postData(
+      `${apiUrl}/users/register`,
+      payload
+    );
 
     if (responseRegister?.apiError) {
       mostrarMensaje(responseRegister.apiError.message, MensajeErrUsuario);

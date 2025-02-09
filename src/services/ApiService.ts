@@ -8,10 +8,6 @@ export const fetchData = async (apiAlias: string): Promise<any> => {
       return result.data;
     }
 
-    if ([200, 201].includes(result.status)) {
-      return {};
-    }
-
     return { apiError: { message: "Error en la API sin datos" } };
   } catch (error: any) {
     return {
@@ -60,7 +56,7 @@ export const updateDataInApi = async (
     if (result?.data) {
       return result.data;
     }
-    if ([200, 201].includes(result.status)) {
+    if ([200].includes(result.status)) {
       return {};
     }
     return { apiError: { message: "Error en la API sin datos" } };
@@ -78,7 +74,7 @@ export const updateDataInApi = async (
 export const deleteDataFromApi = async (apiAlias: string): Promise<any> => {
   try {
     const result = await axios.delete(apiAlias);
-    if ([200, 201].includes(result.status)) {
+    if ([200].includes(result.status)) {
       return {};
     }
     return { apiError: { message: "Error en la API sin datos" } };

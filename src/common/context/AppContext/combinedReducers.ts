@@ -2,24 +2,29 @@ import { registerReducer } from "../reducers/screenRegisterReducer";
 import { loginReducer } from "../reducers/screenLoginReducer";
 import { recoveryPasswordReducer } from "../reducers/screenRecoveryPasswordReducer";
 import { resetPasswordReducer } from "../reducers/screenResetPasswordReducer";
-import { AppContextStateTypeOf } from "./initialState";
 
-type Action = { type: string; payload: any };
+type Action = {
+  type: string;
+  payload: any;
+};
 
-export function combinedReducers(
-  state: AppContextStateTypeOf,
-  action: Action
-): AppContextStateTypeOf {
-  return {
-    screenRegister: registerReducer(state.screenRegister, action),
-    screenLogin: loginReducer(state.screenLogin, action),
-    screenRecoveryPassword: recoveryPasswordReducer(
-      state.screenRecoveryPassword,
-      action
-    ),
-    screenResetPassword: resetPasswordReducer(
-      state.screenResetPassword,
-      action
-    ),
+type ReducersMapObject = {
+  [key: string]: (state: any, action: Action) => any;
+};
+
+const combineReducers =
+  (reducers: ReducersMapObject) =>
+  (state: any, action: Action): any => {
+    const nextState: any = {};
+    for (const key in reducers) {
+      nextState[key] = reducers[key](state[key], action);
+    }
+    return nextState;
   };
-}
+
+export const combinedReducers = combineReducers({
+  screenRegister: registerReducer,
+  screenLogin: loginReducer,
+  screenRecoveryPassword: recoveryPasswordReducer,
+  screenResetPassword: resetPasswordReducer,
+});

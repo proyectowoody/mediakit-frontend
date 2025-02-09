@@ -2,8 +2,14 @@ import { registerReducer } from "../reducers/screenRegisterReducer";
 import { loginReducer } from "../reducers/screenLoginReducer";
 import { recoveryPasswordReducer } from "../reducers/screenRecoveryPasswordReducer";
 import { resetPasswordReducer } from "../reducers/screenResetPasswordReducer";
+import { AppContextStateTypeOf } from "./initialState";
 
-export function combinedReducers(state: any, action: any) {
+type Action = { type: string; payload: any };
+
+export function combinedReducers(
+  state: AppContextStateTypeOf,
+  action: Action
+): AppContextStateTypeOf {
   return {
     screenRegister: registerReducer(state.screenRegister, action),
     screenLogin: loginReducer(state.screenLogin, action),
@@ -12,7 +18,7 @@ export function combinedReducers(state: any, action: any) {
       action
     ),
     screenResetPassword: resetPasswordReducer(
-      state.screenRecoveryPassword,
+      state.screenResetPassword,
       action
     ),
   };

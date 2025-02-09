@@ -9,3 +9,5 @@ export const initialState = {
   screenRecoveryPassword: initialRecoveryPasswordState,
   screenResetPassword: initialResetPasswordState,
 };
+
+export type AppContextStateTypeOf = typeof initialState;

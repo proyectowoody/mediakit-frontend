@@ -12,6 +12,8 @@ function Register() {
 
   authRedirectToken("/");
 
+  console.log(state.screenRegister);
+
   return (
     <>
       <div>
@@ -151,7 +153,8 @@ function Register() {
                   state?.screenRegister.isLoading
                 }
                 className={`w-full py-2 px-4 text-white font-medium rounded-md focus:outline-none focus:ring-2 ${
-                  state?.screenRegister.isTermsAccepted && !state?.screenRegister.isLoading
+                  state?.screenRegister.isTermsAccepted &&
+                  !state?.screenRegister.isLoading
                     ? "bg-[#6E9475] hover:bg-[#5C8465] focus:ring-[#6E9475]"
                     : "bg-gray-400 cursor-not-allowed"
                 }`}

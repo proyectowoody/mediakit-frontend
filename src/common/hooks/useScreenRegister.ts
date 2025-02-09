@@ -20,18 +20,18 @@ function useScreenRegister() {
     });
   };
 
-  const updateRegisterFields = ({
-    path,
-    ...values
-  }: {
-    path: string;
-    [key: string]: any;
-  }): void => {
-    dispatch({
-      type: "UPDATE-MULTIPLE-FIELDS-REGISTER",
-      payload: { path, values },
-    });
-  };
+  // const updateRegisterFields = ({
+  //   path,
+  //   ...values
+  // }: {
+  //   path: string;
+  //   [key: string]: any;
+  // }): void => {
+  //   dispatch({
+  //     type: "UPDATE-MULTIPLE-FIELDS-REGISTER",
+  //     payload: { path, values },
+  //   });
+  // };
 
   const resetForm = () => {
     dispatch({
@@ -56,8 +56,9 @@ function useScreenRegister() {
     const validateForm = (): boolean => {
       for (const field of validationFields) {
         if (field.key === "isTermsAccepted") {
-          if (!state.screenRegister[field.key as keyof RegisterState]) {
-            mostrarMensaje(field.message, MensajeErrUsuario);
+          if (
+            state.screenRegister[field.key as keyof RegisterState] === false
+          ) {
             return false;
           }
         } else {
@@ -102,7 +103,6 @@ function useScreenRegister() {
 
   return {
     updateRegisterField,
-    updateRegisterFields,
     handleSubmitRegister,
   };
 }

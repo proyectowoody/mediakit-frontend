@@ -12,8 +12,6 @@ function Register() {
 
   authRedirectToken("/");
 
-  console.log(state.screenRegister);
-
   return (
     <>
       <div>
@@ -111,7 +109,7 @@ function Register() {
                   <button
                     type="button"
                     className="absolute right-2 top-2 text-sm text-[#6E9475] hover:text-[#4E6E5D]"
-                    onChange={() =>
+                    onClick={() =>
                       registerHook.updateRegisterField(
                         "showPassword",
                         !state?.screenRegister.showPassword

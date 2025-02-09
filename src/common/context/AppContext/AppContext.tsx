@@ -16,11 +16,9 @@ export function AppContextProvider({
 
   const isProduction = import.meta.env.VITE_NODE_ENV === "development";
 
-  const linkBackend = isProduction
+  const apiUrl = isProduction
     ? import.meta.env.VITE_BACKEND_URL_PROD
     : import.meta.env.VITE_BACKEND_URL;
-
-  const apiUrl = linkBackend;
 
   const value = React.useMemo(
     () => ({

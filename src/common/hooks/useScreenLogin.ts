@@ -20,19 +20,6 @@ function useScreenLogin() {
     });
   };
 
-  const updateLoginFields = ({
-    path,
-    ...values
-  }: {
-    path: string;
-    [key: string]: any;
-  }): void => {
-    dispatch({
-      type: "UPDATE-MULTIPLE-FIELDS-LOGIN",
-      payload: { path, values },
-    });
-  };
-
   const resetForm = () => {
     dispatch({
       type: "RESET-LOGIN-FORM",
@@ -91,7 +78,6 @@ function useScreenLogin() {
 
   return {
     updateLoginField,
-    updateLoginFields,
     handleSubmitLogin,
   };
 }

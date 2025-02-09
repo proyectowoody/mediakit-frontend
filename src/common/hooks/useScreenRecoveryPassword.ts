@@ -20,19 +20,6 @@ function useScreenRecoveryPassword() {
     });
   };
 
-  const updateRecoveryPasswordFields = ({
-    path,
-    ...values
-  }: {
-    path: string;
-    [key: string]: any;
-  }): void => {
-    dispatch({
-      type: "UPDATE-MULTIPLE-FIELDS-RECOVERY-PASSWORD",
-      payload: { path, values },
-    });
-  };
-
   const resetForm = () => {
     dispatch({
       type: "RESET-RECOVERY-PASSWORD-FORM",
@@ -86,7 +73,6 @@ function useScreenRecoveryPassword() {
 
   return {
     updateRecoveryPasswordField,
-    updateRecoveryPasswordFields,
     handleSubmitRecoveryPassword,
   };
 }

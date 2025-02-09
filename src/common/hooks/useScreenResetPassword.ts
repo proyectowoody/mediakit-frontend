@@ -2,7 +2,7 @@ import { useContext, FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import { AppContext } from "../context/AppContext/AppContext";
 import { ResetPasswordState } from "../context/states/initialResetPasswordState";
-import { postData } from "../../services/ApiService";
+import axios from "axios";
 import { mostrarMensaje } from "../../components/toast";
 
 function useScreenResetPassword() {
@@ -17,19 +17,6 @@ function useScreenResetPassword() {
         key,
         value,
       },
-    });
-  };
-
-  const updateResetPasswordFields = ({
-    path,
-    ...values
-  }: {
-    path: string;
-    [key: string]: any;
-  }): void => {
-    dispatch({
-      type: "UPDATE-MULTIPLE-FIELDS-RESET-PASSWORD",
-      payload: { path, values },
     });
   };
 
@@ -90,48 +77,36 @@ function useScreenResetPassword() {
       return null;
     }
 
-    alert("por acabar");
+    const payload = {
+      password: state.screenResetPassword.password,
+      verPassword: state.screenResetPassword.verPassword,
+    };
 
-    // const payload = {
-    //   password: state.screenResetPassword.password,
-    //   verPassword: state.screenResetPassword.verPassword,
-    // };
+    try {
+      const result = await axios.patch(`${apiUrl}/users/password`, payload, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
-    // const responseOperation = await postData(
-    //   `${apiUrl}/users/password`,
-    //   payload
-    // );
-
-    // if (responseOperation?.apiError) {
-    //   mostrarMensaje(responseOperation.apiError.message, MensajeErr);
-    //   resetForm();
-    //   return false;
-    // }
-
-    //   const responseSesion = await axios.patch(
-    //     `${linkBackend}/users/password`,
-    //     { password, verPassword },
-    //     {
-    //       headers: {
-    //         Authorization: `Bearer ${token}`,
-    //       },
-    //     }
-    //   );
-
-    //   mostrarMensaje(responseSesion.data.message, MensajeAct);
-    //   const tokens = responseSesion.data.token;
-    //   return { tokens };
-    // } catch (error: any) {
-    //   const message =
-    //     error.response?.data.message || "Ocurrió un error inesperado.";
-    //   mostrarMensaje(message, MensajeErr);
-    //   return null;
-    // }
+      if (result?.data) {
+        // Procesa la respuesta si es necesario
+        console.log("Respuesta de la API:", result.data);
+      } else if ([200, 201].includes(result.status)) {
+        console.log("Operación completada sin datos adicionales.");
+      } else {
+        console.error("Error en la API sin datos.");
+      }
+    } catch (error: any) {
+      console.error(
+        "Error en la petición:",
+        error.response?.data?.message || "Ocurrió un error inesperado."
+      );
+    }
   };
 
   return {
     updateResetPasswordField,
-    updateResetPasswordFields,
     handleSubmitResetPassword,
   };
 }

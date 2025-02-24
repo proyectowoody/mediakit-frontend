@@ -4,16 +4,7 @@ import { linkBackend } from "../../url";
 export async function handleGet() {
     try {
 
-        const token = localStorage.getItem("ACCESS_TOKEN");
-        if (!token) {
-            throw new Error("No tienes permiso para realizar esta acción");
-        }
-
-        const headers = {
-            Authorization: `Bearer ${token}`,
-        };
-
-        const response = await axios.get(`${linkBackend}/articulos`, { headers });
+        const response = await axios.get(`${linkBackend}/articulos`);
 
         return response.data;
     } catch (error) {

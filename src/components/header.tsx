@@ -105,10 +105,9 @@ function Header() {
                 </nav>
 
                 <div className="flex items-center space-x-4">
-                    <Link to="/login" className="hidden md:flex items-center space-x-2 px-4 py-2 bg-[#6E9475] text-white rounded hover:bg-[#5C8465]">
+                    <a href="/login" className="hidden md:flex items-center space-x-2 px-4 py-2 bg-[#6E9475] text-white rounded hover:bg-[#5C8465]">
                         <FaUser className="h-5 w-5" />
-                    </Link>
-
+                    </a>
                     <button onClick={() => setIsOpen(!isOpen)} className="md:hidden">
                         <img src={isOpen ? closeIcon : menuIcon} alt="Menú" className="h-8" />
                     </button>
@@ -144,9 +143,9 @@ function Header() {
                             )}
                         </li>
                         <li>
-                            <Link to="/login" className="flex items-center justify-center space-x-2 px-4 py-2 bg-[#6E9475] text-white rounded hover:bg-[#5C8465]">
+                            <a href="/login" className="flex items-center justify-center space-x-2 px-4 py-2 bg-[#6E9475] text-white rounded hover:bg-[#5C8465]">
                                 <FaUser className="h-5 w-5" />
-                            </Link>
+                            </a>
                         </li>
                     </ul>
                 </nav>

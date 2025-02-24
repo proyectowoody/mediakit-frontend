@@ -4,7 +4,7 @@ import NavBar from "./navBar";
 import Sidebar from "./aside";
 import Footer from "./footer";
 import authRedirectNoToken from "../../validation/autRedirectNoToken";
-import roleClient from "../ts/roleClient";
+// import roleClient from "../ts/roleClient";
 import { Modal } from "../toast";
 
 function Admin() {

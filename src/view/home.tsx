@@ -36,7 +36,7 @@ function Home() {
   const [cartItems, setCartItems] = useState<Product[]>([]);
   const [animatedProduct, setAnimatedProduct] = useState<Product | null>(null);
   const [favorites, setFavorites] = useState<number[]>([]);
-
+  console.log(cartItems);
   const [articulos, setArticulos] = useState<
     {
       id: number;

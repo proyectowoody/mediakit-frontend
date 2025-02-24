@@ -1,11 +1,9 @@
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { jwtDecode } from "jwt-decode"; 
-
 
 interface User {
   email: string;
-  role: string;
+  user: "client" | "admin"; 
 }
 
 export const AuthGuard = () => {
@@ -14,30 +12,20 @@ export const AuthGuard = () => {
   const [isRedirected, setIsRedirected] = useState(false);
 
   useEffect(() => {
-    const token = localStorage.getItem("ACCESS_TOKEN");
+    const accessToken = localStorage.getItem("ACCESS_TOKEN");
 
-    if (!token) {
-      // Si no hay token, redirigir al login
+    if (!accessToken) {
       navigate("/login");
       return;
     }
 
     try {
-      // Decodificar el token para obtener email y role
-      const decoded: User = jwtDecode(token);
-      setUser(decoded);
+      const payloadBase64 = accessToken.split(".")[1];
+      const decodedPayload: User = JSON.parse(atob(payloadBase64));
 
-      // Verificar si el token ha expirado
-      const currentTime = Math.floor(Date.now() / 1000); // Tiempo actual en segundos
-      const decodedAny: any = jwtDecode(token); // Acceso al campo `exp`
-      if (decodedAny.exp < currentTime) {
-        console.error("El token ha expirado");
-        localStorage.removeItem("ACCESS_TOKEN");
-        navigate("/login");
-        return;
-      }
+      setUser(decodedPayload);
     } catch (error) {
-      console.error("Error al decodificar el token:", error);
+      console.error("Error decodificando el token:", error);
       navigate("/login");
     }
   }, [navigate]);
@@ -45,15 +33,13 @@ export const AuthGuard = () => {
   useEffect(() => {
     if (user && !isRedirected) {
       const redirectRoutes: Record<string, string> = {
-        client: "/home",
-        admin: "/dashboard", 
+        "client": "/",
+        "admin": "/home-admin",
       };
 
-      const { role } = user;
-
-      if (role && redirectRoutes[role]) {
+      if (user.user && redirectRoutes[user.user]) {
         setIsRedirected(true);
-        navigate(redirectRoutes[role]);
+        navigate(redirectRoutes[user.user]);
       }
     }
   }, [user, isRedirected, navigate]);

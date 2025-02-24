@@ -7,6 +7,11 @@ import { motion, AnimatePresence } from "framer-motion";
 import Nosotros from "../components/nosotros";
 import Presumir from "../components/presumir";
 import Testimonios from "../components/testimonios";
+import { handleGet } from "../validation/admin/article/handleGet";
+import { FaHeart } from "react-icons/fa";
+import { handleGetFavorito } from "../validation/favorite/handle";
+import { handleDelete } from "../validation/favorite/handleDelete";
+import { Submit } from "../validation/favorite/Submit";
 
 interface Product {
   id: number;
@@ -30,13 +35,43 @@ function Home() {
   const [bestSellingProducts, setBestSellingProducts] = useState<Product[]>([]);
   const [cartItems, setCartItems] = useState<Product[]>([]);
   const [animatedProduct, setAnimatedProduct] = useState<Product | null>(null);
+  const [favorites, setFavorites] = useState<number[]>([]);
 
-  const products: Product[] = [
-    { id: 1, name: "Kent Handmade Tick-Weave Blazer", price: 4917.36, discountPrice: 3999.99, image: "https://tiendasanthonys.com/cdn/shop/products/10D28-BL_01_20221020091359.jpg?v=1709931798", sales: 150 },
-    { id: 2, name: "Gregory Handmade Wool Dinner Jacket", price: 4090.91, discountPrice: 3499.99, image: "https://paylesschat.com/republicadominicana/19735-thickbox_default/zapatos_de_vestir_satin_partie.jpg", sales: 200 },
-    { id: 3, name: "Burnham Suede Jacket", price: 2851.24, discountPrice: 2199.99, image: "https://ego.do/wp-content/uploads/255103-TAN-LTHR-Zapato-Noicy-Bronce-Democrata_01-1.jpg", sales: 300 },
-    { id: 4, name: "Gregory Hand-Tailored Wool Dinner Jacket", price: 2685.95, discountPrice: 1999.99, image: "https://valetzshoes.com/cdn/shop/products/ZAPATO-MOCASIN-DUTY-ANTIFAZ-ULTRA-LIVIANO-NEGRO-PIEL-VALETZ-SHOES.jpg?v=1720710764&width=1445", sales: 400 }
-  ];
+  const [articulos, setArticulos] = useState<
+    {
+      id: number;
+      nombre: string;
+      descripcion: string;
+      categoria: {
+        id: number;
+        nombre: string;
+        descripcion: string;
+      };
+      fecha: string;
+      estado: string;
+      imagen: string;
+      precio: number;
+    }[]
+  >([]);
+
+  useEffect(() => {
+    handleGet()
+      .then((data) => setArticulos(data))
+      .catch((error) => console.error(error));
+
+    handleGetFavorito()
+      .then((favoritos) => setFavorites(favoritos.map((fav: any) => fav.article.id)))
+      .catch((error) => console.error("Error al obtener favoritos:", error));
+  }, []);
+
+  const products: Product[] = articulos.map((articulo) => ({
+    id: articulo.id,
+    name: articulo.nombre,
+    price: articulo.precio,
+    discountPrice: articulo.precio * 0.9,
+    image: articulo.imagen,
+    sales: 150,
+  }));
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -55,7 +90,7 @@ function Home() {
 
     const bestSellers = [...products].sort((a, b) => b.sales - a.sales).slice(0, 8);
     setBestSellingProducts(bestSellers);
-  }, []);
+  }, [products]);
 
   const handleAddToCart = (product: Product) => {
     setAnimatedProduct(product);
@@ -63,6 +98,21 @@ function Home() {
     setTimeout(() => setAnimatedProduct(null), 1500);
   };
 
+  const toggleFavorite = async (productId: number) => {
+    const isFavorito = favorites.includes(productId);
+
+    try {
+      if (isFavorito) {
+        await handleDelete(productId);
+        setFavorites(favorites.filter((id) => id !== productId));
+      } else {
+        await Submit(productId);
+        setFavorites([...favorites, productId]);
+      }
+    } catch (error) {
+      console.error("Error al actualizar favorito:", error);
+    }
+  };
   return (
     <div className="font-quicksand">
       <Header />
@@ -95,6 +145,15 @@ function Home() {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 max-w-6xl mx-auto px-4">
           {topProducts.map((product) => (
             <div key={product.id} className="border border-gray-200 rounded-lg overflow-hidden shadow hover:shadow-lg transition duration-300 relative">
+              <button
+                className="absolute top-2 right-2 text-red-500 hover:text-red-600"
+                onClick={() => toggleFavorite(product.id)}
+              >
+                <FaHeart
+                  size={24}
+                  className={favorites.includes(product.id) ? "fill-red-500" : "fill-gray-500"}
+                />
+              </button>
               <img src={product.image} alt={product.name} className="w-full h-48 object-cover" />
               <div className="p-4">
                 <h3 className="text-lg font-semibold text-[#2F4F4F]">{product.name}</h3>
@@ -107,6 +166,7 @@ function Home() {
                 </button>
               </div>
             </div>
+
           ))}
         </div>
       </section>
@@ -117,7 +177,16 @@ function Home() {
         <h2 className="text-4xl font-bold text-center text-[#2F4F4F] mb-10">Nuestras Ofertas</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 max-w-6xl mx-auto px-4">
           {offerProducts.map((product) => (
-            <div key={product.id} className="border border-gray-200 rounded-lg overflow-hidden shadow hover:shadow-lg transition duration-300">
+            <div key={product.id} className="border border-gray-200 rounded-lg overflow-hidden shadow hover:shadow-lg transition duration-300 relative">
+              <button
+                className="absolute top-2 right-2 text-red-500 hover:text-red-600"
+                onClick={() => toggleFavorite(product.id)}
+              >
+                <FaHeart
+                  size={24}
+                  className={favorites.includes(product.id) ? "fill-red-500" : "fill-gray-500"}
+                />
+              </button>
               <img src={product.image} alt={product.name} className="w-full h-48 object-cover" />
               <div className="p-4">
                 <h3 className="text-lg font-semibold text-[#2F4F4F]">{product.name}</h3>
@@ -126,6 +195,7 @@ function Home() {
                 <button className="w-full mt-4 bg-[#6E9475] text-white py-2 rounded hover:bg-[#5C8465]">Ver Producto</button>
               </div>
             </div>
+
           ))}
         </div>
       </section>
@@ -136,7 +206,16 @@ function Home() {
         <h2 className="text-4xl font-bold text-center text-[#2F4F4F] mb-10">Nuestros productos más vendidos</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 max-w-6xl mx-auto px-4">
           {bestSellingProducts.map((product) => (
-            <div key={product.id} className="border border-gray-200 rounded-lg overflow-hidden shadow hover:shadow-lg transition duration-300">
+            <div key={product.id} className="border border-gray-200 rounded-lg overflow-hidden shadow hover:shadow-lg transition duration-300 relative">
+              <button
+                className="absolute top-2 right-2 text-red-500 hover:text-red-600"
+                onClick={() => toggleFavorite(product.id)}
+              >
+                <FaHeart
+                  size={24}
+                  className={favorites.includes(product.id) ? "fill-red-500" : "fill-gray-500"}
+                />
+              </button>
               <img src={product.image} alt={product.name} className="w-full h-48 object-cover" />
               <div className="p-4">
                 <h3 className="text-lg font-semibold text-[#2F4F4F]">{product.name}</h3>
@@ -145,6 +224,7 @@ function Home() {
                 <button className="w-full mt-4 bg-[#6E9475] text-white py-2 rounded hover:bg-[#5C8465]">Ver Producto</button>
               </div>
             </div>
+
           ))}
         </div>
       </section>
@@ -162,7 +242,7 @@ function Home() {
           />
         )}
       </AnimatePresence>
-      
+
       {/* <Card />  */}
       <Footer />
     </div>

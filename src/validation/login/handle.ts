@@ -26,7 +26,7 @@ function Handle(
 
       setTimeout(() => {
         navigate("/authguard");
-      }, 3000);
+      }, 1000);
     }
 
     setIsLoading(false);

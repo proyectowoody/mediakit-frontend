@@ -11,7 +11,7 @@ async function VerificationUrls(tokens: any, navigate: (path: string) => void): 
             localStorage.setItem("ACCESS_TOKEN", token);
 
             setTimeout(() => {
-                navigate("/home");
+                navigate("/authguard");
             }, 1000);
 
             return true;

@@ -49,7 +49,6 @@ function Header() {
         return () => window.removeEventListener("scroll", handleScroll);
     }, [lastScrollY]);
 
-    // Cierra el dropdown al hacer clic fuera
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
             const dropdown = document.getElementById("dropdownMenu");
@@ -73,8 +72,6 @@ function Header() {
 
                 <nav className="hidden md:flex space-x-8 absolute left-1/2 transform -translate-x-1/2">
                     <Link to="/" className="text-[#2F4F4F] hover:text-[#6E9475]">Inicio</Link>
-
-                    {/* Dropdown Tienda */}
                     <div className="relative" id="dropdownMenu">
                         <button
                             className="flex items-center text-[#2F4F4F] hover:text-[#6E9475] focus:outline-none"
@@ -107,7 +104,6 @@ function Header() {
                     </div>
                 </nav>
 
-                {/* Login y Menú Hamburguesa */}
                 <div className="flex items-center space-x-4">
                     <Link to="/login" className="hidden md:flex items-center space-x-2 px-4 py-2 bg-[#6E9475] text-white rounded hover:bg-[#5C8465]">
                         <FaUser className="h-5 w-5" />
@@ -119,7 +115,6 @@ function Header() {
                 </div>
             </div>
 
-            {/* Menú Móvil */}
             {isOpen && (
                 <nav className="md:hidden bg-[#FAF3E0] border-t border-[#D4C9B0] p-4">
                     <ul className="flex flex-col space-y-4">

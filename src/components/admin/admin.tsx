@@ -12,9 +12,9 @@ function Admin() {
   authRedirectNoToken("/login");
   const navigate = useNavigate();
 
-  useEffect(() => {
-    roleClient(navigate);
-  }, [navigate]);
+  // useEffect(() => {
+  //   roleClient(navigate);
+  // }, [navigate]);
 
   const [isAsideOpen, setIsAsideOpen] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);

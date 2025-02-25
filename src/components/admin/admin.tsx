@@ -76,7 +76,7 @@ function Admin() {
           isLogged={isLogged}
         />
 
-        <div className={`flex-1 transition-all ${isAsideOpen ? "lg:ml-64" : "ml-0"} flex flex-col`}>
+        <div className={`overflow-x-auto flex-1 transition-all ${isAsideOpen ? "lg:ml-64" : "ml-0"} flex flex-col`}>
           <div className="flex-1 p-4">
             <Outlet />
           </div>

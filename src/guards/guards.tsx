@@ -22,7 +22,6 @@ export const AuthGuard = () => {
     try {
       const payloadBase64 = accessToken.split(".")[1];
       const decodedPayload: User = JSON.parse(atob(payloadBase64));
-
       setUser(decodedPayload);
     } catch (error) {
       console.error("Error decodificando el token:", error);

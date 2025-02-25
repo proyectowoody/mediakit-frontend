@@ -4,17 +4,17 @@ import NavBar from "./navBar";
 import Sidebar from "./aside";
 import Footer from "./footer";
 import authRedirectNoToken from "../../validation/autRedirectNoToken";
-// import roleClient from "../ts/roleClient";
 import { Modal } from "../toast";
+import roleClient from "../ts/roleClient";
 
 function Admin() {
 
   authRedirectNoToken("/login");
   const navigate = useNavigate();
 
-  // useEffect(() => {
-  //   roleClient(navigate);
-  // }, [navigate]);
+  useEffect(() => {
+    roleClient(navigate);
+  }, [navigate]);
 
   const [isAsideOpen, setIsAsideOpen] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);

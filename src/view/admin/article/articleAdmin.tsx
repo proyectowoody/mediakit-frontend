@@ -1,7 +1,4 @@
-import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
 import authRedirectNoToken from "../../../validation/autRedirectNoToken";
-import roleClient from "../../../components/ts/roleClient";
 import User from "../../../validation/admin/article/user";
 import ArticleHeader from "../../../components/admin/article/articleHeader";
 import ArticleTable from "../../../components/admin/article/articuleTable";
@@ -10,13 +7,6 @@ import ArticleFormImage from "../../../components/admin/article/articleFormImage
 
 function ArticleAdmin() {
   authRedirectNoToken("/login");
-
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    roleClient(navigate);
-  }, [navigate]);
-
 
   const {
     setId,

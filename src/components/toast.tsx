@@ -61,14 +61,14 @@ export const Modal: React.FC<ModalProps> = ({
             type="button"
             className="transition duration-300 transform hover:scale-105 text-white bg-[#6E9475] hover:bg-[#5C8465] focus:ring-4 focus:outline-none focus:ring-[#6E9475] font-medium rounded-lg px-5 py-2.5"
           >
-            ✅ Sí, confirmar
+            ✅ Sí
           </button>
           <button
             onClick={onClose}
             type="button"
             className="transition duration-300 transform hover:scale-105 text-white bg-[#6E9475] hover:bg-[#5C8465] focus:ring-4 focus:outline-none focus:ring-[#6E9475] font-medium rounded-lg px-5 py-2.5"
           >
-            ❌ No, cancelar
+            ❌ No
           </button>
         </div>
       </div>

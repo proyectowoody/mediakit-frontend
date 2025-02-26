@@ -24,7 +24,7 @@ function ArticleTable({
       estado: string;
       imagen: string;
       precio: number;
-      imagenes: { id: number; url: string }[]; // ✅ Incluye el array de imágenes
+      imagenes: { id: number; url: string }[]; 
     }[]
   >([]);
 
@@ -36,7 +36,6 @@ function ArticleTable({
   useEffect(() => {
     handleGet()
       .then((data) => {
-        console.log(data, "2");
         setArticulos(data);
       })
       .catch((error) => {

@@ -57,19 +57,18 @@ export const handleSubmit = async (
     mostrarMensaje("No tienes permiso para realizar esta acción", MensajeErr);
     return null;
   }
-
-  const headers = {
-    Authorization: `Bearer ${token}`,
-    "Content-Type": "multipart/form-data",
-  };
-
+  
   try {
     let response: AxiosResponse<CampanaResponse>;
 
     if (id === 0) {
+      const headers = {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "multipart/form-data",
+      };
       const formData = new FormData();
       formData.append("nombre", nombre);
-      formData.append("categoria_id", categoria.toString()); 
+      formData.append("categoria_id", categoria.toString());
       formData.append("estado", estado);
       formData.append("descripcion", descripcion);
       formData.append("precio", precio.toString());
@@ -80,15 +79,18 @@ export const handleSubmit = async (
 
       response = await axios.post(`${linkBackend}/articulos`, formData, { headers });
     } else {
+      const headers = {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      };
       const updateData = {
         nombre,
-        categoria_id: categoria, 
+        categoria_id: categoria,
         estado,
         descripcion,
         precio,
       };
-
-      response = await axios.patch(`${linkBackend}/articulos/${id}`, updateData, { headers });
+      response = await axios.patch(`${linkBackend}/articulos/${id}`, JSON.stringify(updateData), { headers });
     }
 
     mostrarMensaje(response.data.message, MensajeAct);

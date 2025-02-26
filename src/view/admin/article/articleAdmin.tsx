@@ -27,7 +27,7 @@ function ArticleAdmin() {
     setDescripcion("");
     setCategoria("");
     setEstado("");
-    setImagen(null);
+    setImagen([]);
     setIsOpen(!isOpen);
     localStorage.removeItem("articuloSeleccionado");
   };
@@ -38,7 +38,7 @@ function ArticleAdmin() {
     setDescripcion("");
     setCategoria("");
     setEstado("");
-    setImagen(null);
+    setImagen([]);
     setIsOpen(!isOpen);
   };
 

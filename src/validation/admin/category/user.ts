@@ -5,6 +5,8 @@ function User() {
   const [nombre, setNombre] = useState("");
   const [descripcion, setDescripcion] = useState("");
   const [isOpen, setIsOpen] = useState(false);
+  const [imagen, setImagen] = useState<File | null>(null);
+  const [isOpenImg, setIsOpenImg] = useState(false);
 
   return {
     id,
@@ -15,6 +17,10 @@ function User() {
     setDescripcion,
     isOpen,
     setIsOpen,
+    imagen,
+    setImagen,
+    isOpenImg, 
+    setIsOpenImg
   };
 }
 

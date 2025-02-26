@@ -13,9 +13,9 @@ export const handleSubmit = async (
   nombre: string,
   categoria: string | number,
   estado: string,
-  imagen: File | null,
+  imagen: File[],
   descripcion: string,
-  precio:number
+  precio: number
 ): Promise<AxiosResponse<CampanaResponse> | null> => {
   event.preventDefault();
   const MensajeErr = document.getElementById("err");
@@ -36,8 +36,8 @@ export const handleSubmit = async (
     return null;
   }
 
-  if (id === 0 && !imagen) {
-    mostrarMensaje("Ingrese la imagen", MensajeErr);
+  if (id === 0 && imagen.length === 0) {
+    mostrarMensaje("Ingrese al menos una imagen", MensajeErr);
     return null;
   }
 
@@ -60,7 +60,7 @@ export const handleSubmit = async (
 
   const headers = {
     Authorization: `Bearer ${token}`,
-    "Content-Type": id === 0 ? "multipart/form-data" : "application/json",
+    "Content-Type": "multipart/form-data",
   };
 
   try {
@@ -69,25 +69,26 @@ export const handleSubmit = async (
     if (id === 0) {
       const formData = new FormData();
       formData.append("nombre", nombre);
-      formData.append("categoria", categoria.toString());
+      formData.append("categoria_id", categoria.toString()); 
       formData.append("estado", estado);
-      if (imagen) formData.append("imagen", imagen);
       formData.append("descripcion", descripcion);
       formData.append("precio", precio.toString());
+
+      imagen.forEach((file) => {
+        formData.append("imagenes", file);
+      });
 
       response = await axios.post(`${linkBackend}/articulos`, formData, { headers });
     } else {
       const updateData = {
         nombre,
-        categoria,
+        categoria_id: categoria, 
         estado,
         descripcion,
-        precio
+        precio,
       };
 
-      response = await axios.patch(`${linkBackend}/articulos/${id}`, updateData, {
-        headers,
-      });
+      response = await axios.patch(`${linkBackend}/articulos/${id}`, updateData, { headers });
     }
 
     mostrarMensaje(response.data.message, MensajeAct);

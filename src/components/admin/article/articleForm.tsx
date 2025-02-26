@@ -192,9 +192,10 @@ function ArticleForm({ toggleModal }: any) {
                     <input
                       type="file"
                       accept="image/*"
+                      multiple
                       className="bg-[#FFFFFF] border border-[#D4C9B0] text-[#2F4F4F] text-sm rounded-lg focus:ring-[#6E9475] focus:border-[#6E9475] block w-full p-2.5"
                       onChange={(e) =>
-                        setImagen(e.target.files ? e.target.files[0] : null)
+                        setImagen(e.target.files ? Array.from(e.target.files) : [])
                       }
                     />
                   </div>

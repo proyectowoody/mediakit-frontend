@@ -3,7 +3,7 @@ import { handleSubmit } from "./handleSubmit";
 
 function Handle(
     id: number, nombre: string,  categoria: string | number, 
-    estado: string, imagen: File | null , 
+    estado: string, imagen: File [] , 
     descripcion: string, precio:number
 ) {
     const [isLoading, setIsLoading] = useState(false);

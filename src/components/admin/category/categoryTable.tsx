@@ -3,12 +3,14 @@ import { handleGet } from "../../../validation/admin/category/handleGet";
 import { Modal } from "../../toast";
 import { handleDelete } from "../../../validation/admin/category/handleDelete";
 
-function CategoryTable({ toggleModalAct }: { toggleModalAct: () => void }) {
+function CategoryTable({ toggleModalAct,  toggleModalImagen, }: { toggleModalAct: () => void, toggleModalImagen: () => void; }) {
+  
   const [categorias, setCategorias] = useState<
     {
       id: number;
       nombre: string;
       descripcion: string;
+      imagen:string;
     }[]
   >([]);
 
@@ -37,6 +39,12 @@ function CategoryTable({ toggleModalAct }: { toggleModalAct: () => void }) {
     toggleModalAct();
   };
 
+  const handleImagen = (id: number, imagen: string) => {
+    const categoria = { id, imagen };
+    localStorage.setItem("imagenCategoria", JSON.stringify(categoria));
+    toggleModalImagen();
+  };
+
   return (
     <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
       {categorias.length === 0 ? (
@@ -54,6 +62,9 @@ function CategoryTable({ toggleModalAct }: { toggleModalAct: () => void }) {
                 Descripción
               </th>
               <th scope="col" className="px-6 py-3">
+                Imagen
+              </th>
+              <th scope="col" className="px-6 py-3">
                 Acción
               </th>
             </tr>
@@ -69,6 +80,14 @@ function CategoryTable({ toggleModalAct }: { toggleModalAct: () => void }) {
                 </th>
                 <td className="px-6 py-4 text-[#4E6E5D]">
                   {cat.descripcion.slice(0, 50)}...
+                </td>
+                <td className="px-6 py-4">
+                  <img
+                    src={cat.imagen}
+                    alt="Imagen"
+                    className="w-12 h-12 rounded-full cursor-pointer border border-[#D4C9B0]"
+                    onClick={() => handleImagen(cat.id, cat.imagen)}
+                  />
                 </td>
                 <td className="px-6 py-4">
                   <a

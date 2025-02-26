@@ -5,15 +5,16 @@ import Handle from "../../../validation/admin/category/handle";
 
 function CategoryForm({ toggleModal }: any) {
 
-    const { id, setId, nombre, setNombre, descripcion, setDescripcion, isOpen } = User();
+    const { id, setId, nombre, setNombre, descripcion, setDescripcion, isOpen, imagen,
+        setImagen } = User();
 
-    const { handleSubmitForm, isLoading } = Handle(id, nombre, descripcion);
+    const { handleSubmitForm, isLoading } = Handle(id, nombre, descripcion, imagen);
 
     useEffect(() => {
         if (toggleModal) {
-            const articuloSeleccionado = localStorage.getItem("categoriaSeleccionado");
-            if (articuloSeleccionado) {
-                const articulo = JSON.parse(articuloSeleccionado);
+            const categoriaSeleccionado = localStorage.getItem("categoriaSeleccionado");
+            if (categoriaSeleccionado) {
+                const articulo = JSON.parse(categoriaSeleccionado);
                 setId(articulo.id || "");
                 setNombre(articulo.nombre || "");
                 setDescripcion(articulo.descripcion || "");
@@ -86,6 +87,24 @@ function CategoryForm({ toggleModal }: any) {
                                     onChange={(e) => setDescripcion(e.target.value)}
                                 ></textarea>
                             </div>
+
+                            {!id && (
+                                <div className="flex flex-col sm:flex-row gap-6">
+                                    <div className="flex-1">
+                                        <label className="block mb-2 text-sm font-medium text-[#2F4F4F]">
+                                            Imagen
+                                        </label>
+                                        <input
+                                            type="file"
+                                            accept="image/*"
+                                            className="bg-[#FFFFFF] border border-[#D4C9B0] text-[#2F4F4F] text-sm rounded-lg focus:ring-[#6E9475] focus:border-[#6E9475] block w-full p-2.5"
+                                            onChange={(e) =>
+                                                setImagen(e.target.files ? e.target.files[0] : null)
+                                            }
+                                        />
+                                    </div>
+                                </div>
+                            )}
 
                             <div>
                                 <button

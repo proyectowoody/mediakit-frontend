@@ -11,7 +11,8 @@ export const handleSubmit = async (
     event: FormEvent,
     id: number,
     nombre: string,
-    descripcion: string
+    descripcion: string,
+    imagen: File | null,
 ): Promise<AxiosResponse<CampanaResponse> | null> => {
     event.preventDefault();
     const MensajeErr = document.getElementById("err");
@@ -26,7 +27,13 @@ export const handleSubmit = async (
         mostrarMensaje("Ingrese la descripción", MensajeErr);
         return null;
     }
-    
+
+    if (id === 0 && !imagen) {
+        mostrarMensaje("Ingrese la imagen", MensajeErr);
+        return null;
+    }
+
+
     const token = localStorage.getItem("ACCESS_TOKEN");
 
     if (!token) {
@@ -36,26 +43,38 @@ export const handleSubmit = async (
 
     const headers = {
         Authorization: `Bearer ${token}`,
+        "Content-Type": id === 0 ? "multipart/form-data" : "application/json",
     };
 
     try {
-        const response = id === 0
-            ? await axios.post<CampanaResponse>(
-                `${linkBackend}/categorias`,
-                { nombre, descripcion },
-                { headers }
-            )
-            : await axios.patch<CampanaResponse>(
-                `${linkBackend}/categorias/${id}`,
-                { nombre, descripcion },
-                { headers }
-            );
+        let response: AxiosResponse<CampanaResponse>;
+
+        if (id === 0) {
+            const formData = new FormData();
+            formData.append("nombre", nombre);
+            if (imagen) formData.append("imagen", imagen);
+            formData.append("descripcion", descripcion);
+
+            response = await axios.post(`${linkBackend}/categorias`, formData, { headers });
+        } else {
+            const updateData = {
+                nombre,
+                descripcion
+            };
+
+            response = await axios.patch(`${linkBackend}/categorias/${id}`, updateData, {
+                headers,
+            });
+        }
 
         mostrarMensaje(response.data.message, MensajeAct);
         return response;
     } catch (error: any) {
         console.error("Error en la solicitud:", error);
-        mostrarMensaje(error.response?.data?.message || "Error al enviar los datos", MensajeErr);
+        mostrarMensaje(
+            error.response?.data?.message || "Error al enviar los datos",
+            MensajeErr
+        );
         return null;
     }
 };

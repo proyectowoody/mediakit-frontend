@@ -10,16 +10,6 @@ function ArticleTable({
   toggleModalAct: () => void;
   toggleModalImagen: () => void;
 }) {
-  useEffect(() => {
-    handleGet()
-      .then((data) => {
-        setArticulos(data);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  }, []);
-
   const [articulos, setArticulos] = useState<
     {
       id: number;
@@ -33,7 +23,8 @@ function ArticleTable({
       fecha: string;
       estado: string;
       imagen: string;
-      precio:number;
+      precio: number;
+      imagenes: { id: number; url: string }[]; // ✅ Incluye el array de imágenes
     }[]
   >([]);
 
@@ -41,6 +32,17 @@ function ArticleTable({
   const showModal = () => {
     setIsModalVisible(!isModalVisible);
   };
+
+  useEffect(() => {
+    handleGet()
+      .then((data) => {
+        console.log(data, "2");
+        setArticulos(data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }, []);
 
   const handleActualizar = (
     id: number,
@@ -50,7 +52,7 @@ function ArticleTable({
     fecha: string,
     imagen: string,
     descripcion: string,
-    precio:number,
+    precio: number
   ) => {
     const articulo = {
       id,
@@ -60,7 +62,7 @@ function ArticleTable({
       fecha,
       imagen,
       descripcion,
-      precio
+      precio,
     };
     localStorage.setItem("articuloSeleccionado", JSON.stringify(articulo));
     toggleModalAct();
@@ -110,7 +112,7 @@ function ArticleTable({
                 Precio
               </th>
               <th scope="col" className="px-6 py-3">
-                Imagen
+                Imágenes
               </th>
               <th scope="col" className="px-6 py-3">
                 Acción
@@ -131,13 +133,16 @@ function ArticleTable({
                 <td className="px-6 py-4">{formatFecha(art.fecha)}</td>
                 <td className="px-6 py-4">{art.estado}</td>
                 <td className="px-6 py-4">{art.precio}</td>
-                <td className="px-6 py-4">
-                  <img
-                    src={art.imagen}
-                    alt="Imagen"
-                    className="w-12 h-12 rounded-full cursor-pointer border border-[#D4C9B0]"
-                    onClick={() => handleImagen(art.id, art.imagen)}
-                  />
+                <td className="px-6 py-4 flex gap-2">
+                  {art.imagenes.map((imagen) => (
+                    <img
+                      key={imagen.id}
+                      src={imagen.url}
+                      alt={`Imagen ${imagen.id}`}
+                      className="w-12 h-12 rounded cursor-pointer border border-[#D4C9B0]"
+                      onClick={() => handleImagen(art.id, imagen.url)}
+                    />
+                  ))}
                 </td>
                 <td className="px-6 py-4">
                   <a

@@ -7,7 +7,7 @@ function User() {
     const [descripcion, setDescripcion] = useState("");
     const [categoria, setCategoria] = useState<string | number>("");
     const [estado, setEstado] = useState("");
-    const [imagen, setImagen] = useState<File | null>(null);
+    const [imagen, setImagen] = useState<File[]>([]);
     const [precio, setPrecio] = useState(0);
     const [isOpen, setIsOpen] = useState(false);
     const [isOpenImg, setIsOpenImg] = useState(false);

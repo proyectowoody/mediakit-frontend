@@ -12,7 +12,7 @@ function authRedirectToken(redirectTo: string) {
     }, [token, navigate]);
 
     if (token) {
-        return null;
+        return null;;
     }
 }
 

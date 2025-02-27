@@ -12,13 +12,14 @@ import { FaHeart } from "react-icons/fa";
 import { handleGetFavorito } from "../validation/favorite/handle";
 import { handleDelete } from "../validation/favorite/handleDelete";
 import { Submit } from "../validation/favorite/Submit";
+import Carousel from "../components/carrousel";
 
 interface Product {
   id: number;
   name: string;
   price: number;
   discountPrice: number;
-  image: string;
+  images: string[];
   sales: number;
 }
 
@@ -37,6 +38,7 @@ function Home() {
   const [animatedProduct, setAnimatedProduct] = useState<Product | null>(null);
   const [favorites, setFavorites] = useState<number[]>([]);
   console.log(cartItems);
+
   const [articulos, setArticulos] = useState<
     {
       id: number;
@@ -51,6 +53,7 @@ function Home() {
       estado: string;
       imagen: string;
       precio: number;
+      imagenes: { id: number; url: string }[];
     }[]
   >([]);
 
@@ -69,7 +72,7 @@ function Home() {
     name: articulo.nombre,
     price: articulo.precio,
     discountPrice: articulo.precio * 0.9,
-    image: articulo.imagen,
+    images: articulo.imagenes.map((img) => img.url),
     sales: 150,
   }));
 
@@ -145,8 +148,9 @@ function Home() {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 max-w-6xl mx-auto px-4">
           {topProducts.map((product) => (
             <div key={product.id} className="border border-gray-200 rounded-lg overflow-hidden shadow hover:shadow-lg transition duration-300 relative">
+
               <button
-                className="absolute top-2 right-2 text-red-500 hover:text-red-600"
+                className="absolute top-2 right-2 text-red-500 hover:text-red-600 z-10"
                 onClick={() => toggleFavorite(product.id)}
               >
                 <FaHeart
@@ -154,7 +158,9 @@ function Home() {
                   className={favorites.includes(product.id) ? "fill-red-500" : "fill-gray-500"}
                 />
               </button>
-              <img src={product.image} alt={product.name} className="w-full h-48 object-cover" />
+
+              {product.images.length > 0 ? <Carousel images={product.images} /> : <p className="text-center text-gray-400">Sin imágenes</p>}
+
               <div className="p-4">
                 <h3 className="text-lg font-semibold text-[#2F4F4F]">{product.name}</h3>
                 <p className="text-[#6E9475] font-bold">{product.price.toFixed(2)} €</p>
@@ -166,7 +172,6 @@ function Home() {
                 </button>
               </div>
             </div>
-
           ))}
         </div>
       </section>
@@ -178,8 +183,9 @@ function Home() {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 max-w-6xl mx-auto px-4">
           {offerProducts.map((product) => (
             <div key={product.id} className="border border-gray-200 rounded-lg overflow-hidden shadow hover:shadow-lg transition duration-300 relative">
+
               <button
-                className="absolute top-2 right-2 text-red-500 hover:text-red-600"
+                className="absolute top-2 right-2 text-red-500 hover:text-red-600 z-10"
                 onClick={() => toggleFavorite(product.id)}
               >
                 <FaHeart
@@ -187,15 +193,18 @@ function Home() {
                   className={favorites.includes(product.id) ? "fill-red-500" : "fill-gray-500"}
                 />
               </button>
-              <img src={product.image} alt={product.name} className="w-full h-48 object-cover" />
+
+              {product.images.length > 0 ? <Carousel images={product.images} /> : <p className="text-center text-gray-400">Sin imágenes</p>}
+
               <div className="p-4">
                 <h3 className="text-lg font-semibold text-[#2F4F4F]">{product.name}</h3>
                 <p className="text-red-500 font-bold line-through">{product.price.toFixed(2)} €</p>
                 <p className="text-[#6E9475] font-bold">{product.discountPrice.toFixed(2)} €</p>
-                <button className="w-full mt-4 bg-[#6E9475] text-white py-2 rounded hover:bg-[#5C8465]">Ver Producto</button>
+                <button className="w-full mt-4 bg-[#6E9475] text-white py-2 rounded hover:bg-[#5C8465]">
+                  Ver Producto
+                </button>
               </div>
             </div>
-
           ))}
         </div>
       </section>
@@ -207,8 +216,9 @@ function Home() {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 max-w-6xl mx-auto px-4">
           {bestSellingProducts.map((product) => (
             <div key={product.id} className="border border-gray-200 rounded-lg overflow-hidden shadow hover:shadow-lg transition duration-300 relative">
+
               <button
-                className="absolute top-2 right-2 text-red-500 hover:text-red-600"
+                className="absolute top-2 right-2 text-red-500 hover:text-red-600 z-10"
                 onClick={() => toggleFavorite(product.id)}
               >
                 <FaHeart
@@ -216,23 +226,26 @@ function Home() {
                   className={favorites.includes(product.id) ? "fill-red-500" : "fill-gray-500"}
                 />
               </button>
-              <img src={product.image} alt={product.name} className="w-full h-48 object-cover" />
+
+              {product.images.length > 0 ? <Carousel images={product.images} /> : <p className="text-center text-gray-400">Sin imágenes</p>}
+
               <div className="p-4">
                 <h3 className="text-lg font-semibold text-[#2F4F4F]">{product.name}</h3>
                 <p className="text-[#6E9475] font-bold">{product.price.toFixed(2)} €</p>
                 <p className="text-sm text-gray-500">Ventas: {product.sales}</p>
-                <button className="w-full mt-4 bg-[#6E9475] text-white py-2 rounded hover:bg-[#5C8465]">Ver Producto</button>
+                <button className="w-full mt-4 bg-[#6E9475] text-white py-2 rounded hover:bg-[#5C8465]">
+                  Ver Producto
+                </button>
               </div>
             </div>
-
           ))}
         </div>
       </section>
 
       <AnimatePresence>
-        {animatedProduct && (
+        {animatedProduct && animatedProduct.images.length > 0 && (
           <motion.img
-            src={animatedProduct.image}
+            src={animatedProduct.images[0]} 
             initial={{ scale: 1, x: 0, y: 0, opacity: 1 }}
             animate={{ scale: 0.1, x: 300, y: -300, opacity: 0 }}
             exit={{ opacity: 0 }}
@@ -243,7 +256,6 @@ function Home() {
         )}
       </AnimatePresence>
 
-      {/* <Card />  */}
       <Footer />
     </div>
   );

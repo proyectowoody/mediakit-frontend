@@ -4,6 +4,8 @@ import Handle from "../../validation/register/handle";
 import Message from "../../components/message";
 import Footer from "../../components/footer";
 import Header from "../../components/header";
+import { FcGoogle } from "react-icons/fc";
+import { linkBackend } from "../../validation/url";
 
 function Register() {
   const [showPassword, setShowPassword] = useState(false);
@@ -134,13 +136,20 @@ function Register() {
               type="submit"
               disabled={!isTermsAccepted || isLoading}
               className={`w-full py-2 px-4 text-white font-medium rounded-md focus:outline-none focus:ring-2 ${isTermsAccepted && !isLoading
-                  ? "bg-[#6E9475] hover:bg-[#5C8465] focus:ring-[#6E9475]"
-                  : "bg-gray-400 cursor-not-allowed"
+                ? "bg-[#6E9475] hover:bg-[#5C8465] focus:ring-[#6E9475]"
+                : "bg-gray-400 cursor-not-allowed"
                 }`}
             >
               {isLoading ? "Registrando..." : "Regístrate"}
             </button>
           </form>
+
+          <a href={`${linkBackend}/google`}
+            className="mt-4 w-full flex items-center justify-center py-2 px-4 border border-[#B2C9AB] rounded-md hover:bg-[#F5F5DC] focus:outline-none focus:ring-2 focus:ring-[#6E9475]"
+          >
+            <FcGoogle className="mr-2 text-xl" />
+            Registrate con Google
+          </a>
 
           <div className="flex items-center my-4">
             <div className="flex-grow border-t border-[#B2C9AB]"></div>

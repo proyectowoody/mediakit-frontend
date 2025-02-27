@@ -6,6 +6,8 @@ import Message from "../../components/message";
 import authRedirectToken from "../../validation/authRedirectToken";
 import Header from "../../components/header";
 import Footer from "../../components/footer";
+import { FcGoogle } from "react-icons/fc";
+import { linkBackend } from "../../validation/url";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -94,6 +96,13 @@ function Login() {
             </button>
           </form>
 
+          <a href={`${linkBackend}/google`}
+            className="mt-4 w-full flex items-center justify-center py-2 px-4 border border-[#B2C9AB] rounded-md hover:bg-[#F5F5DC] focus:outline-none focus:ring-2 focus:ring-[#6E9475]"
+          >
+            <FcGoogle className="mr-2 text-xl" />
+            Iniciar sesión con Google
+          </a>
+
           <div className="flex items-center my-4">
             <div className="flex-grow border-t border-[#B2C9AB]"></div>
             <span className="mx-3 text-sm text-[#4E6E5D]">o</span>
@@ -105,6 +114,7 @@ function Login() {
               Registrarse
             </button>
           </a>
+
         </div>
       </div>
       <Footer />

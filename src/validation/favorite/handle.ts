@@ -16,7 +16,6 @@ export const handleGetFavorito = async () => {
         Authorization: `Bearer ${token}`
       }
     });
-    console.log(response.data, "favoritos");
     return response.data;
   } catch (error: any) {
     console.error("Error al obtener los favoritos:", error);

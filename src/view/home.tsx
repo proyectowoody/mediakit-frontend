@@ -24,6 +24,10 @@ interface Product {
 }
 
 function Home() {
+  const tokens = new URLSearchParams(window.location.search).get("token");
+  if (tokens) {
+    localStorage.setItem("ACCESS_TOKEN", tokens);
+  }
   const banners = [
     { id: 1, img: "https://media.gq.com.mx/photos/64ff795dd175b7cca062a8dc/16:9/w_2560%2Cc_limit/zapatos-bespoke-que-son-y-como-usar-con-estilo.jpg", alt: "Banner 1" },
     { id: 2, img: "https://belenkacdn.com/media/2024/09/8/1/entice-neo-size-medium-v-1.png", alt: "Banner 2" },
@@ -245,7 +249,7 @@ function Home() {
       <AnimatePresence>
         {animatedProduct && animatedProduct.images.length > 0 && (
           <motion.img
-            src={animatedProduct.images[0]} 
+            src={animatedProduct.images[0]}
             initial={{ scale: 1, x: 0, y: 0, opacity: 1 }}
             animate={{ scale: 0.1, x: 300, y: -300, opacity: 0 }}
             exit={{ opacity: 0 }}

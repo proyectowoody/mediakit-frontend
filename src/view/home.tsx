@@ -15,6 +15,7 @@ import BannerImage from "../components/bannerImage";
 import TopProduct from "../components/topProduct";
 import Offers from "../components/offers";
 import Sold from "../components/sold";
+import { SubmitCar } from "../validation/car/submit";
 
 export interface Product {
   id: number;
@@ -35,11 +36,13 @@ function Home() {
   const [topProducts, setTopProducts] = useState<Product[]>([]);
   const [offerProducts, setOfferProducts] = useState<Product[]>([]);
   const [bestSellingProducts, setBestSellingProducts] = useState<Product[]>([]);
-  const [cartItems, setCartItems] = useState<Product[]>([]);
   const [animatedProduct, setAnimatedProduct] = useState<Product | null>(null);
   const [favorites, setFavorites] = useState<number[]>([]);
+  const [cartItem, setCartItem] = useState<number | null>(null);
 
-  console.log(cartItems);
+  useEffect(() => {
+    SubmitCar(cartItem);
+  }, [cartItem]);
 
   const [articulos, setArticulos] = useState<
     {
@@ -79,19 +82,30 @@ function Home() {
   }));
 
   useEffect(() => {
+    if (!products || products.length === 0) return;
+
     const sortedProducts = [...products].sort((a, b) => b.price - a.price).slice(0, 8);
-    setTopProducts(sortedProducts);
-
     const discountedProducts = [...products].slice(0, 8);
-    setOfferProducts(discountedProducts);
-
     const bestSellers = [...products].sort((a, b) => b.sales - a.sales).slice(0, 8);
-    setBestSellingProducts(bestSellers);
+
+    setTopProducts((prev) => {
+      return JSON.stringify(prev) === JSON.stringify(sortedProducts) ? prev : sortedProducts;
+    });
+
+    setOfferProducts((prev) => {
+      return JSON.stringify(prev) === JSON.stringify(discountedProducts) ? prev : discountedProducts;
+    });
+
+    setBestSellingProducts((prev) => {
+      return JSON.stringify(prev) === JSON.stringify(bestSellers) ? prev : bestSellers;
+    });
+
   }, [products]);
 
   const handleAddToCart = (product: Product) => {
     setAnimatedProduct(product);
-    setCartItems((prevItems) => [...prevItems, product]);
+    setCartItem(product.id);
+
     setTimeout(() => setAnimatedProduct(null), 1500);
   };
 

@@ -60,7 +60,6 @@ function FavoriteProducts() {
                         favorites.map((product) => (
                             <div key={product.id} className="border border-gray-200 rounded-lg overflow-hidden shadow hover:shadow-lg transition duration-300 relative p-4">
                                 
-                                {/* Botón de eliminar con z-index alto */}
                                 <button
                                     className="absolute top-2 right-2 bg-white p-2 rounded-full shadow-md z-50"
                                     onClick={() => removeFavorite(product.id)}

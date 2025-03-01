@@ -25,6 +25,7 @@ import Admin from "../components/admin/admin";
 import HomeAdmin from "../view/admin/home/home";
 import CategoryAdmin from "../view/admin/category/adminCategory";
 import ArticleAdmin from "../view/admin/article/articleAdmin";
+import SupplierAdmin from "../view/admin/supplier/adminSupplier";
 
 const router = createBrowserRouter(
   [
@@ -49,16 +50,17 @@ const router = createBrowserRouter(
     { path: "/history", element: <History /> },
     { path: "/blog", element: <Blog /> },
 
-     // Rutas del admin
-  {
-    path: "/",
-    element: <Admin />,
-    children: [
-      { path: "/home-admin", element: <HomeAdmin /> },
-      { path: "/category-admin", element: <CategoryAdmin /> },
-      { path: "/article-admin", element: <ArticleAdmin /> },
-    ]
-  },
+    // Rutas del admin
+    {
+      path: "/",
+      element: <Admin />,
+      children: [
+        { path: "/home-admin", element: <HomeAdmin /> },
+        { path: "/category-admin", element: <CategoryAdmin /> },
+        { path: "/supplier-admin", element: <SupplierAdmin /> },
+        { path: "/article-admin", element: <ArticleAdmin /> },
+      ]
+    },
 
     { path: "/authguard", element: <AuthGuard /> },
     { path: "*", element: <NotFound /> }

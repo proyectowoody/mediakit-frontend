@@ -5,10 +5,10 @@ import { linkBackend } from "../../../validation/url";
 import Message from "../../message";
 
 function ArticleFormImage({ toggleModalImagen }: any) {
-
     const [id, setId] = useState<number>(0);
     const [imageUrl, setImagenUrl] = useState<string>("");
     const [newImage, setNewImage] = useState<File | null>(null);
+    const [isUpdating, setIsUpdating] = useState<boolean>(false); 
     const MensajeErr = document.getElementById("err");
     const MensajeAct = document.getElementById("success");
 
@@ -55,6 +55,7 @@ function ArticleFormImage({ toggleModalImagen }: any) {
             return;
         }
 
+        setIsUpdating(true);
         const formData = new FormData();
         formData.append("id", String(id));
         formData.append("imagen", newImage);
@@ -66,9 +67,11 @@ function ArticleFormImage({ toggleModalImagen }: any) {
                 },
             });
             mostrarMensaje(response.data.message, MensajeAct);
-            window.location.reload();
+            setTimeout(() => window.location.reload(), 1000); 
         } catch (error: any) {
             mostrarMensaje(error.response?.data?.message || "Error al actualizar la imagen.", null);
+        } finally {
+            setIsUpdating(false); 
         }
     };
 
@@ -119,10 +122,12 @@ function ArticleFormImage({ toggleModalImagen }: any) {
                             />
                             <Message />
                             <button
-                                className="w-full bg-[#6E9475] hover:bg-[#5C8465] text-white py-2 px-4 rounded-lg focus:ring-4 focus:outline-none focus:ring-[#D4C9B0]"
+                                className={`w-full ${isUpdating ? "bg-[#5C8465] cursor-not-allowed" : "bg-[#6E9475] hover:bg-[#5C8465]"
+                                    } text-white py-2 px-4 rounded-lg focus:ring-4 focus:outline-none focus:ring-[#D4C9B0]`}
                                 onClick={handleUpdateImage}
+                                disabled={isUpdating} 
                             >
-                                Actualizar Imagen
+                                {isUpdating ? "Actualizando..." : "Actualizar Imagen"}
                             </button>
                         </>
                     )}

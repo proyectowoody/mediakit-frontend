@@ -14,7 +14,7 @@ export function handleDelete(art: any) {
   }
 
   axios
-    .delete(`${linkBackend}/categorias/${id}`, {
+    .delete(`${linkBackend}/supplier/${id}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -23,7 +23,6 @@ export function handleDelete(art: any) {
       window.location.reload();
     })
     .catch((error) => {
-      console.error("Error al eliminar:", error);
       if (error.response) {
         mostrarMensaje(error.response.data.error, MensajeNegToast);
       } else {

@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
-import { FaUser, FaChevronDown, FaSignOutAlt } from "react-icons/fa";
+import { FaUser, FaChevronDown, FaSignOutAlt, FaShoppingCart } from "react-icons/fa";
 import logo from "../assets/img/logo.png";
 import menuIcon from "../assets/img/menu.png";
 import closeIcon from "../assets/img/close.png";
 import { Modal } from "./toast";
+import { handleGetCountCar } from "../validation/car/handle";
 
 function Header() {
     const [isOpen, setIsOpen] = useState(false);
@@ -13,6 +14,7 @@ function Header() {
     const [userMenuOpen, setUserMenuOpen] = useState(false);
     const [isLogged, setIsLogged] = useState(false);
     const [isModalVisible, setIsModalVisible] = useState(false);
+    const [cartItemCount, setCartItemCount] = useState(0);
 
     const categorias = [
         { nombre: "Hombre", subcategorias: ["Deporte", "Casual", "Formal"] },
@@ -53,7 +55,21 @@ function Header() {
     const logOut = () => {
         localStorage.removeItem("ACCESS_TOKEN");
         setIsLogged(false);
-    };
+    };    
+    
+    useEffect(() => {
+        const interval = setInterval(() => {
+            handleGetCountCar()
+                .then((data) => {
+                    setCartItemCount(data);
+                })
+                .catch((error) => {
+                    console.error("Error del carrito:", error);
+                });
+        }, 500);
+
+        return () => clearInterval(interval);
+    }, [cartItemCount]);
 
     return (
         <div>
@@ -100,6 +116,17 @@ function Header() {
                     </nav>
 
                     <div className="flex items-center space-x-4 relative">
+                        {isLogged && (
+                            <a href="/cart" className="relative flex items-center text-[#2F4F4F] hover:text-[#6E9475]">
+                                <FaShoppingCart className="h-6 w-6" />
+                                {cartItemCount > 0 && (
+                                    <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs px-2 py-0.5 rounded-full">
+                                        {cartItemCount}
+                                    </span>
+                                )}
+                            </a>
+                        )}
+
                         {isLogged ? (
                             <div className="relative hidden md:block">
                                 <button onClick={() => setUserMenuOpen(!userMenuOpen)} className="flex items-center px-4 py-2 bg-[#6E9475] text-white rounded hover:bg-[#5C8465]">
@@ -161,7 +188,6 @@ function Header() {
                                     </div>
                                 )}
                             </li>
-
                             {isLogged ? (
                                 <>
                                     <li><a href="/perfil" className=" text-[#2F4F4F] hover:text-[#6E9475]">Perfil</a></li>

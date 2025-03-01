@@ -59,6 +59,7 @@ function Admin() {
 
   const navLinks = [
     { path: "/category-admin", label: "Categorías" },
+    { path: "/supplier-admin", label: "Proveedores" },
     { path: "/article-admin", label: "Artículos" },
   ];
 

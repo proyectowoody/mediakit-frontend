@@ -4,7 +4,7 @@ import { mostrarMensaje } from "../../toast";
 import { linkBackend } from "../../../validation/url";
 import Message from "../../message";
 
-function CategoryFormImage({ toggleModalImagen }: any) {
+function SupplierFormImage({ toggleModalImagen }: any) {
     const [id, setId] = useState<number>(0);
     const [imageUrl, setImagenUrl] = useState<string>("");
     const [newImage, setNewImage] = useState<File | null>(null);
@@ -13,7 +13,7 @@ function CategoryFormImage({ toggleModalImagen }: any) {
     const MensajeAct = document.getElementById("success");
 
     useEffect(() => {
-        const imagenSeleccionado = localStorage.getItem("imagenCategoria");
+        const imagenSeleccionado = localStorage.getItem("imagenSupplier");
         if (imagenSeleccionado) {
             const imagen = JSON.parse(imagenSeleccionado);
             setId(imagen.id || 0);
@@ -22,7 +22,7 @@ function CategoryFormImage({ toggleModalImagen }: any) {
     }, []);
 
     const handleClose = () => {
-        localStorage.removeItem("imagenCategoria");
+        localStorage.removeItem("imagenSupplier");
         toggleModalImagen();
     };
 
@@ -55,14 +55,14 @@ function CategoryFormImage({ toggleModalImagen }: any) {
             return;
         }
 
-        setIsUpdating(true); 
+        setIsUpdating(true);
 
         const formData = new FormData();
         formData.append("id", String(id));
         formData.append("imagen", newImage);
 
         try {
-            const response = await axios.patch(`${linkBackend}/categorias/${id}/imagen`, formData, {
+            const response = await axios.patch(`${linkBackend}/supplier/${id}/imagen`, formData, {
                 headers: {
                     Authorization: `Bearer ${localStorage.getItem("ACCESS_TOKEN")}`,
                 },
@@ -138,4 +138,4 @@ function CategoryFormImage({ toggleModalImagen }: any) {
     );
 }
 
-export default CategoryFormImage;
+export default SupplierFormImage;

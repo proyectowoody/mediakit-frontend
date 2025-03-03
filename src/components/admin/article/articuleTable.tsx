@@ -52,6 +52,7 @@ function ArticleTable({
   useEffect(() => {
     handleGet()
       .then((data) => {
+        console.log(data);
         setArticulos(data);
       })
       .catch((error) => {

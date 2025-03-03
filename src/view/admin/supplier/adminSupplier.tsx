@@ -16,7 +16,7 @@ function SupplierAdmin() {
     setNombre("");
     setDescripcion("");
     setIsOpen(!isOpen);
-    localStorage.removeItem("supplierSeleccionado");
+    localStorage.removeItem("supplierseleccionado");
   };
 
   const toggleModalAct = () => {

@@ -4,6 +4,7 @@ import { handleGet } from "../../../validation/admin/category/handleGet";
 import User from "../../../validation/admin/article/user";
 import Handle from "../../../validation/admin/article/handle";
 import Message from "../../message";
+import { handleGetSup } from "../../../validation/admin/supplier/handleGet";
 
 function ArticleForm({ toggleModal }: any) {
   const {
@@ -21,7 +22,9 @@ function ArticleForm({ toggleModal }: any) {
     setImagen,
     isOpen,
     precio,
-    setPrecio
+    setPrecio,
+    supplier, 
+    setSupplier
   } = User();
 
   const { handleSubmitForm, isLoading } = Handle(
@@ -31,7 +34,8 @@ function ArticleForm({ toggleModal }: any) {
     estado,
     imagen,
     descripcion,
-    precio
+    precio,
+    supplier
   );
 
   useEffect(() => {
@@ -45,6 +49,7 @@ function ArticleForm({ toggleModal }: any) {
         setEstado(articulo.estado || "");
         setDescripcion(articulo.descripcion || "");
         setPrecio(articulo.precio || 0);
+        setSupplier(articulo.supplier || "");
       }
     }
   }, [toggleModal]);
@@ -60,6 +65,23 @@ function ArticleForm({ toggleModal }: any) {
     handleGet()
       .then((data) => {
         setCategorias(data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }, []);
+
+  const [suppliers, setSuppliers] = useState<
+    {
+      id: number;
+      nombre: string;
+    }[]
+  >([]);
+
+  useEffect(() => {
+    handleGetSup()
+      .then((data) => {
+        setSuppliers(data);
       })
       .catch((error) => {
         console.error(error);
@@ -180,6 +202,30 @@ function ArticleForm({ toggleModal }: any) {
                     value={precio}
                     onChange={(e) => setPrecio(Number(e.target.value))}
                   />
+                </div>
+
+                <div className="flex-1">
+                  <label className="block mb-2 text-sm font-medium text-[#2F4F4F]">
+                    Proveedor
+                  </label>
+                  <select
+                    className="bg-[#FFFFFF] border border-[#D4C9B0] text-[#2F4F4F] text-sm rounded-lg focus:ring-[#6E9475] focus:border-[#6E9475] block w-full p-2.5"
+                    value={supplier}
+                    onChange={(e) =>
+                      setSupplier(
+                        e.target.value ? parseInt(e.target.value, 10) : ""
+                      )
+                    }
+                  >
+                    <option value="" disabled>
+                      Selecciona un proveedor
+                    </option>
+                    {suppliers.map((sup) => (
+                      <option key={sup.id} value={sup.id}>
+                        {sup.nombre}
+                      </option>
+                    ))}
+                  </select>
                 </div>
               </div>
 

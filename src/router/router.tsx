@@ -26,6 +26,7 @@ import HomeAdmin from "../view/admin/home/home";
 import CategoryAdmin from "../view/admin/category/adminCategory";
 import ArticleAdmin from "../view/admin/article/articleAdmin";
 import SupplierAdmin from "../view/admin/supplier/adminSupplier";
+import OfferAdmin from "../view/admin/article/offerAdmin";
 
 const router = createBrowserRouter(
   [
@@ -59,6 +60,7 @@ const router = createBrowserRouter(
         { path: "/category-admin", element: <CategoryAdmin /> },
         { path: "/supplier-admin", element: <SupplierAdmin /> },
         { path: "/article-admin", element: <ArticleAdmin /> },
+        { path: "/offer-admin", element: <OfferAdmin /> },
       ]
     },
 

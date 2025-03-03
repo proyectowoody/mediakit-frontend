@@ -3,7 +3,6 @@ import { mostrarMensaje } from "../../../components/toast";
 import { linkBackend } from "../../url";
 
 export function handleDelete(art: any) {
-  const id = art.id;
   const MensajeNegToast = document.getElementById("toast-negative");
 
   const token = localStorage.getItem("ACCESS_TOKEN");
@@ -14,7 +13,7 @@ export function handleDelete(art: any) {
   }
 
   axios
-    .delete(`${linkBackend}/categorias/${id}`, {
+    .delete(`${linkBackend}/categorias/${art}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },

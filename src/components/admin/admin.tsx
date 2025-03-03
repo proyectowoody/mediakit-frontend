@@ -61,6 +61,7 @@ function Admin() {
     { path: "/category-admin", label: "Categorías" },
     { path: "/supplier-admin", label: "Proveedores" },
     { path: "/article-admin", label: "Artículos" },
+    { path: "/offer-admin", label: "Ofertas" },
   ];
 
   return (

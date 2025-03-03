@@ -6,6 +6,7 @@ import BannerImage from "../../components/bannerImage";
 import Header from "../../components/header";
 import { handleGetCar } from "../../validation/car/handle";
 import { handleDelete } from "../../validation/car/handleDelete";
+import { handleSubmitPaypal } from "../../validation/paypal/Submit";
 
 interface Product {
     id: number;
@@ -56,10 +57,16 @@ function Cart() {
         }
     };
 
-    const handlePurchase = () => {
-        alert("¡Gracias por tu compra! 🎉");
-        setCar([]);
-        setTotal(0);
+    const [isLoading, setIsLoading] = useState(false);
+
+    const handleClick = async () => {
+        setIsLoading(true);
+        try {
+            await handleSubmitPaypal();
+        } catch (error) {
+            console.error("Error en la compra:", error);
+        }
+        setIsLoading(false);
     };
 
     return (
@@ -69,14 +76,14 @@ function Cart() {
 
             <section className="py-16 bg-white">
                 <h2 className="text-4xl font-bold text-center text-[#2F4F4F] mb-10">Tu carrito de compra</h2>
-                
+
                 <div className="max-w-6xl mx-auto px-4">
                     {car.length > 0 ? (
                         <div>
                             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                                 {car.map((product) => (
                                     <div key={product.id} className="border border-gray-200 rounded-lg overflow-hidden shadow hover:shadow-lg transition duration-300 relative p-4 bg-white">
-                                        
+
                                         <button
                                             className="absolute top-2 right-2 bg-white p-2 rounded-full shadow-md z-50"
                                             onClick={() => removeCars(product.id)}
@@ -103,12 +110,24 @@ function Cart() {
                             </div>
 
                             <div className="mt-10 text-center">
-                                <h3 className="text-2xl font-bold text-[#2F4F4F]">Total: {total.toFixed(2)} €</h3>
-                                <button 
-                                    className="mt-4 bg-green-600 text-white font-bold py-3 px-6 rounded-lg text-lg hover:bg-green-700 transition flex items-center justify-center mx-auto"
-                                    onClick={handlePurchase}
+                                <h3 className="text-2xl font-bold text-[#2F4F4F]">
+                                    Total: {total.toFixed(2)} €
+                                </h3>
+                                <button
+                                    onClick={handleClick}
+                                    disabled={isLoading}
+                                    className={`mt-4 ${isLoading ? "bg-gray-400 cursor-not-allowed" : "bg-green-600 hover:bg-green-700"
+                                        } text-white font-bold py-3 px-6 rounded-lg text-lg transition flex items-center justify-center mx-auto`}
                                 >
-                                    <FaShoppingCart className="mr-2" /> Comprar ahora
+                                    {isLoading ? (
+                                        <>
+                                            <span className="animate-spin mr-2">⏳</span> Procesando...
+                                        </>
+                                    ) : (
+                                        <>
+                                            <FaShoppingCart className="mr-2" /> Comprar ahora
+                                        </>
+                                    )}
                                 </button>
                             </div>
                         </div>

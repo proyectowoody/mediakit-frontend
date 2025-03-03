@@ -62,7 +62,7 @@ export const handleSubmit = async (
                 descripcion
             };
 
-            response = await axios.patch(`${linkBackend}/supplier'/${id}`, updateData, {
+            response = await axios.patch(`${linkBackend}/supplier/${id}`, updateData, {
                 headers,
             });
         }

@@ -12,18 +12,19 @@ function SupplierForm({ toggleModal }: any) {
 
     useEffect(() => {
         if (toggleModal) {
-            const supplierSeleccionado = localStorage.getItem("supplierSeleccionado");
+            const supplierSeleccionado = localStorage.getItem("supplierseleccionado");
+            console.log(supplierSeleccionado, "data");
             if (supplierSeleccionado) {
-                const articulo = JSON.parse(supplierSeleccionado);
-                setId(articulo.id || "");
-                setNombre(articulo.nombre || "");
-                setDescripcion(articulo.descripcion || "");
+                const supplier = JSON.parse(supplierSeleccionado);
+                setId(supplier.id || "");
+                setNombre(supplier.nombre || "");
+                setDescripcion(supplier.descripcion || "");
             }
         }
     }, [toggleModal]);
 
     const handleClose = () => {
-        localStorage.removeItem("supplierSeleccionado");
+        localStorage.removeItem("supplierseleccionado");
         toggleModal();
     };
 

@@ -17,6 +17,9 @@ function Login() {
 
   const navigate = useNavigate();
   const tokens = new URLSearchParams(window.location.search).get("token");
+  if (tokens) {
+    return
+  }
 
   useEffect(() => {
     const verify = async () => {

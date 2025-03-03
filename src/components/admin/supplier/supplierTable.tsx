@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Modal } from "../../toast";
-import { handleGet } from "../../../validation/admin/supplier/handleGet";
+import { handleGetSup } from "../../../validation/admin/supplier/handleGet";
 import { handleDelete } from "../../../validation/admin/supplier/handleDelete";
 
 function SupplierTable({ toggleModalAct, toggleModalImagen, }: { toggleModalAct: () => void, toggleModalImagen: () => void; }) {
@@ -15,7 +15,7 @@ function SupplierTable({ toggleModalAct, toggleModalImagen, }: { toggleModalAct:
     >([]);
 
     useEffect(() => {
-        handleGet()
+        handleGetSup()
             .then((data) => {
                 setsuppliers(data);
             })
@@ -25,17 +25,29 @@ function SupplierTable({ toggleModalAct, toggleModalImagen, }: { toggleModalAct:
     }, []);
 
     const [isModalVisible, setIsModalVisible] = useState(false);
-    const showModal = () => {
+    const [proveedorSeleccionado, setProveedorSeleccionado] = useState<number | null>(null);
+
+    const showModal = (id?: number) => {
+        if (id) {
+            setProveedorSeleccionado(id);
+        }
         setIsModalVisible(!isModalVisible);
     };
+
+    const handleEliminarProveedor = () => {
+        if (proveedorSeleccionado !== null) {
+          handleDelete(proveedorSeleccionado);
+          setIsModalVisible(false);
+        }
+      };
 
     const handleActualizar = (
         id: number,
         nombre: string,
         descripcion: string
     ) => {
-        const categoria = { id, nombre, descripcion };
-        localStorage.setItem("supplierseleccionado", JSON.stringify(categoria));
+        const supplier = { id, nombre, descripcion };
+        localStorage.setItem("supplierseleccionado", JSON.stringify(supplier));
         toggleModalAct();
     };
 
@@ -70,23 +82,23 @@ function SupplierTable({ toggleModalAct, toggleModalImagen, }: { toggleModalAct:
                         </tr>
                     </thead>
                     <tbody>
-                        {suppliers.map((cat, index) => (
+                        {suppliers.map((sup, index) => (
                             <tr key={index} className="border-b bg-[#FAF3E0] border-[#D4C9B0]">
                                 <th
                                     scope="row"
                                     className="px-6 py-4 font-medium whitespace-nowrap text-[#2F4F4F]"
                                 >
-                                    {cat.nombre}
+                                    {sup.nombre}
                                 </th>
                                 <td className="px-6 py-4 text-[#4E6E5D]">
-                                    {cat.descripcion.slice(0, 50)}...
+                                    {sup.descripcion.slice(0, 50)}...
                                 </td>
                                 <td className="px-6 py-4">
                                     <img
-                                        src={cat.imagen}
+                                        src={sup.imagen}
                                         alt="Imagen"
                                         className="w-12 h-12 rounded-full cursor-pointer border border-[#D4C9B0]"
-                                        onClick={() => handleImagen(cat.id, cat.imagen)}
+                                        onClick={() => handleImagen(sup.id, sup.imagen)}
                                     />
                                 </td>
                                 <td className="px-6 py-4">
@@ -94,25 +106,22 @@ function SupplierTable({ toggleModalAct, toggleModalImagen, }: { toggleModalAct:
                                         href="#"
                                         className="font-medium text-[#6E9475] hover:underline"
                                         onClick={() =>
-                                            handleActualizar(cat.id, cat.nombre, cat.descripcion)
+                                            handleActualizar(sup.id, sup.nombre, sup.descripcion)
                                         }
                                     >
                                         Actualizar
                                     </a>
                                     <a
                                         href="#"
-                                        onClick={showModal}
+                                        onClick={() => showModal(sup.id)}
                                         className="ml-8 font-medium text-red-500 hover:underline"
                                     >
                                         Eliminar
                                     </a>
                                     <Modal
-                                        onConfirm={() => {
-                                            handleDelete(cat);
-                                            showModal();
-                                        }}
+                                        onConfirm={handleEliminarProveedor}
                                         isVisible={isModalVisible}
-                                        onClose={showModal}
+                                        onClose={() => setIsModalVisible(false)}
                                         message="¿Estás seguro de eliminar el proveedor?"
                                     />
                                 </td>

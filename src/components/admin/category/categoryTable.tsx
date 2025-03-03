@@ -25,9 +25,21 @@ function CategoryTable({ toggleModalAct,  toggleModalImagen, }: { toggleModalAct
   }, []);
 
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const showModal = () => {
+  const [categoriaSeleccionado, setCategoriaSeleccionado] = useState<number | null>(null);
+
+  const showModal = (id?: number) => {
+    if (id) {
+      setCategoriaSeleccionado(id);
+    }
     setIsModalVisible(!isModalVisible);
   };
+
+  const handleEliminarCategoria = () => {
+      if (categoriaSeleccionado !== null) {
+        handleDelete(categoriaSeleccionado);
+        setIsModalVisible(false);
+      }
+    };
 
   const handleActualizar = (
     id: number,
@@ -101,18 +113,15 @@ function CategoryTable({ toggleModalAct,  toggleModalImagen, }: { toggleModalAct
                   </a>
                   <a
                     href="#"
-                    onClick={showModal}
+                    onClick={() => showModal(cat.id)}
                     className="ml-8 font-medium text-red-500 hover:underline"
                   >
                     Eliminar
                   </a>
                   <Modal
-                    onConfirm={() => {
-                      handleDelete(cat);
-                      showModal();
-                    }}
+                    onConfirm={handleEliminarCategoria}
                     isVisible={isModalVisible}
-                    onClose={showModal}
+                    onClose={() => setIsModalVisible(false)}
                     message="¿Estás seguro de eliminar la categoría?"
                   />
                 </td>

@@ -4,6 +4,7 @@ import ArticleHeader from "../../../components/admin/article/articleHeader";
 import ArticleTable from "../../../components/admin/article/articuleTable";
 import ArticleForm from "../../../components/admin/article/articleForm";
 import ArticleFormImage from "../../../components/admin/article/articleFormImage";
+import ArticleFormOffer from "../../../components/admin/article/articleFormOffer";
 
 function ArticleAdmin() {
   authRedirectNoToken("/login");
@@ -14,11 +15,14 @@ function ArticleAdmin() {
     setDescripcion,
     setCategoria,
     setEstado,
+    setPrecio,
     setImagen,
     isOpen,
     setIsOpen,
     isOpenImg,
     setIsOpenImg,
+    isOpenOffer, 
+    setIsOpenOffer
   } = User();
 
   const toggleModal = () => {
@@ -27,6 +31,7 @@ function ArticleAdmin() {
     setDescripcion("");
     setCategoria("");
     setEstado("");
+    setPrecio(0);
     setImagen([]);
     setIsOpen(!isOpen);
     localStorage.removeItem("articuloSeleccionado");
@@ -38,8 +43,15 @@ function ArticleAdmin() {
     setDescripcion("");
     setCategoria("");
     setEstado("");
+    setPrecio(0);
     setImagen([]);
     setIsOpen(!isOpen);
+  };
+
+  const toggleModalOffer = () => {
+    setId(0);
+    setPrecio(0);
+    setIsOpenOffer(!isOpenOffer);
   };
 
   const toggleModalImagen = () => {
@@ -52,8 +64,10 @@ function ArticleAdmin() {
       <ArticleTable
         toggleModalAct={toggleModalAct}
         toggleModalImagen={toggleModalImagen}
+        toggleModalOffer={toggleModalOffer}
       />
       {isOpen && <ArticleForm toggleModal={toggleModal} />}
+      {isOpenOffer && <ArticleFormOffer toggleModalOffer={toggleModalOffer} />}
       {isOpenImg && (
         <ArticleFormImage toggleModalImagen={toggleModalImagen} />
       )}

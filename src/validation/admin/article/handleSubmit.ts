@@ -15,7 +15,8 @@ export const handleSubmit = async (
   estado: string,
   imagen: File[],
   descripcion: string,
-  precio: number
+  precio: number,
+  supplier: string | number
 ): Promise<AxiosResponse<CampanaResponse> | null> => {
   event.preventDefault();
   const MensajeErr = document.getElementById("err");
@@ -51,6 +52,11 @@ export const handleSubmit = async (
     return null;
   }
 
+  if (!supplier) {
+    mostrarMensaje("Ingrese el proveedor", MensajeErr);
+    return null;
+  }
+
   const token = localStorage.getItem("ACCESS_TOKEN");
 
   if (!token) {
@@ -72,6 +78,7 @@ export const handleSubmit = async (
       formData.append("estado", estado);
       formData.append("descripcion", descripcion);
       formData.append("precio", precio.toString());
+      formData.append("supplier_id", supplier.toString());
 
       imagen.forEach((file) => {
         formData.append("imagenes", file);
@@ -89,9 +96,60 @@ export const handleSubmit = async (
         estado,
         descripcion,
         precio,
+        supplier_id: supplier
       };
       response = await axios.patch(`${linkBackend}/articulos/${id}`, JSON.stringify(updateData), { headers });
     }
+
+    mostrarMensaje(response.data.message, MensajeAct);
+    return response;
+  } catch (error: any) {
+    console.error("Error en la solicitud:", error);
+    mostrarMensaje(
+      error.response?.data?.message || "Error al enviar los datos",
+      MensajeErr
+    );
+    return null;
+  }
+};
+
+export const handleSubmitDiscount = async (
+  event: FormEvent,
+  id: number,
+  discount:number
+): Promise<AxiosResponse<CampanaResponse> | null> => {
+  event.preventDefault();
+  const MensajeErr = document.getElementById("err");
+  const MensajeAct = document.getElementById("success");
+
+  if (id === 0) {
+    mostrarMensaje("Error con el id", MensajeErr);
+    return null;
+  }
+
+  if (!discount) {
+    mostrarMensaje("Ingrese el nombre", MensajeErr);
+    return null;
+  }
+
+  const token = localStorage.getItem("ACCESS_TOKEN");
+
+  if (!token) {
+    mostrarMensaje("No tienes permiso para realizar esta acción", MensajeErr);
+    return null;
+  }
+  
+  try {
+    let response: AxiosResponse<CampanaResponse>;
+
+    const headers = {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    };
+
+    const updateData = {discount};
+
+    response = await axios.patch(`${linkBackend}/articulos/discount/${id}`, JSON.stringify(updateData), { headers });
 
     mostrarMensaje(response.data.message, MensajeAct);
     return response;

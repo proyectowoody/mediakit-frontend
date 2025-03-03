@@ -1,7 +1,7 @@
 import axios from "axios";
 import { linkBackend } from "../../url";
 
-export async function handleGet() {
+export async function handleGetSup() {
     try {
 
         const token = localStorage.getItem("ACCESS_TOKEN");

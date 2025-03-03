@@ -24,7 +24,7 @@ export const Modal: React.FC<ModalProps> = ({
   if (!isVisible) return null;
 
   return (
-    <div className="bg-black/60 backdrop-blur-md fixed inset-0 flex justify-center items-center z-50">
+    <div className="bg-gray-600 bg-opacity-25 fixed inset-0 flex justify-center items-center z-50">
       <div
         id="popup-modal"
         className="relative rounded-2xl shadow-lg bg-[#FAF3E0] border-4 border-[#6E9475] p-6 max-w-md w-full text-center"

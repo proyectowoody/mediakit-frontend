@@ -2,14 +2,20 @@ import { useEffect, useState } from "react";
 import { handleGet } from "../../../validation/admin/article/handleGet";
 import { Modal } from "../../toast";
 import { handleDelete } from "../../../validation/admin/article/handleDelete";
+import Slider from "react-slick";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 
 function ArticleTable({
   toggleModalAct,
   toggleModalImagen,
+  toggleModalOffer,
 }: {
   toggleModalAct: () => void;
   toggleModalImagen: () => void;
+  toggleModalOffer: () => void;
 }) {
+
   const [articulos, setArticulos] = useState<
     {
       id: number;
@@ -20,16 +26,26 @@ function ArticleTable({
         nombre: string;
         descripcion: string;
       };
+      supplier: {
+        id: number;
+        nombre: string;
+        descripcion: string;
+      };
       fecha: string;
       estado: string;
       imagen: string;
       precio: number;
-      imagenes: { id: number; url: string }[]; 
+      imagenes: { id: number; url: string }[];
     }[]
   >([]);
 
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const showModal = () => {
+  const [articuloSeleccionado, setArticuloSeleccionado] = useState<number | null>(null);
+
+  const showModal = (id?: number) => {
+    if (id) {
+      setArticuloSeleccionado(id);
+    }
     setIsModalVisible(!isModalVisible);
   };
 
@@ -51,7 +67,8 @@ function ArticleTable({
     fecha: string,
     imagen: string,
     descripcion: string,
-    precio: number
+    precio: number,
+    supplier: string | number,
   ) => {
     const articulo = {
       id,
@@ -62,9 +79,22 @@ function ArticleTable({
       imagen,
       descripcion,
       precio,
+      supplier
     };
     localStorage.setItem("articuloSeleccionado", JSON.stringify(articulo));
     toggleModalAct();
+  };
+
+  const handleOffer = (
+    id: number,
+    precio: number,
+  ) => {
+    const offer = {
+      id,
+      precio,
+    };
+    localStorage.setItem("articuloOfferSeleccionado", JSON.stringify(offer));
+    toggleModalOffer();
   };
 
   const handleImagen = (id: number, imagen: string) => {
@@ -80,6 +110,13 @@ function ArticleTable({
       month: "2-digit",
       year: "numeric",
     });
+  };
+
+  const handleEliminarArticulo = () => {
+    if (articuloSeleccionado !== null) {
+      handleDelete(articuloSeleccionado);
+      setIsModalVisible(false);
+    }
   };
 
   return (
@@ -111,10 +148,16 @@ function ArticleTable({
                 Precio
               </th>
               <th scope="col" className="px-6 py-3">
+                Proveedor
+              </th>
+              <th scope="col" className="px-6 py-3">
+                Agregar a oferta
+              </th>
+              <th scope="col" className="px-6 py-3">
                 Imágenes
               </th>
               <th scope="col" className="px-6 py-3">
-                Acción
+                Actualizar
               </th>
             </tr>
           </thead>
@@ -132,16 +175,57 @@ function ArticleTable({
                 <td className="px-6 py-4">{formatFecha(art.fecha)}</td>
                 <td className="px-6 py-4">{art.estado}</td>
                 <td className="px-6 py-4">{art.precio}</td>
-                <td className="px-6 py-4 flex gap-2">
-                  {art.imagenes.map((imagen) => (
-                    <img
-                      key={imagen.id}
-                      src={imagen.url}
-                      alt={`Imagen ${imagen.id}`}
-                      className="w-12 h-12 rounded cursor-pointer border border-[#D4C9B0]"
-                      onClick={() => handleImagen(art.id, imagen.url)}
-                    />
-                  ))}
+                <td className="px-6 py-4">{art.supplier.nombre}</td>
+                <td className="px-6 py-4">
+                  <a
+                    href="#"
+                    className="ml-8 font-medium text-blue-500 hover:underline"
+                    onClick={() =>
+                      handleOffer(
+                        art.id,
+                        art.precio
+                      )
+                    }
+                  >
+                    Agregar
+                  </a>
+                </td>
+                <td className="px-6 py-4">
+                  <div className="w-32">
+                    {art.imagenes.length > 2 ? (
+                      <Slider 
+                        dots={false}
+                        infinite={true}
+                        speed={500}
+                        slidesToShow={Math.min(art.imagenes.length, 3)}
+                        slidesToScroll={1}
+                        arrows={true}
+                      >
+                        {art.imagenes.map((imagen) => (
+                          <div key={imagen.id}>
+                            <img
+                              src={imagen.url}
+                              alt={`Imagen ${imagen.id}`}
+                              className="w-12 h-12 rounded cursor-pointer border border-[#D4C9B0]"
+                              onClick={() => handleImagen(art.id, imagen.url)}
+                            />
+                          </div>
+                        ))}
+                      </Slider>
+                    ) : (
+                      <div className="flex gap-2">
+                        {art.imagenes.map((imagen) => (
+                          <img
+                            key={imagen.id}
+                            src={imagen.url}
+                            alt={`Imagen ${imagen.id}`}
+                            className="w-12 h-12 rounded cursor-pointer border border-[#D4C9B0]"
+                            onClick={() => handleImagen(art.id, imagen.url)}
+                          />
+                        ))}
+                      </div>
+                    )}
+                  </div>
                 </td>
                 <td className="px-6 py-4">
                   <a
@@ -156,7 +240,8 @@ function ArticleTable({
                         art.fecha,
                         art.imagen,
                         art.descripcion,
-                        art.precio
+                        art.precio,
+                        art.supplier.id
                       )
                     }
                   >
@@ -164,18 +249,15 @@ function ArticleTable({
                   </a>
                   <a
                     href="#"
-                    onClick={showModal}
+                    onClick={() => showModal(art.id)}
                     className="ml-8 font-medium text-red-500 hover:underline"
                   >
                     Eliminar
                   </a>
                   <Modal
-                    onConfirm={() => {
-                      handleDelete(art);
-                      showModal();
-                    }}
+                    onConfirm={handleEliminarArticulo}
                     isVisible={isModalVisible}
-                    onClose={showModal}
+                    onClose={() => setIsModalVisible(false)}
                     message="¿Estás seguro de eliminar el artículo?"
                   />
                 </td>

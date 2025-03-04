@@ -2,6 +2,9 @@ import { useEffect, useState } from "react";
 import { handleGetOfertas } from "../../../validation/admin/article/handleGet";
 import { Modal } from "../../toast";
 import { handleDeleteOffer } from "../../../validation/admin/article/handleDelete";
+import Slider from "react-slick";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 
 function OfferTable() {
 
@@ -124,14 +127,39 @@ function OfferTable() {
                 <td className="px-6 py-4">{art.supplier.nombre}</td>
                 <td className="px-6 py-4">{art.discount}</td>
                 <td className="px-6 py-4 flex gap-2">
-                  {art.imagenes.map((imagen) => (
-                    <img
-                      key={imagen.id}
-                      src={imagen.url}
-                      alt={`Imagen ${imagen.id}`}
-                      className="w-12 h-12 rounded cursor-pointer border border-[#D4C9B0]"
-                    />
-                  ))}
+                <div className="w-32">
+                    {art.imagenes.length > 2 ? (
+                      <Slider 
+                        dots={false}
+                        infinite={true}
+                        speed={500}
+                        slidesToShow={Math.min(art.imagenes.length, 3)}
+                        slidesToScroll={1}
+                        arrows={true}
+                      >
+                        {art.imagenes.map((imagen) => (
+                          <div key={imagen.id}>
+                            <img
+                              src={imagen.url}
+                              alt={`Imagen ${imagen.id}`}
+                              className="w-12 h-12 rounded cursor-pointer border border-[#D4C9B0]"
+                            />
+                          </div>
+                        ))}
+                      </Slider>
+                    ) : (
+                      <div className="flex gap-2">
+                        {art.imagenes.map((imagen) => (
+                          <img
+                            key={imagen.id}
+                            src={imagen.url}
+                            alt={`Imagen ${imagen.id}`}
+                            className="w-12 h-12 rounded cursor-pointer border border-[#D4C9B0]"
+                          />
+                        ))}
+                      </div>
+                    )}
+                  </div>
                 </td>
                 <td className="px-6 py-4">
                   <a

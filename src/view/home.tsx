@@ -7,7 +7,7 @@ import Presumir from "../components/presumir";
 import Testimonios from "../components/testimonios";
 import { handleGetFavorito } from "../validation/favorite/handle";
 import { handleDelete } from "../validation/favorite/handleDelete";
-import { Submit } from "../validation/favorite/Submit";
+import { Submit } from "../validation/favorite/submit";
 import BannerImage from "../components/bannerImage";
 import TopProduct from "../components/topProduct";
 import Offers from "../components/offers";

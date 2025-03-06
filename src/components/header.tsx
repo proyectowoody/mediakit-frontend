@@ -136,8 +136,8 @@ function Header() {
 
                                 {userMenuOpen && (
                                     <div className="absolute right-0 mt-2 w-40 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
-                                        <a href="/perfil" className="block px-4 py-2 text-[#2F4F4F] hover:bg-[#FAF3E0]">Perfil</a>
                                         <a href="/favorite" className="block px-4 py-2 text-[#2F4F4F] hover:bg-[#FAF3E0]">Favoritos</a>
+                                        <a href="/buy" className="block px-4 py-2 text-[#2F4F4F] hover:bg-[#FAF3E0]">Compras</a>
                                         <button
                                             onClick={showModal}
                                             className="w-full text-left px-4 py-2 text-red-500 hover:bg-[#FAF3E0] flex items-center"
@@ -190,8 +190,8 @@ function Header() {
                             </li>
                             {isLogged ? (
                                 <>
-                                    <li><a href="/perfil" className=" text-[#2F4F4F] hover:text-[#6E9475]">Perfil</a></li>
                                     <li><a href="/favorite" className=" text-[#2F4F4F] hover:text-[#6E9475]">Favoritos</a></li>
+                                    <li><a href="/buy" className=" text-[#2F4F4F] hover:text-[#6E9475]">Compras</a></li>
                                     <li>
                                         <button
                                             onClick={showModal}

@@ -1,5 +1,5 @@
-// const isProduction = import.meta.env.VITE_NODE_ENV === "production"
-const isProduction = import.meta.env.VITE_NODE_ENV === "development"
+const isProduction = import.meta.env.VITE_NODE_ENV === "production"
+// const isProduction = import.meta.env.VITE_NODE_ENV === "development"
 
 export const linkBackend = isProduction
   ? import.meta.env.VITE_BACKEND_URL_PROD

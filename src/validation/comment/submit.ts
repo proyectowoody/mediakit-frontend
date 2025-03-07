@@ -30,10 +30,9 @@ export const SubmitComment = async (
     const email = getUserEmailFromToken();
 
     try {
-        let response;
 
         if (id) {
-            response = await axios.patch(
+            await axios.patch(
                 `${linkBackend}/comment/${id}`,
                 { descripcion },
                 {
@@ -46,7 +45,7 @@ export const SubmitComment = async (
             mostrarMensaje("Comentario actualizado correctamente", MensajeSucces);
             return "Éxito: Comentario actualizado correctamente";
         } else {
-            response = await axios.post(
+            await axios.post(
                 `${linkBackend}/comment/${email}/${buy_id}`,
                 { descripcion },
                 {

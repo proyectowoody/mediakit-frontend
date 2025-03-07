@@ -55,11 +55,10 @@ export const SubmitAddress = async (
   const email = getUserEmailFromToken();
 
   try {
-    let response;
 
     if (id) {
 
-      response = await axios.patch(
+       await axios.patch(
         `${linkBackend}/address/${id}`,
         {
           calle,
@@ -81,7 +80,7 @@ export const SubmitAddress = async (
       return "Éxito: Dirección actualizada correctamente";
     } else {
 
-      response = await axios.post(
+      await axios.post(
         `${linkBackend}/address/${email}`,
         {
           calle,

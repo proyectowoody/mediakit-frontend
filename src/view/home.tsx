@@ -13,7 +13,8 @@ import Offers from "../components/offers";
 import Sold from "../components/sold";
 import { useNavigate } from "react-router-dom";
 import roleAdmin from "../components/ts/roleAdmin";
-import { Submit } from "../validation/favorite/submit";        
+import { SubmitFavorite } from "../validation/favorite/submitFavorite";
+      
 
 export interface Product {
     id: number;
@@ -56,7 +57,7 @@ function Home() {
         await handleDelete(productId);
         setFavorites(favorites.filter((id) => id !== productId));
       } else {
-        await Submit(productId);
+        await SubmitFavorite(productId);
         setFavorites([...favorites, productId]);
       }
     } catch (error) {

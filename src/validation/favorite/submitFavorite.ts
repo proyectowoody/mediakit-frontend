@@ -2,7 +2,7 @@ import axios from "axios";
 import { getUserEmailFromToken } from "../../components/ts/emailFromToken";
 import { linkBackend } from "../url";
 
-export const Submit = async (
+export const SubmitFavorite = async (
   articulo_id: number,
 )=> {
   const email_user = getUserEmailFromToken();

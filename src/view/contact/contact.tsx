@@ -1,8 +1,17 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Footer from "../../components/footer";
 import Header from "../../components/header";
+import { useNavigate } from "react-router-dom";
+import roleAdmin from "../../components/ts/roleAdmin";
 
 function Contact() {
+
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        roleAdmin(navigate);
+    }, [navigate]);
+
     const [formData, setFormData] = useState({
         name: "",
         email: "",

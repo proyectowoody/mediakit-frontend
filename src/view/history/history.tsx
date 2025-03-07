@@ -1,7 +1,17 @@
 import Header from "../../components/header";
 import Footer from "../../components/footer";
+import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import roleAdmin from "../../components/ts/roleAdmin";
 
 function MediaKit() {
+
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        roleAdmin(navigate);
+    }, [navigate]);
+
     return (
         <div>
             <Header />

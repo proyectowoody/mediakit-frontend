@@ -7,6 +7,9 @@ import Header from "../../components/header";
 import { handleGetCar } from "../../validation/car/handle";
 import { handleDelete } from "../../validation/car/handleDelete";
 import { handleSubmitPaypal } from "../../validation/paypal/Submit";
+import { useNavigate } from "react-router-dom";
+import roleAdmin from "../../components/ts/roleAdmin";
+import authRedirectNoToken from "../../validation/autRedirectNoToken";
 
 interface Product {
     id: number;
@@ -21,6 +24,15 @@ interface Product {
 }
 
 function Cart() {
+
+    authRedirectNoToken("/");
+
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        roleAdmin(navigate);
+    }, [navigate]);
+
     const [car, setCar] = useState<Product[]>([]);
     const [total, setTotal] = useState<number>(0);
 

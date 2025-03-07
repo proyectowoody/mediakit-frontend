@@ -6,6 +6,8 @@ import { handleGet } from "../../validation/buy/handle";
 import { handleGetAddress } from "../../validation/address/handleGet";
 import { useNavigate } from "react-router-dom";
 import { handleGetComment } from "../../validation/comment/handleGet";
+import roleAdmin from "../../components/ts/roleAdmin";
+import authRedirectNoToken from "../../validation/autRedirectNoToken";
 
 interface Article {
     id: number;
@@ -46,6 +48,14 @@ interface Comments {
 }
 
 function BuyPage() {
+
+    authRedirectNoToken("/");
+
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        roleAdmin(navigate);
+    }, [navigate]);
 
     const [purchases, setPurchases] = useState<Buy[]>([]);
     const [address, setAddress] = useState<Address | null>(null);
@@ -97,8 +107,6 @@ function BuyPage() {
                 console.error("Error obteniendo compras:", error);
             });
     }, []);
-
-    const navigate = useNavigate();
 
     const handleAddOrUpdateAddress = () => {
         if (address) {

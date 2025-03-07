@@ -8,7 +8,7 @@ import Footer from "../../components/footer";
 function Email() {
   const [email, setEmail] = useState("");
 
-  authRedirectToken("/explorar");
+  authRedirectToken("/");
 
   const { handleSubmit, isLoading } = Handle(email);
 

@@ -5,6 +5,7 @@ import menuIcon from "../assets/img/menu.png";
 import closeIcon from "../assets/img/close.png";
 import { Modal } from "./toast";
 import { handleGetCountCar } from "../validation/car/handle";
+import { useNavigate } from "react-router-dom";
 
 function Header() {
     const [isOpen, setIsOpen] = useState(false);
@@ -50,12 +51,7 @@ function Header() {
         return () => window.removeEventListener("scroll", handleScroll);
     }, [lastScrollY]);
 
-    const showModal = () => setIsModalVisible(!isModalVisible);
-
-    const logOut = () => {
-        localStorage.removeItem("ACCESS_TOKEN");
-        setIsLogged(false);
-    };    
+    const showModal = () => setIsModalVisible(!isModalVisible);  
     
     useEffect(() => {
         const interval = setInterval(() => {
@@ -70,6 +66,14 @@ function Header() {
 
         return () => clearInterval(interval);
     }, [cartItemCount]);
+
+    const navigate = useNavigate();
+
+    const logOut = () => {
+        localStorage.removeItem("ACCESS_TOKEN");
+        setIsLogged(false);
+        navigate("/login");
+    };  
 
     return (
         <div>

@@ -1,11 +1,21 @@
 import { useState, useEffect } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import Footer from "../../components/footer";
 import Header from "../../components/header";
 import Message from "../../components/message";
 import HandleComment from "../../validation/comment/handle";
+import roleAdmin from "../../components/ts/roleAdmin";
+import authRedirectNoToken from "../../validation/autRedirectNoToken";
 
 function Comment() {
+
+    authRedirectNoToken("/");
+
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        roleAdmin(navigate);
+    }, [navigate]);
 
     const [searchParams] = useSearchParams();
 

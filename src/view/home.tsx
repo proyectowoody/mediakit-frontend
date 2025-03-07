@@ -12,6 +12,8 @@ import BannerImage from "../components/bannerImage";
 import TopProduct from "../components/topProduct";
 import Offers from "../components/offers";
 import Sold from "../components/sold";
+import { useNavigate } from "react-router-dom";
+import roleAdmin from "../components/ts/roleAdmin";
 
 export interface Product {
     id: number;
@@ -25,6 +27,12 @@ export interface Product {
 }
 
 function Home() {
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    roleAdmin(navigate);
+  }, [navigate]);
 
   const tokens = new URLSearchParams(window.location.search).get("token");
 

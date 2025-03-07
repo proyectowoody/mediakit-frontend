@@ -1,8 +1,16 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Header from "../../components/header";
 import Footer from "../../components/footer";
+import { useNavigate } from "react-router-dom";
+import roleAdmin from "../../components/ts/roleAdmin";
 
 function Blog() {
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        roleAdmin(navigate);
+    }, [navigate]);
+
     const [expandedPost, setExpandedPost] = useState<number | null>(null);
 
     const posts = [

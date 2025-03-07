@@ -7,7 +7,6 @@ import Register from "../view/register/register";
 import Email from "../view/email/email";
 import Password from "../view/password/password";
 import Home from "../view/home";
-import Dashboard from "../view/dashboard/dashboard";
 import Contact from "../view/contact/contact";
 import Favorite from "../view/favorit/favorite";
 import Cart from "../view/cart/cart";
@@ -29,18 +28,24 @@ import Comment from "../view/comment/comment";
 
 const router = createBrowserRouter(
   [
+    // ruta semi comun
     { path: "/", element: <Home /> },
+
+    //ruta de autenticacion
     { path: "/login", element: <Login /> },
     { path: "/register", element: <Register /> },
     { path: "/email", element: <Email /> },
     { path: "/password", element: <Password /> },
     { path: "/verification", element: <Verification /> },
-    { path: "/dashboard", element: <Dashboard /> },
+
+    // rutas de usuario
     { path: "/favorite", element: <Favorite /> },
     { path: "/cart", element: <Cart /> },
     { path: "/buy", element: <Buy /> },
     { path: "/address", element: <Address /> },
     { path: "/comment", element: <Comment /> },
+
+    // rutas de informacion
     { path: "/contact", element: <Contact /> },
     { path: "/terms", element: <Terms /> },
     { path: "/follow-up", element: <FollowUp /> },
@@ -62,9 +67,11 @@ const router = createBrowserRouter(
       ]
     },
 
+    // ruta de error
     { path: "/authguard", element: <AuthGuard /> },
     { path: "*", element: <NotFound /> }
   ],
+
   {
     future: {
       v7_startTransition: true,

@@ -4,7 +4,8 @@ import Footer from "../../components/footer";
 import Header from "../../components/header";
 
 function Verification() {
-  authRedirectToken("/explorar");
+
+  authRedirectToken("/");
 
   return (
     <div>

@@ -6,6 +6,9 @@ import { handleDelete } from "../../validation/favorite/handleDelete";
 import Footer from "../../components/footer";
 import BannerImage from "../../components/bannerImage";
 import Header from "../../components/header";
+import { useNavigate } from "react-router-dom";
+import roleAdmin from "../../components/ts/roleAdmin";
+import authRedirectNoToken from "../../validation/autRedirectNoToken";
 
 interface Product {
     id: number;
@@ -18,6 +21,15 @@ interface Product {
 }
 
 function FavoriteProducts() {
+
+    authRedirectNoToken("/");
+    
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        roleAdmin(navigate);
+    }, [navigate]);
+
     const [favorites, setFavorites] = useState<Product[]>([]);
 
     useEffect(() => {
@@ -59,7 +71,7 @@ function FavoriteProducts() {
                     {favorites.length > 0 ? (
                         favorites.map((product) => (
                             <div key={product.id} className="border border-gray-200 rounded-lg overflow-hidden shadow hover:shadow-lg transition duration-300 relative p-4">
-                                
+
                                 <button
                                     className="absolute top-2 right-2 bg-white p-2 rounded-full shadow-md z-50"
                                     onClick={() => removeFavorite(product.id)}

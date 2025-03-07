@@ -10,6 +10,7 @@ import { FcGoogle } from "react-icons/fc";
 import { linkBackend } from "../../validation/url";
 
 function Login() {
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -17,15 +18,14 @@ function Login() {
 
   const navigate = useNavigate();
   const tokens = new URLSearchParams(window.location.search).get("token");
-  if (tokens) {
-    return
-  }
 
   useEffect(() => {
-    const verify = async () => {
-      await VerificationUrls(tokens, navigate);
-    };
-    verify();
+    if (tokens) {
+      const verify = async () => {
+        await VerificationUrls(tokens, navigate);
+      };
+      verify();
+    }
   }, [tokens, navigate]);
 
   const { handleSubmit, isLoading } = Handle(

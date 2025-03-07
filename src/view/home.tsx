@@ -7,13 +7,13 @@ import Presumir from "../components/presumir";
 import Testimonios from "../components/testimonios";
 import { handleGetFavorito } from "../validation/favorite/handle";
 import { handleDelete } from "../validation/favorite/handleDelete";
-import { Submit } from "../validation/favorite/submit";
 import BannerImage from "../components/bannerImage";
 import TopProduct from "../components/topProduct";
 import Offers from "../components/offers";
 import Sold from "../components/sold";
 import { useNavigate } from "react-router-dom";
 import roleAdmin from "../components/ts/roleAdmin";
+import { Submit } from "../validation/favorite/submit";        
 
 export interface Product {
     id: number;

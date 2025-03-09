@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Message from "../../components/message";
 import VerificationUrls from "../../validation/password/verificationUrls";
 import Handle from "../../validation/password/handle";
@@ -17,6 +17,10 @@ function Password() {
     password,
     verPassword
   );
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);  
 
   return (
     <div>

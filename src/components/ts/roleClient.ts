@@ -7,7 +7,6 @@ interface User {
     const accessToken = localStorage.getItem("ACCESS_TOKEN");
   
     if (!accessToken) {
-      console.error("No se encontró el token en localStorage");
       return;
     }
   

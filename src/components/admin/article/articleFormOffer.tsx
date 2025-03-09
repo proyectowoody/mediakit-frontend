@@ -31,8 +31,10 @@ function ArticleFormOffer({ toggleModalOffer }: any) {
     }, [precio, descuento]);
 
     const calcularPrecioConDescuento = () => {
-        const precioConDescuento = precio - (precio * (descuento / 100));
-        setDiscount(parseFloat(precioConDescuento.toFixed(2)));
+        if (descuento >= 0 && descuento <= 100) {
+            const precioConDescuento = precio - (precio * (descuento / 100));
+            setDiscount(parseFloat(precioConDescuento.toFixed(2)));
+        }
     };
 
     const handleClose = () => {
@@ -98,19 +100,22 @@ function ArticleFormOffer({ toggleModalOffer }: any) {
 
                             <div className="flex-1">
                                 <label className="block mb-2 text-sm font-medium text-[#2F4F4F]">
-                                    Descuento
+                                    Descuento (%)
                                 </label>
-                                <select
+                                <input
+                                    type="number"
+                                    min="0"
+                                    max="100"
                                     className="bg-[#FFFFFF] border border-[#D4C9B0] text-[#2F4F4F] text-sm rounded-lg focus:ring-[#6E9475] focus:border-[#6E9475] block w-full p-2.5"
+                                    placeholder="Ingrese el descuento"
                                     value={descuento}
-                                    onChange={(e) => setDescuento(Number(e.target.value))}
-                                >
-                                    {Array.from({ length: 20 }, (_, i) => (i + 1) * 5).map((value) => (
-                                        <option key={value} value={value}>
-                                            {value}%
-                                        </option>
-                                    ))}
-                                </select>
+                                    onChange={(e) => {
+                                        let value = Number(e.target.value);
+                                        if (value < 0) value = 0;
+                                        if (value > 100) value = 100;
+                                        setDescuento(value);
+                                    }}
+                                />
                             </div>
 
                             <div className="flex-1">

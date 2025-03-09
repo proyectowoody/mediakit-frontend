@@ -5,9 +5,10 @@ import menuIcon from "../assets/img/menu.png";
 import closeIcon from "../assets/img/close.png";
 import { Modal } from "./toast";
 import { handleGetCountCar } from "../validation/car/handle";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 function Header() {
+    
     const [isOpen, setIsOpen] = useState(false);
     const [showHeader, setShowHeader] = useState(false);
     const [lastScrollY, setLastScrollY] = useState(0);
@@ -16,6 +17,9 @@ function Header() {
     const [isLogged, setIsLogged] = useState(false);
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [cartItemCount, setCartItemCount] = useState(0);
+
+    const location = useLocation(); 
+    const isHomePage = location.pathname === "/"; 
 
     const categorias = [
         { nombre: "Hombre", subcategorias: ["Deporte", "Casual", "Formal"] },
@@ -29,6 +33,11 @@ function Header() {
     }, []);
 
     useEffect(() => {
+
+        if (!isHomePage) {
+            setShowHeader(true); 
+            return;
+        }
         const handleScroll = () => {
             const currentScrollY = window.scrollY;
             const nosotrosSection = document.getElementById("nosotros");

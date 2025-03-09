@@ -20,10 +20,12 @@ interface Product {
     fecha: string;
 }
 
+
+
 function FavoriteProducts() {
 
     authRedirectNoToken("/");
-    
+
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -59,6 +61,10 @@ function FavoriteProducts() {
             console.error("Error eliminando favorito:", error);
         }
     };
+
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, []);
 
     return (
         <div className="font-quicksand">

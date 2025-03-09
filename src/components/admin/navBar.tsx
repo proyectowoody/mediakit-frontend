@@ -1,9 +1,23 @@
 import logoImage from "../../assets/img/logo.png";
 import { FaUser } from "react-icons/fa";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 
 const NavBar = ({ toggleAside, showModal }: { toggleAside: () => void; showModal: () => void }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsDropdownOpen(false);
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   return (
     <nav className="fixed top-0 z-50 w-full border-b shadow-md bg-gradient-to-r from-[#4E6E5D] via-[#6E9475] to-[#4E6E5D]">
@@ -40,13 +54,14 @@ const NavBar = ({ toggleAside, showModal }: { toggleAside: () => void; showModal
             </a>
           </div>
 
-          <div className="relative">
+          <div className="relative" ref={dropdownRef}>
             <button
               onClick={() => setIsDropdownOpen(!isDropdownOpen)}
               className="flex items-center space-x-2 text-[#FAF3E0] focus:outline-none"
             >
               <FaUser className="h-5 w-5" />
             </button>
+
             {isDropdownOpen && (
               <div className="absolute right-0 mt-2 w-48 bg-[#4E6E5D] rounded-md shadow-lg z-50">
                 <ul className="py-2 text-[#FAF3E0]">

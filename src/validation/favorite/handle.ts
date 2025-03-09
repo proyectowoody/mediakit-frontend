@@ -6,8 +6,8 @@ export const handleGetFavorito = async () => {
   const email = getUserEmailFromToken();
   const token = localStorage.getItem("ACCESS_TOKEN");
 
-  if (!email) {
-    throw new Error("No se encontró el email en el token.");
+  if (!email || !token) {
+    return [];
   }
 
   try {

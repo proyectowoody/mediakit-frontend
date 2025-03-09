@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import authRedirectToken from "../../validation/authRedirectToken";
 import Handle from "../../validation/email/handle";
 import Message from "../../components/message";
@@ -11,6 +11,10 @@ function Email() {
   authRedirectToken("/");
 
   const { handleSubmit, isLoading } = Handle(email);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   return (
     <div>

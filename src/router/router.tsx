@@ -11,7 +11,6 @@ import Contact from "../view/contact/contact";
 import Favorite from "../view/favorit/favorite";
 import Cart from "../view/cart/cart";
 import Terms from "../view/terms/terms";
-import FollowUp from "../view/follow-up/follow-up";
 import Privacy from "../view/privacy/privacy";
 import Faqs from "../view/faqs/faqs";
 import History from "../view/history/history";
@@ -48,7 +47,6 @@ const router = createBrowserRouter(
     // rutas de informacion
     { path: "/contact", element: <Contact /> },
     { path: "/terms", element: <Terms /> },
-    { path: "/follow-up", element: <FollowUp /> },
     { path: "/privacy", element: <Privacy /> },
     { path: "/faqs", element: <Faqs /> },
     { path: "/history", element: <History /> },

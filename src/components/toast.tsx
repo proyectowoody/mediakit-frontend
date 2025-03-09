@@ -75,3 +75,50 @@ export const Modal: React.FC<ModalProps> = ({
     </div>
   );
 };
+
+type AuthModalProps = {
+  isVisible: boolean;
+  onClose: () => void;
+  title: string;
+  message: string;
+  children?: React.ReactNode; 
+};
+
+
+export const AuthModal: React.FC<AuthModalProps> = ({ isVisible, onClose, title, message }) => {
+  if (!isVisible) return null;
+
+  return (
+    <div className="bg-gray-600 bg-opacity-25 fixed inset-0 flex justify-center items-center z-50">
+      <div className="relative rounded-2xl shadow-lg bg-[#FAF3E0] border-4 border-[#6E9475] p-6 max-w-md w-full text-center">
+        <button
+          onClick={onClose}
+          type="button"
+          className="absolute top-3 right-3 text-[#4E6E5D] hover:text-[#6E9475] transition duration-300 transform hover:scale-110"
+        >
+          ✖
+        </button>
+
+        <h3 className="mb-4 text-xl font-semibold text-[#2F4F4F]">{title}</h3>
+        <p className="mb-5 text-[#2F4F4F]">{message}</p>
+
+        <div className="flex justify-center gap-3">
+          <button
+            onClick={() => (window.location.href = "/login")}
+            className="transition duration-300 transform hover:scale-105 text-white bg-[#6E9475] hover:bg-[#5C8465] font-medium rounded-lg px-5 py-2.5"
+          >
+            Iniciar sesión
+          </button>
+          <button
+            onClick={() => (window.location.href = "/register")}
+            className="transition duration-300 transform hover:scale-105 text-[#2F4F4F] bg-[#D4C9B0] hover:bg-[#BBA98A] font-medium rounded-lg px-5 py-2.5"
+          >
+            Registrarse
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default AuthModal;

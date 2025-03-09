@@ -2,10 +2,15 @@ import { Link } from "react-router-dom";
 import authRedirectToken from "../../validation/authRedirectToken";
 import Footer from "../../components/footer";
 import Header from "../../components/header";
+import { useEffect } from "react";
 
 function Verification() {
 
   authRedirectToken("/");
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);  
 
   return (
     <div>

@@ -33,10 +33,14 @@ function Login() {
     password,
   );
 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   return (
     <div>
       <Header />
-      <div className="min-h-screen flex items-center justify-center bg-[#F5F5DC]">
+      <div className="mt-10 min-h-screen flex items-center justify-center bg-[#F5F5DC]">
         <div className="w-full max-w-md bg-[#FAF3E0] p-6 rounded-lg shadow-lg">
           <h2 className="text-2xl font-bold text-[#2F4F4F] text-center">
             Ingresar

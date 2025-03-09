@@ -39,6 +39,10 @@ function Comment() {
         formData.descripcion,
     );
 
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, []);
+
     return (
         <div className="font-quicksand">
             <Header />

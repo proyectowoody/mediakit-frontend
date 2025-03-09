@@ -9,14 +9,22 @@ interface CarouselProps {
 const Carousel: React.FC<CarouselProps> = ({ images }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
+  if (images.length === 0) {
+    return <p className="text-center text-gray-400">Sin imágenes</p>;
+  }
+
   const nextImage = () => {
-    setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
+    if (images.length > 1) {
+      setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
+    }
   };
 
   const prevImage = () => {
-    setCurrentIndex((prevIndex) =>
-      prevIndex === 0 ? images.length - 1 : prevIndex - 1
-    );
+    if (images.length > 1) {
+      setCurrentIndex((prevIndex) =>
+        prevIndex === 0 ? images.length - 1 : prevIndex - 1
+      );
+    }
   };
 
   return (
@@ -34,19 +42,23 @@ const Carousel: React.FC<CarouselProps> = ({ images }) => {
         />
       </AnimatePresence>
 
-      <button
-        className="absolute top-1/2 left-2 transform -translate-y-1/2 bg-black bg-opacity-50 p-2 rounded-full text-white hover:bg-opacity-75 transition"
-        onClick={prevImage}
-      >
-        <FaChevronLeft size={20} />
-      </button>
+      {images.length > 1 && (
+        <>
+          <button
+            className="absolute top-1/2 left-2 transform -translate-y-1/2 bg-black bg-opacity-50 p-2 rounded-full text-white hover:bg-opacity-75 transition"
+            onClick={prevImage}
+          >
+            <FaChevronLeft size={20} />
+          </button>
 
-      <button
-        className="absolute top-1/2 right-2 transform -translate-y-1/2 bg-black bg-opacity-50 p-2 rounded-full text-white hover:bg-opacity-75 transition"
-        onClick={nextImage}
-      >
-        <FaChevronRight size={20} />
-      </button>
+          <button
+            className="absolute top-1/2 right-2 transform -translate-y-1/2 bg-black bg-opacity-50 p-2 rounded-full text-white hover:bg-opacity-75 transition"
+            onClick={nextImage}
+          >
+            <FaChevronRight size={20} />
+          </button>
+        </>
+      )}
     </div>
   );
 };

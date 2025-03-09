@@ -63,6 +63,10 @@ function Address() {
         setFormData({ ...formData, [name]: type === "checkbox" ? checked : value });
     };
 
+    useEffect(() => {
+        window.scrollTo(0, 0);
+      }, []);
+      
     return (
         <div className="font-quicksand">
             <Header />

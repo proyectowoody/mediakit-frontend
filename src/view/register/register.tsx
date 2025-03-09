@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import authRedirectToken from "../../validation/authRedirectToken";
 import Handle from "../../validation/register/handle";
 import Message from "../../components/message";
@@ -24,11 +24,15 @@ function Register() {
     password
   );
 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   return (
     <div>
       <Header />
       <div className="min-h-screen flex items-center justify-center bg-[#F5F5DC]">
-        <div className="w-full max-w-md bg-[#FAF3E0] p-6 rounded-lg shadow-lg">
+        <div className="mt-20 w-full max-w-md bg-[#FAF3E0] p-6 rounded-lg shadow-lg">
           <h2 className="text-2xl font-bold text-[#2F4F4F] text-center">
             Registrarse
           </h2>
@@ -36,7 +40,7 @@ function Register() {
             Completa los campos para crear una cuenta.
           </p>
           <Message />
-          <form onSubmit={handleSubmit} className="mt-6">
+          <form onSubmit={handleSubmit} className="">
             <div className="mb-4">
               <label
                 htmlFor="nombre"

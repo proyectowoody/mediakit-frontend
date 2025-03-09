@@ -14,17 +14,18 @@ import Sold from "../components/sold";
 import { useNavigate } from "react-router-dom";
 import roleAdmin from "../components/ts/roleAdmin";
 import { SubmitFavorite } from "../validation/favorite/submitFavorite";
-      
+import VerificationUrls from "../validation/login/verificationUrls";
+
 
 export interface Product {
-    id: number;
-    name: string;
-    description: string;
-    estatus:string;
-    price: number;
-    discountPrice: number;
-    images: string[];
-    sales: number;
+  id: number;
+  name: string;
+  description: string;
+  estatus: string;
+  price: number;
+  discountPrice: number;
+  images: string[];
+  sales: number;
 }
 
 function Home() {
@@ -37,9 +38,14 @@ function Home() {
 
   const tokens = new URLSearchParams(window.location.search).get("token");
 
-  if (tokens) {
-    localStorage.setItem("ACCESS_TOKEN", tokens);
-  }
+  useEffect(() => {
+    if (tokens) {
+      const verify = async () => {
+        await VerificationUrls(tokens, navigate);
+      };
+      verify();
+    }
+  }, [tokens, navigate]);
 
   const [favorites, setFavorites] = useState<number[]>([]);
 
@@ -65,6 +71,10 @@ function Home() {
     }
   };
 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   return (
     <div className="font-quicksand">
       <Header />
@@ -81,7 +91,9 @@ function Home() {
         toggleFavorite={toggleFavorite}
       />
       <Testimonios />
-      <Sold />
+      <Sold
+        favorites={favorites}
+        toggleFavorite={toggleFavorite} />
       <Footer />
     </div>
   );

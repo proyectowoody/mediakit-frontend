@@ -44,13 +44,17 @@ function Blog() {
         },
     ];
 
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, []);
+
     return (
         <div>
             <Header />
             <div className="bg-[#FAF3E0] min-h-screen py-10 px-6 md:px-16">
-                <div className="max-w-screen-lg mx-auto">
+                <div className="mt-20 max-w-screen-lg mx-auto">
                     <h1 className="text-4xl font-bold text-[#2F4F4F] text-center mb-6">
-                        Blog - Media Kit Respectful Shoes
+                        Blog-Respectful Shoes
                     </h1>
                     <p className="text-center text-[#2F4F4F] mb-8">
                         Explora artículos sobre calzado respetuoso, tendencias en moda sostenible y consejos para elegir el mejor zapato.

@@ -6,12 +6,8 @@ export const handleGetCountCar = async () => {
   const email = getUserEmailFromToken();
   const token = localStorage.getItem("ACCESS_TOKEN");
 
-  if (!token) {
-    return null;
-  }
-  
-  if (!email) {
-    throw new Error("No se encontró el email en el token.");
+  if (!email || !token) {
+    return [];
   }
 
   try {
@@ -31,8 +27,8 @@ export const handleGetCar = async () => {
   const email = getUserEmailFromToken();
   const token = localStorage.getItem("ACCESS_TOKEN");
 
-  if (!email) {
-    throw new Error("No se encontró el email en el token.");
+  if (!email || !token) {
+    return [];
   }
 
   try {

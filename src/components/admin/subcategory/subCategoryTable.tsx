@@ -1,19 +1,22 @@
 import { useEffect, useState } from "react";
-import { handleGet } from "../../../validation/admin/category/handleGet";
+import { handleGet } from "../../../validation/admin/subcategory/handleGet";
 import { Modal } from "../../toast";
-import { handleDelete } from "../../../validation/admin/category/handleDelete";
 import { FaEdit, FaTrash } from "react-icons/fa";
+import { handleDelete } from "../../../validation/admin/subcategory/handleDelete";
 
-function CategoryTable({ toggleModalAct, toggleModalImagen }: { toggleModalAct: () => void; toggleModalImagen: () => void }) {
+function SubCategoryTable({ toggleModalAct }: { toggleModalAct: () => void;}) {
 
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 3;
-  const [categorias, setCategorias] = useState<
+
+  const [subcategorias, setSubCategorias] = useState<
     {
       id: number;
       nombre: string;
-      descripcion: string;
-      imagen: string;
+      categoria:{
+        id:number;
+        nombre:string;
+      }
     }[]
   >([]);
 
@@ -22,7 +25,7 @@ function CategoryTable({ toggleModalAct, toggleModalImagen }: { toggleModalAct: 
   useEffect(() => {
     handleGet()
       .then((data) => {
-        setCategorias(data);
+        setSubCategorias(data);
       })
       .catch((error) => {
         console.error(error);
@@ -44,19 +47,13 @@ function CategoryTable({ toggleModalAct, toggleModalImagen }: { toggleModalAct: 
     }
   };
 
-  const handleActualizar = (id: number, nombre: string, descripcion: string) => {
-    const categoria = { id, nombre, descripcion };
-    localStorage.setItem("categoriaSeleccionado", JSON.stringify(categoria));
+  const handleActualizar = (id: number, nombre: string, categoriaId: number) => {
+    const categoria = { id, nombre, categoriaId };
+    localStorage.setItem("subcategoriaSeleccionado", JSON.stringify(categoria));
     toggleModalAct();
   };
 
-  const handleImagen = (id: number, imagen: string) => {
-    const categoria = { id, imagen };
-    localStorage.setItem("imagenCategoria", JSON.stringify(categoria));
-    toggleModalImagen();
-  };
-
-  const filteredCategories = categorias.filter((cat) =>
+  const filteredCategories = subcategorias.filter((cat) =>
     cat.nombre.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
@@ -80,7 +77,7 @@ function CategoryTable({ toggleModalAct, toggleModalImagen }: { toggleModalAct: 
       </div>
       {currentItems.length === 0 ? (
         <div className="flex items-center justify-center h-64 text-center text-white">
-          <p className="text-lg">No hay categorías para mostrar.</p>
+          <p className="text-lg">No hay sub-categorías para mostrar.</p>
         </div>
       ) : (
         <>
@@ -88,8 +85,7 @@ function CategoryTable({ toggleModalAct, toggleModalImagen }: { toggleModalAct: 
             <thead className="text-xs uppercase bg-[#6E9475] text-[#FAF3E0]">
               <tr>
                 <th scope="col" className="px-6 py-3">Nombre</th>
-                <th scope="col" className="px-6 py-3">Descripción</th>
-                <th scope="col" className="px-6 py-3">Imagen</th>
+                <th scope="col" className="px-6 py-3">Categoría</th>
                 <th scope="col" className="px-6 py-3">Opciones</th>
               </tr>
             </thead>
@@ -99,20 +95,12 @@ function CategoryTable({ toggleModalAct, toggleModalImagen }: { toggleModalAct: 
                   <th scope="row" className="px-6 py-4 font-medium whitespace-nowrap text-[#2F4F4F]">
                     {cat.nombre}
                   </th>
-                  <td className="px-6 py-4 text-[#4E6E5D]">{cat.descripcion.slice(0, 50)}...</td>
-                  <td className="px-6 py-4">
-                    <img
-                      src={cat.imagen}
-                      alt="Imagen"
-                      className="w-12 h-12 rounded-full cursor-pointer border border-[#D4C9B0]"
-                      onClick={() => handleImagen(cat.id, cat.imagen)}
-                    />
-                  </td>
+                  <td className="px-6 py-4 text-[#4E6E5D]">{cat.categoria.nombre}</td>
                   <td className="px-6 py-4 flex justify-center gap-6">
                     <FaEdit
                       size={24}
                       className="text-green-500 cursor-pointer hover:text-green-700"
-                      onClick={() => handleActualizar(cat.id, cat.nombre, cat.descripcion)}
+                      onClick={() => handleActualizar(cat.id, cat.nombre, cat.categoria.id)}
                       title="Editar"
                     />
                     <FaTrash
@@ -155,4 +143,4 @@ function CategoryTable({ toggleModalAct, toggleModalImagen }: { toggleModalAct: 
   );
 }
 
-export default CategoryTable;
+export default SubCategoryTable;

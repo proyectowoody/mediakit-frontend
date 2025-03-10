@@ -13,19 +13,8 @@ export async function handleGet() {
             Authorization: `Bearer ${token}`,
         };
 
-        const response = await axios.get(`${linkBackend}/categorias`, { headers });
+        const response = await axios.get(`${linkBackend}/Subcategorias`, { headers });
 
-        return response.data;
-    } catch (error) {
-        console.error("Error en la solicitud GET:", error);
-        throw error;
-    }
-}
-
-export async function handleGetCategoriaClient() {
-    try {
-
-        const response = await axios.get(`${linkBackend}/categorias/subcategorias`);
         return response.data;
     } catch (error) {
         console.error("Error en la solicitud GET:", error);

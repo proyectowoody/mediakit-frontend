@@ -1,40 +1,34 @@
 import { FaHeart } from "react-icons/fa";
 import Carousel from "../components/carrousel";
 import { useEffect, useState } from "react";
-import { handleGetOfertas } from "../validation/admin/article/handleGet";
+import { handleGet } from "../validation/admin/article/handleGet";
 import { SubmitCar } from "../validation/car/submit";
 import { motion, AnimatePresence } from "framer-motion";
 import { Product } from "../view/home";
-import AuthModal from "./toast";
+import { AuthModal } from "./toast";
 
-interface TopProductProps {
+interface CategoryArticleProps {
     favorites: number[];
     toggleFavorite: (productId: number) => void;
+    categoria?: string;
+    subcategoria?: string;
 }
 
-function Offers({ favorites, toggleFavorite }: TopProductProps) {
+function CategoryArticle({ favorites, toggleFavorite, categoria, subcategoria }: CategoryArticleProps) {
+
     const [cartItem, setCartItem] = useState<number | null>(null);
     const [animatedProduct, setAnimatedProduct] = useState<Product | null>(null);
-    const [topProducts, setTopProducts] = useState<Product[]>([]);
     const [isAuth, setIsAuth] = useState<boolean>(false);
     const [showAuthModal, setShowAuthModal] = useState<boolean>(false);
 
     useEffect(() => {
-        const userToken = localStorage.getItem("ACCESS_TOKEN"); 
+        const userToken = localStorage.getItem("ACCESS_TOKEN");
         setIsAuth(!!userToken);
     }, []);
 
     useEffect(() => {
         SubmitCar(cartItem);
     }, [cartItem]);
-
-    const handleToggleFavorite = (productId: number) => {
-        if (!isAuth) {
-            setShowAuthModal(true);
-            return;
-        }
-        toggleFavorite(productId);
-    };
 
     const handleAddToCart = (product: Product) => {
         if (!isAuth) {
@@ -46,13 +40,24 @@ function Offers({ favorites, toggleFavorite }: TopProductProps) {
         setTimeout(() => setAnimatedProduct(null), 1500);
     };
 
+    const handleToggleFavorite = (productId: number) => {
+        if (!isAuth) {
+            setShowAuthModal(true);
+            return;
+        }
+        toggleFavorite(productId);
+    };
+
     const [articulos, setArticulos] = useState<
         {
             id: number;
             nombre: string;
             descripcion: string;
-            discount: number;
-            categoria: { id: number; nombre: string; descripcion: string };
+            categoria: {
+                id: number;
+                nombre: string;
+                subcategorias: { id: number; nombre: string }[];
+            };
             fecha: string;
             estado: string;
             imagen: string;
@@ -62,84 +67,85 @@ function Offers({ favorites, toggleFavorite }: TopProductProps) {
     >([]);
 
     useEffect(() => {
-        handleGetOfertas()
-            .then((data) => setArticulos(data))
-            .catch((error) => console.error(error));
+        handleGet()
+            .then((data) => {
+                setArticulos(data);
+            })
+            .catch((error) => console.error("Error al obtener los artículos:", error));
     }, []);
 
-    const products: Product[] = articulos.map((articulo) => ({
+    const filteredProducts = articulos.filter((articulo) => {
+        return (
+            (!categoria || (articulo.categoria?.nombre && articulo.categoria.nombre.toLowerCase() === categoria.toLowerCase())) &&
+            (!subcategoria || articulo.categoria?.subcategorias?.some(sub => sub.nombre.trim().toLowerCase() === subcategoria.toLowerCase()))
+        );
+    });
+
+    const products: Product[] = filteredProducts.map((articulo) => ({
         id: articulo.id,
         name: articulo.nombre,
-        description: articulo.descripcion,
         estatus: articulo.estado,
+        description: articulo.descripcion,
         price: articulo.precio,
-        discountPrice: articulo.discount,
+        discountPrice: articulo.precio * 0.9,
         images: articulo.imagenes.map((img) => img.url),
         sales: 150,
     }));
 
-    useEffect(() => {
-        if (!products || products.length === 0) return;
-        const sortedProducts = [...products].sort((a, b) => b.price - a.price).slice(0, 8);
-        setTopProducts((prev) => (JSON.stringify(prev) === JSON.stringify(sortedProducts) ? prev : sortedProducts));
-    }, [products]);
-
     return (
-        <section id="mejores-ofertas" className="py-16 bg-white">
-            <h2 className="text-4xl font-bold text-center text-[#2F4F4F] mb-10">Ofertas</h2>
+        <section id="mejores-productos" className="py-16 bg-white">
+            <h2 className="text-4xl font-bold text-center text-[#2F4F4F] mb-10">
+                {categoria ? `Categoría: ${categoria}` : "Categorías"}
+                {subcategoria && ` - Subcategoría: ${subcategoria}`}
+            </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 max-w-6xl mx-auto px-4">
-                {topProducts.map((product) => {
-
-                    const discountPercentage = product.discountPrice > 0 
-                        ? Math.round(((product.price - product.discountPrice) / product.price) * 100)
-                        : 0;
-
-                    return (
+                {products.length > 0 ? (
+                    products.map((product) => (
                         <div key={product.id} className="border border-gray-200 rounded-lg overflow-hidden shadow hover:shadow-lg transition duration-300 relative">
-                            
-                            {discountPercentage > 0 && (
-                                <div className="absolute top-2 left-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded z-10">
-                                    -{discountPercentage}%
-                                </div>
-                            )}
-
                             <button
                                 className="absolute top-2 right-2 text-red-500 hover:text-red-600 z-10"
                                 onClick={() => handleToggleFavorite(product.id)}
                             >
                                 <FaHeart size={24} className={favorites.includes(product.id) ? "fill-red-500" : "fill-gray-500"} />
                             </button>
-
                             {product.images.length > 0 ? <Carousel images={product.images} /> : <p className="text-center text-gray-400">Sin imágenes</p>}
-
                             <div className="p-4">
                                 <h3 className="text-lg font-semibold text-[#2F4F4F]">{product.name}</h3>
-                                <h3 className="text-sm text-[#2F4F4F]">
-                                    {product.description.length > 50 ? product.description.substring(0, 50) + "..." : product.description}
-                                </h3>
-                                <h3 className="text-sm text-[#2F4F4F]">{product.estatus}</h3>
-
-                                <div className="flex items-center gap-2">
-                                    <p className="text-red-500 line-through font-bold">{product.price.toFixed(2)} €</p>
-                                    <p className="text-[#6E9475] font-bold">{product.discountPrice.toFixed(2)} €</p>
-                                </div>
-
+                                <p className="text-[#6E9475] font-bold">{product.price.toFixed(2)} €</p>
                                 <button className="w-full mt-4 bg-[#6E9475] text-white py-2 rounded hover:bg-[#5C8465]" onClick={() => handleAddToCart(product)}>
                                     Añadir al Carrito
                                 </button>
                             </div>
                         </div>
-                    );
-                })}
+                    ))
+                ) : (
+                    <p className="text-center text-gray-500">No hay productos disponibles.</p>
+                )}
             </div>
 
             {showAuthModal && (
-                <AuthModal
-                    isVisible={showAuthModal}
+                <AuthModal isVisible={showAuthModal}
                     onClose={() => setShowAuthModal(false)}
                     title="¡Debes registrarte!"
-                    message="Para usar esta funcionalidad, necesitas iniciar sesión o registrarte."
-                />
+                    message="Para usar esta funcionalidad, necesitas iniciar sesión o registrarte.">
+                    <p className="text-center text-[#2F4F4F] my-4">
+                        Para usar esta funcionalidad, necesitas iniciar sesión o registrarte.
+                    </p>
+                    <div className="flex justify-center gap-4">
+                        <button
+                            className="bg-[#6E9475] text-white px-4 py-2 rounded hover:bg-[#5C8465] transition"
+                            onClick={() => window.location.href = "/login"}
+                        >
+                            Iniciar sesión
+                        </button>
+                        <button
+                            className="bg-[#D4C9B0] text-[#2F4F4F] px-4 py-2 rounded hover:bg-[#BBA98A] transition"
+                            onClick={() => window.location.href = "/register"}
+                        >
+                            Registrarse
+                        </button>
+                    </div>
+                </AuthModal>
             )}
 
             <AnimatePresence>
@@ -159,4 +165,4 @@ function Offers({ favorites, toggleFavorite }: TopProductProps) {
     );
 }
 
-export default Offers;
+export default CategoryArticle;

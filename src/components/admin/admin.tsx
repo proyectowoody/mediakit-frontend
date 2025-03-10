@@ -29,7 +29,7 @@ function Admin() {
   const toggleAside = () => setIsAsideOpen(!isAsideOpen);
 
   const logOut = () => {
-    localStorage.removeItem("ACCESS_TOKEN");
+    localStorage.clear();
     setIsLogged(false);
     navigate("/");
   };
@@ -59,6 +59,7 @@ function Admin() {
 
   const navLinks = [
     { path: "/category-admin", label: "Categorías" },
+    { path: "/sub-category-admin", label: "Sub-Categorías" },
     { path: "/supplier-admin", label: "Proveedores" },
     { path: "/article-admin", label: "Artículos" },
     { path: "/offer-admin", label: "Ofertas" },

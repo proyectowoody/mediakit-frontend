@@ -24,11 +24,14 @@ import OfferAdmin from "../view/admin/article/offerAdmin";
 import Buy from "../view/buy/buy";
 import Address from "../view/address/address";
 import Comment from "../view/comment/comment";
+import SubCategoryAdmin from "../view/admin/adminSubCategory";
+import Category from "../view/category";
 
 const router = createBrowserRouter(
   [
     // ruta semi comun
     { path: "/", element: <Home /> },
+    { path: "/tienda/:categoria?/:subcategoria?", element: <Category /> },
 
     //ruta de autenticacion
     { path: "/login", element: <Login /> },
@@ -59,6 +62,7 @@ const router = createBrowserRouter(
       children: [
         { path: "/home-admin", element: <HomeAdmin /> },
         { path: "/category-admin", element: <CategoryAdmin /> },
+        { path: "/sub-category-admin", element: <SubCategoryAdmin /> },
         { path: "/supplier-admin", element: <SupplierAdmin /> },
         { path: "/article-admin", element: <ArticleAdmin /> },
         { path: "/offer-admin", element: <OfferAdmin /> },

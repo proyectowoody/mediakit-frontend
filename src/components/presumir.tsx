@@ -1,6 +1,25 @@
+import { useEffect, useState } from "react";
 import logo from "../assets/img/logo.png";
+import { handleGetCountArticulos, handleGetCountClientes, handleGetCountProveedor } from "../validation/presumir/presumir";
 
 function Presumir() {
+
+  const [totalArt, setTotalArt] = useState<number>(0);
+  const [totalPro, setTotalPro] = useState<number>(0);
+  const [totalCli, setTotalCli] = useState<number>(0);
+
+  useEffect(() => {
+    async function fetchData() {
+      const totalArt = await handleGetCountArticulos();
+      const totalPro = await handleGetCountProveedor();
+      const totalCli = await handleGetCountClientes();
+      setTotalArt(totalArt);
+      setTotalCli(totalCli);
+      setTotalPro(totalPro);
+    }
+    fetchData();
+  }, []);
+  
   return (
     <section className="py-16 bg-[#FAF3E0] flex flex-col md:flex-row items-center justify-center px-8">
       <div className="w-full md:w-1/2 mb-8 md:mb-0 flex justify-center">
@@ -18,15 +37,15 @@ function Presumir() {
 
         <div className="flex justify-center md:justify-start space-x-8">
           <div className="text-center">
-            <p className="text-3xl font-bold text-[#6E9475]">+60</p>
+            <p className="text-3xl font-bold text-[#6E9475]">+{totalPro}</p>
             <p className="text-[#2F4F4F]">Marcas</p>
           </div>
           <div className="text-center">
-            <p className="text-3xl font-bold text-[#6E9475]">+100</p>
+            <p className="text-3xl font-bold text-[#6E9475]">+{totalArt}</p>
             <p className="text-[#2F4F4F]">Productos</p>
           </div>
           <div className="text-center">
-            <p className="text-3xl font-bold text-[#6E9475]">+200</p>
+            <p className="text-3xl font-bold text-[#6E9475]">+{totalCli}</p>
             <p className="text-[#2F4F4F]">Clientes</p>
           </div>
         </div>

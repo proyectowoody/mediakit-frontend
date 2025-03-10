@@ -13,6 +13,7 @@ interface TopProductProps {
 }
 
 function TopProduct({ favorites, toggleFavorite }: TopProductProps) {
+    
     const [cartItem, setCartItem] = useState<number | null>(null);
     const [animatedProduct, setAnimatedProduct] = useState<Product | null>(null);
     const [topProducts, setTopProducts] = useState<Product[]>([]);

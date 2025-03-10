@@ -16,7 +16,6 @@ import roleAdmin from "../components/ts/roleAdmin";
 import { SubmitFavorite } from "../validation/favorite/submitFavorite";
 import VerificationUrls from "../validation/login/verificationUrls";
 
-
 export interface Product {
   id: number;
   name: string;

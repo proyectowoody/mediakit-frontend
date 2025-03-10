@@ -5,6 +5,7 @@ interface Categoria {
   id: number;
   nombre: string;
   descripcion: string;
+  subcategorias: { id: number; nombre: string }[]; 
 }
 
 interface Proveedor {
@@ -30,6 +31,16 @@ export interface Articulo {
   precio: number;
   discount: number;
   imagenes: Imagen[];
+}
+
+export async function handleGetSearch(query: string = ""): Promise<Articulo[]> {
+  try {
+    const response = await axios.get<Articulo[]>(`${linkBackend}/articulos?search=${query}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error en la solicitud GET:", error);
+    throw error;
+  }
 }
 
 export async function handleGet(): Promise<Articulo[]> {

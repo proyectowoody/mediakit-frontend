@@ -6,9 +6,10 @@ import closeIcon from "../assets/img/close.png";
 import { Modal } from "./toast";
 import { handleGetCountCar } from "../validation/car/handle";
 import { useLocation, useNavigate } from "react-router-dom";
+import { handleGetCategoriaClient } from "../validation/admin/category/handleGet";
 
 function Header() {
-    
+
     const [isOpen, setIsOpen] = useState(false);
     const [showHeader, setShowHeader] = useState(false);
     const [lastScrollY, setLastScrollY] = useState(0);
@@ -18,14 +19,26 @@ function Header() {
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [cartItemCount, setCartItemCount] = useState(0);
 
-    const location = useLocation(); 
-    const isHomePage = location.pathname === "/"; 
+    const location = useLocation();
+    const isHomePage = location.pathname === "/";
 
-    const categorias = [
-        { nombre: "Hombre", subcategorias: ["Deporte", "Casual", "Formal"] },
-        { nombre: "Mujer", subcategorias: ["Deporte", "Casual", "Tacones"] },
-        { nombre: "Niños", subcategorias: ["Escolar", "Deporte", "Casual"] }
-    ];
+    const [categorias, setCategorias] = useState<
+        {
+            id: number;
+            nombre: string;
+            subcategorias: { id: number; nombre: string }[];
+        }[]
+    >([]);
+
+    useEffect(() => {
+        handleGetCategoriaClient()
+            .then((data) => {
+                setCategorias(data);
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+    }, []);
 
     useEffect(() => {
         const token = localStorage.getItem("ACCESS_TOKEN");
@@ -35,7 +48,7 @@ function Header() {
     useEffect(() => {
 
         if (!isHomePage) {
-            setShowHeader(true); 
+            setShowHeader(true);
             return;
         }
         const handleScroll = () => {
@@ -60,8 +73,8 @@ function Header() {
         return () => window.removeEventListener("scroll", handleScroll);
     }, [lastScrollY]);
 
-    const showModal = () => setIsModalVisible(!isModalVisible);  
-    
+    const showModal = () => setIsModalVisible(!isModalVisible);
+
     useEffect(() => {
         const interval = setInterval(() => {
             handleGetCountCar()
@@ -79,10 +92,10 @@ function Header() {
     const navigate = useNavigate();
 
     const logOut = () => {
-        localStorage.removeItem("ACCESS_TOKEN");
+        localStorage.clear();
         setIsLogged(false);
-        navigate("/login");
-    };  
+        navigate("/");
+    };
 
     return (
         <div>
@@ -96,35 +109,37 @@ function Header() {
 
                     <nav className="hidden md:flex space-x-8 absolute left-1/2 transform -translate-x-1/2">
                         <a href="/" className="text-[#2F4F4F] hover:text-[#6E9475]">Inicio</a>
-                        <div className="relative" id="dropdownMenu">
-                            <button
-                                className="flex items-center text-[#2F4F4F] hover:text-[#6E9475] focus:outline-none"
-                                onClick={() => setDropdownOpen(!dropdownOpen)}
-                            >
-                                Tienda <FaChevronDown className={`ml-1 text-sm transition-transform ${dropdownOpen ? 'rotate-180' : ''}`} />
+
+                        <div
+                            className="relative group"
+                        >
+                            <button className="flex items-center text-[#2F4F4F] hover:text-[#6E9475] focus:outline-none">
+                                Tienda <FaChevronDown className="ml-1 text-sm" />
                             </button>
 
-                            {dropdownOpen && (
-                                <div className="absolute top-full left-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
-                                    {categorias.map((categoria) => (
-                                        <div key={categoria.nombre} className="border-b last:border-none">
-                                            <div className="px-4 py-2 font-semibold text-[#2F4F4F] hover:bg-[#F0E6D6]">
-                                                {categoria.nombre}
-                                            </div>
-                                            {categoria.subcategorias.map((sub) => (
-                                                <a
-                                                    key={sub}
-                                                    href={`/tienda/${categoria.nombre.toLowerCase()}/${sub.toLowerCase()}`}
-                                                    className="block px-6 py-1 text-sm text-[#2F4F4F] hover:bg-[#FAF3E0]"
-                                                    onClick={() => setDropdownOpen(false)}
-                                                >
-                                                    {sub}
-                                                </a>
-                                            ))}
+                            <div className="absolute top-full left-0 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-50 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-opacity duration-200">
+                                {categorias.map((categoria) => (
+                                    <div key={categoria.id} className="relative group/submenu">
+                                        <div className="px-4 py-2 font-semibold text-[#2F4F4F] hover:bg-[#F0E6D6] cursor-pointer">
+                                            {categoria.nombre}
                                         </div>
-                                    ))}
-                                </div>
-                            )}
+
+                                        {categoria.subcategorias.length > 0 && (
+                                            <div className="absolute left-full top-0 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-50 opacity-0 invisible group-hover/submenu:opacity-100 group-hover/submenu:visible transition-opacity duration-200">
+                                                {categoria.subcategorias.map((sub) => (
+                                                    <a
+                                                        key={sub.id}
+                                                        href={`/tienda/${categoria.nombre.toLowerCase()}/${sub.nombre.toLowerCase()}`}
+                                                        className="block px-6 py-1 text-sm text-[#2F4F4F] hover:bg-[#FAF3E0]"
+                                                    >
+                                                        {sub.nombre}
+                                                    </a>
+                                                ))}
+                                            </div>
+                                        )}
+                                    </div>
+                                ))}
+                            </div>
                         </div>
                     </nav>
 
@@ -188,12 +203,11 @@ function Header() {
                                                 <div className="px-4 py-2 font-semibold text-[#2F4F4F]">{categoria.nombre}</div>
                                                 {categoria.subcategorias.map((sub) => (
                                                     <a
-                                                        key={sub}
-                                                        href={`/tienda/${categoria.nombre.toLowerCase()}/${sub.toLowerCase()}`}
+                                                        key={sub.id}
+                                                        href={`/tienda/${categoria.nombre.toLowerCase()}/${sub.nombre.toLowerCase()}`}
                                                         className="block px-6 py-1 text-sm text-[#2F4F4F] hover:bg-[#FAF3E0]"
-                                                        onClick={() => setIsOpen(false)}
                                                     >
-                                                        {sub}
+                                                        {sub.nombre}
                                                     </a>
                                                 ))}
                                             </div>

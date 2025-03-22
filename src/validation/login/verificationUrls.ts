@@ -1,24 +1,23 @@
+import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { submitUrls } from "./submitUrls";
 
-async function VerificationUrls(tokens: any, navigate: (path: string) => void): Promise<boolean> {
+function VerificationUrls() {
+  
+  const navigate = useNavigate();
+  const tokens = new URLSearchParams(window.location.search).get("token");
 
+  useEffect(() => {
     if (tokens) {
-        const tokenData = await submitUrls(tokens);
-
-        if (tokenData) {
-            const { token } = tokenData;
-
-            localStorage.setItem("ACCESS_TOKEN", token);
-
-            setTimeout(() => {
-                navigate("/authguard");
-            }, 1000);
-
-            return true;
-        }
+      const verify = async () => {
+        await submitUrls(tokens);
+        navigate("/authguard");
+      };
+      verify();
     }
+  }, [tokens, navigate]);
 
-    return false;
+  return null;
 }
 
 export default VerificationUrls;

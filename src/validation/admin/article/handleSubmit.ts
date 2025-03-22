@@ -1,7 +1,8 @@
 import { FormEvent } from "react";
-import axios, { AxiosResponse } from "axios";
 import { mostrarMensaje } from "../../../components/toast";
 import { linkBackend } from "../../url";
+import { AxiosResponse } from "axios";
+import api from "../../axios.config";
 
 interface CampanaResponse {
   message: string;
@@ -13,65 +14,25 @@ export const handleSubmit = async (
   nombre: string,
   categoria: string | number,
   estado: string,
-  imagen: File[],
   descripcion: string,
   precio: number,
-  supplier: string | number
+  supplier: string | number,
+  imagenesFile: File[],
 ): Promise<AxiosResponse<CampanaResponse> | null> => {
   event.preventDefault();
   const MensajeErr = document.getElementById("err");
   const MensajeAct = document.getElementById("success");
 
-  if (!nombre) {
-    mostrarMensaje("Ingrese el nombre", MensajeErr);
+  if (!nombre || !categoria || !estado || !descripcion || !precio || !supplier) {
+    mostrarMensaje("Todos los campos son obligatorios", MensajeErr);
     return null;
   }
 
-  if (!categoria) {
-    mostrarMensaje("Ingrese la categoría", MensajeErr);
-    return null;
-  }
-
-  if (!estado) {
-    mostrarMensaje("Ingrese el estado", MensajeErr);
-    return null;
-  }
-
-  if (id === 0 && imagen.length === 0) {
-    mostrarMensaje("Ingrese al menos una imagen", MensajeErr);
-    return null;
-  }
-
-  if (!descripcion) {
-    mostrarMensaje("Ingrese la descripción", MensajeErr);
-    return null;
-  }
-
-  if (!precio) {
-    mostrarMensaje("Ingrese el precio", MensajeErr);
-    return null;
-  }
-
-  if (!supplier) {
-    mostrarMensaje("Ingrese el proveedor", MensajeErr);
-    return null;
-  }
-
-  const token = localStorage.getItem("ACCESS_TOKEN");
-
-  if (!token) {
-    mostrarMensaje("No tienes permiso para realizar esta acción", MensajeErr);
-    return null;
-  }
-  
   try {
     let response: AxiosResponse<CampanaResponse>;
 
     if (id === 0) {
-      const headers = {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "multipart/form-data",
-      };
+
       const formData = new FormData();
       formData.append("nombre", nombre);
       formData.append("categoria_id", categoria.toString());
@@ -80,25 +41,31 @@ export const handleSubmit = async (
       formData.append("precio", precio.toString());
       formData.append("supplier_id", supplier.toString());
 
-      imagen.forEach((file) => {
+      imagenesFile.forEach((file) => {
         formData.append("imagenes", file);
       });
 
-      response = await axios.post(`${linkBackend}/articulos`, formData, { headers });
+      response = await api.post(`/articulos`, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+
     } else {
-      const headers = {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      };
-      const updateData = {
-        nombre,
-        categoria_id: categoria,
-        estado,
-        descripcion,
-        precio,
-        supplier_id: supplier
-      };
-      response = await axios.patch(`${linkBackend}/articulos/${id}`, JSON.stringify(updateData), { headers });
+
+      const formData = new FormData();
+      formData.append("nombre", nombre);
+      formData.append("categoria_id", categoria.toString());
+      formData.append("estado", estado);
+      formData.append("descripcion", descripcion);
+      formData.append("precio", precio.toString());
+      formData.append("supplier_id", supplier.toString());
+
+      imagenesFile.forEach((file) => {
+        formData.append("imagenes", file);
+      });
+
+      response = await api.patch(`/articulos/${id}`, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
     }
 
     mostrarMensaje(response.data.message, MensajeAct);
@@ -116,7 +83,7 @@ export const handleSubmit = async (
 export const handleSubmitDiscount = async (
   event: FormEvent,
   id: number,
-  discount:number
+  discount: number
 ): Promise<AxiosResponse<CampanaResponse> | null> => {
   event.preventDefault();
   const MensajeErr = document.getElementById("err");
@@ -132,24 +99,12 @@ export const handleSubmitDiscount = async (
     return null;
   }
 
-  const token = localStorage.getItem("ACCESS_TOKEN");
-
-  if (!token) {
-    mostrarMensaje("No tienes permiso para realizar esta acción", MensajeErr);
-    return null;
-  }
-  
   try {
     let response: AxiosResponse<CampanaResponse>;
 
-    const headers = {
-      Authorization: `Bearer ${token}`,
-      "Content-Type": "application/json",
-    };
+    const updateData = { discount };
 
-    const updateData = {discount};
-
-    response = await axios.patch(`${linkBackend}/articulos/discount/${id}`, JSON.stringify(updateData), { headers });
+    response = await api.patch(`${linkBackend}/articulos/discount/${id}`, JSON.stringify(updateData));
 
     mostrarMensaje(response.data.message, MensajeAct);
     return response;
@@ -162,3 +117,28 @@ export const handleSubmitDiscount = async (
     return null;
   }
 };
+
+export function handleDeleteImage(imageUrl: string) {
+
+
+  const encodedImageUrl = encodeURIComponent(imageUrl);
+
+  api
+    .delete(`${linkBackend}/articulos?imageUrl=${encodedImageUrl}`)
+    .then(() => {
+    })
+    .catch((error) => {
+      console.error("Error eliminando la imagen:", error);
+    });
+
+  const articuloSeleccionado = localStorage.getItem("articuloSeleccionado");
+
+  if (articuloSeleccionado) {
+    let articulo = JSON.parse(articuloSeleccionado);
+    if (Array.isArray(articulo.imagenes)) {
+      articulo.imagenes = articulo.imagenes.filter((img: string) => img !== imageUrl);
+    }
+    localStorage.setItem("articuloSeleccionado", JSON.stringify(articulo));
+  }
+}
+

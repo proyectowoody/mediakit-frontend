@@ -1,7 +1,7 @@
 import { FormEvent } from "react";
-import axios from "axios";
 import { mostrarMensaje } from "../../components/toast";
 import { linkBackend } from "../url";
+import api from "../axios.config";
 
 
 export const SubmitSuscribe = async (
@@ -19,7 +19,7 @@ export const SubmitSuscribe = async (
     }
 
     try {
-        const responseRegister = await axios.post(`${linkBackend}/contact/suscribe`, { email });
+        const responseRegister = await api.post(`${linkBackend}/contact/suscribe`, { email });
         const mensaje = responseRegister.data.message;
         mostrarMensaje(mensaje, MensajeActUsuario);
         return true;

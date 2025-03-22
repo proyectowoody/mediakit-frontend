@@ -1,8 +1,7 @@
 import { FormEvent } from "react";
-import axios from "axios";
 import { mostrarMensaje } from "../../components/toast";
 import { linkBackend } from "../url";
-import { getUserEmailFromToken } from "../../components/ts/emailFromToken";
+import api from "../axios.config";
 
 export const SubmitAddress = async (
   event: FormEvent,
@@ -45,20 +44,12 @@ export const SubmitAddress = async (
     return null;
   }
 
-  const token = localStorage.getItem("ACCESS_TOKEN");
-
-  if (!token) {
-    mostrarMensaje("No tienes permiso para realizar esta acción", MensajeErr);
-    return null;
-  }
-
-  const email = getUserEmailFromToken();
 
   try {
 
     if (id) {
 
-       await axios.patch(
+       await api.patch(
         `${linkBackend}/address/${id}`,
         {
           calle,
@@ -68,20 +59,14 @@ export const SubmitAddress = async (
           ciudad,
           provincia,
           comunidad_autonoma,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
         }
       );
       mostrarMensaje("Dirección actualizada correctamente", MensajeSucces);
       return "Éxito: Dirección actualizada correctamente";
     } else {
 
-      await axios.post(
-        `${linkBackend}/address/${email}`,
+      await api.post(
+        `${linkBackend}/address`,
         {
           calle,
           numero,
@@ -90,12 +75,6 @@ export const SubmitAddress = async (
           ciudad,
           provincia,
           comunidad_autonoma,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
         }
       );
       mostrarMensaje("Dirección guardada correctamente", MensajeSucces);

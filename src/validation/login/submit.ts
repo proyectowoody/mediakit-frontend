@@ -1,18 +1,15 @@
-import { FormEvent } from "react";
-import axios from "axios";
 import { mostrarMensaje } from "../../components/toast";
 import { linkBackend } from "../url";
+import api from "../axios.config";
 
 export interface SesionData {
   token: string;
 }
 
 export const Submit = async (
-  event: FormEvent,
   email: string,
   password: string,
 ): Promise<SesionData | null> => {
-  event.preventDefault();
 
   const MensajeErrUsuario = document.getElementById("err");
 
@@ -27,12 +24,12 @@ export const Submit = async (
   }
 
   try {
-    const responseSesion = await axios.post(`${linkBackend}/users/login`, {
-      email, 
+    const response = await api.post(`${linkBackend}/users/login`, {
+      email,
       password,
     });
-    const token = responseSesion.data.token;
-    return { token };
+
+    return { token: response.data.token };
   } catch (error: any) {
     const message = error.response?.data.message;
     mostrarMensaje(message, MensajeErrUsuario);

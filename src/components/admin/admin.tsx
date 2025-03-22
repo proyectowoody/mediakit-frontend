@@ -3,72 +3,67 @@ import { useEffect, useState } from "react";
 import NavBar from "./navBar";
 import Sidebar from "./aside";
 import Footer from "./footer";
-import authRedirectNoToken from "../../validation/autRedirectNoToken";
 import { Modal } from "../toast";
-import roleClient from "../ts/roleClient";
+import { useLanguage } from "../../translate/useLanguage";
+import CierreSesion from "../cierreSesion";
+import api from "../../validation/axios.config";
+import useAuthProtection from "../ts/useAutProteccion";
 
 function Admin() {
 
-  authRedirectNoToken("/login");
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    roleClient(navigate);
-  }, [navigate]);
-
-  const [isAsideOpen, setIsAsideOpen] = useState(false);
-  const [isModalVisible, setIsModalVisible] = useState(false);
   const [isLogged, setIsLogged] = useState(false);
 
+  const user = useAuthProtection();
+
   useEffect(() => {
-    const token = localStorage.getItem("ACCESS_TOKEN");
-    setIsLogged(!!token);
-  }, []);
+    if (user) {
+      setIsLogged(true);
+    }
+  }, [user]);
+
+  const navigate = useNavigate();
+  const [isAsideOpen, setIsAsideOpen] = useState(false);
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
   const showModal = () => setIsModalVisible(!isModalVisible);
   const toggleAside = () => setIsAsideOpen(!isAsideOpen);
 
-  const logOut = () => {
-    localStorage.clear();
-    setIsLogged(false);
-    navigate("/");
+  const logOut = async () => {
+    try {
+      await api.post("/users/logout", {}, { withCredentials: true });
+      setIsLogged(false);
+      localStorage.clear();
+      navigate("/iniciar-sesion");
+    } catch (error) {
+      console.error("Error cerrando sesión:", error);
+    }
   };
 
   const handleNavigation = (path: string) => {
     if (!isLogged) {
-      navigate("/login");
+      navigate("/iniciar-sesion");
     } else {
-      if (path === "/perfil") {
-        const userSession = localStorage.getItem("USER_SESSION");
-        let userName = "Usuario";
-        if (userSession) {
-          try {
-            const parsedSession = JSON.parse(userSession);
-            userName = parsedSession.name || "Usuario";
-          } catch (error) {
-            console.error("Error al parsear USER_SESSION:", error);
-          }
-        }
-        navigate(path, { state: { name: userName } });
-      } else {
-        navigate(path);
-      }
+      navigate(path);
       setIsAsideOpen(false);
     }
   };
 
   const navLinks = [
-    { path: "/category-admin", label: "Categorías" },
-    { path: "/sub-category-admin", label: "Sub-Categorías" },
-    { path: "/supplier-admin", label: "Proveedores" },
-    { path: "/article-admin", label: "Artículos" },
-    { path: "/offer-admin", label: "Ofertas" },
+    { path: "/categorias", label: "Categorías" },
+    { path: "/subcategorias", label: "Sub-Categorías" },
+    { path: "/proveedores", label: "Proveedores" },
+    { path: "/articulos", label: "Artículos" },
+    { path: "/ofertas", label: "Ofertas" },
+    { path: "/blog-admin", label: "Blog" },
   ];
+
+  const { changeLanguage } = useLanguage();
 
   return (
     <div className="flex flex-col min-h-screen font-quicksand">
+      <CierreSesion />
 
-      <NavBar toggleAside={toggleAside} showModal={showModal} />
+      <NavBar toggleAside={toggleAside} showModal={showModal} changeLanguage={changeLanguage} />
 
       <div className="flex flex-1">
         <Sidebar

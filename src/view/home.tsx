@@ -11,10 +11,10 @@ import BannerImage from "../components/bannerImage";
 import TopProduct from "../components/topProduct";
 import Offers from "../components/offers";
 import Sold from "../components/sold";
-import { useNavigate } from "react-router-dom";
-import roleAdmin from "../components/ts/roleAdmin";
 import { SubmitFavorite } from "../validation/favorite/submitFavorite";
 import VerificationUrls from "../validation/login/verificationUrls";
+import { handleGetUserSession } from "../components/ts/fetchUser";
+import { useAdminRedirect } from "../components/ts/useAutProteccion";
 
 export interface Product {
   id: number;
@@ -22,37 +22,31 @@ export interface Product {
   description: string;
   estatus: string;
   price: number;
-  discountPrice: number;
-  images: string[];
-  sales: number;
+  priceAct: number;
+  discount: number;
+  imagenes: string[];
 }
 
 function Home() {
 
-  const navigate = useNavigate();
+  useAdminRedirect();
 
-  useEffect(() => {
-    roleAdmin(navigate);
-  }, [navigate]);
-
-  const tokens = new URLSearchParams(window.location.search).get("token");
-
-  useEffect(() => {
-    if (tokens) {
-      const verify = async () => {
-        await VerificationUrls(tokens, navigate);
-      };
-      verify();
-    }
-  }, [tokens, navigate]);
+  VerificationUrls();
 
   const [favorites, setFavorites] = useState<number[]>([]);
+  const [isLogged, setIsLogged] = useState<boolean | null>(null);
 
   useEffect(() => {
-    handleGetFavorito()
-      .then((favoritos) => setFavorites(favoritos.map((fav: any) => fav.article.id)))
-      .catch((error) => console.error("Error al obtener favoritos:", error));
+    handleGetUserSession(setIsLogged);
   }, []);
+
+  useEffect(() => {
+    if (isLogged) {
+      handleGetFavorito()
+        .then((favoritos) => setFavorites(favoritos.map((fav: any) => fav.article.id)))
+        .catch((error) => console.error("Error al obtener favoritos:", error));
+    }
+  }, [isLogged]);
 
   const toggleFavorite = async (productId: number) => {
     const isFavorito = favorites.includes(productId);
@@ -99,3 +93,5 @@ function Home() {
 }
 
 export default Home;
+
+

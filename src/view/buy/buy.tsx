@@ -4,12 +4,10 @@ import Footer from "../../components/footer";
 import Header from "../../components/header";
 import { handleGet } from "../../validation/buy/handle";
 import { handleGetAddress } from "../../validation/address/handleGet";
-import { useNavigate } from "react-router-dom";
-import { handleGetComment } from "../../validation/comment/handleGet";
-import roleAdmin from "../../components/ts/roleAdmin";
-import authRedirectNoToken from "../../validation/autRedirectNoToken";
+import useAuthProtection from "../../components/ts/useAutProteccion";
+import { handleGetUserSession } from "../../components/ts/fetchUser";
 
-interface Article {
+export interface Article {
     id: number;
     nombre: string;
     precio: number;
@@ -17,7 +15,7 @@ interface Article {
     imagenes: { id: number; url: string }[];
 }
 
-interface DetailBuy {
+export interface DetailBuy {
     id: number;
     fecha: string;
     article: Article;
@@ -29,7 +27,7 @@ export interface Buy {
     details: DetailBuy[];
 }
 
-interface Address {
+export interface Address {
     id: number;
     calle: string;
     numero: string;
@@ -41,114 +39,64 @@ interface Address {
     pais: string;
 }
 
-interface Comments {
-    id: number;
-    buy_id: string;
-    descripcion: string;
-}
-
 function BuyPage() {
 
-    authRedirectNoToken("/");
+    useAuthProtection();
 
-    const navigate = useNavigate();
+    const [isLogged, setIsLogged] = useState<boolean>(false);
 
     useEffect(() => {
-        roleAdmin(navigate);
-    }, [navigate]);
+        handleGetUserSession(setIsLogged);
+    }, []);
 
     const [purchases, setPurchases] = useState<Buy[]>([]);
     const [address, setAddress] = useState<Address | null>(null);
-    const [comment, setComment] = useState<Comments | null>(null);;
 
     useEffect(() => {
-        handleGetAddress()
-            .then((data) => {
-                if (data && Object.keys(data).length > 0) {
-                    setAddress(data);
-                } else {
-                    setAddress(null);
-                }
-            })
-            .catch((error) => {
-                console.error("Error obteniendo la dirección:", error);
-            });
-    }, []);
-
-    useEffect(() => {
-        handleGet()
-            .then((data) => {
-                const formattedPurchases = data.map((buy: any) => ({
-                    id: buy.id,
-                    fecha: new Date(buy.fecha).toLocaleDateString(),
-                    details: buy.details.map((detail: any) => ({
-                        id: detail.id,
-                        fecha: new Date(detail.fecha).toLocaleDateString(),
-                        article: {
-                            id: detail.article.id,
-                            nombre: detail.article.nombre,
-                            precio: detail.article.precio ?? null,
-                            descripcion: detail.article.descripcion,
-                            imagenes: detail.article.imagenes || [],
-                        },
-                    })),
-                }));
-
-                setPurchases(formattedPurchases);
-                handleGetComment(formattedPurchases)
-                    .then((data) => {
-                        setComment(data);
-                    })
-                    .catch((error) => {
-                        console.error("Error obteniendo la dirección:", error);
-                    });
-            })
-            .catch((error) => {
-                console.error("Error obteniendo compras:", error);
-            });
-    }, []);
-
-    const handleAddOrUpdateAddress = () => {
-        if (address) {
-            const queryParams = new URLSearchParams({
-                id: address.id.toString(),
-                calle: address.calle,
-                numero: address.numero,
-                piso_puerta: address.piso_puerta || "",
-                codigo_postal: address.codigo_postal,
-                ciudad: address.ciudad,
-                provincia: address.provincia,
-                comunidad_autonoma: address.comunidad_autonoma,
-                pais: address.pais,
-            }).toString();
-
-            navigate(`/address?${queryParams}`);
+        if (isLogged) {
+            handleGetAddress()
+                .then((data) => {
+                    console.log(data);
+                    if (data && Object.keys(data).length > 0) {
+                        setAddress(data);
+                    } else {
+                        setAddress(null);
+                    }
+                })
+                .catch((error) => {
+                    console.error("Error obteniendo la dirección:", error);
+                });
         }
-    };
-
-    const handleComment = (purchaseId: number) => {
-        const queryParams = new URLSearchParams({
-            buy_id: purchaseId.toString(),
-        }).toString();
-
-        navigate(`/comment?${queryParams}`);
-    };
+    }, [isLogged]);
 
     useEffect(() => {
+        if (isLogged) {
+            handleGet()
+                .then((data) => {
+                    const formattedPurchases = data.map((buy: any) => ({
+                        id: buy.id,
+                        fecha: new Date(buy.fecha).toLocaleDateString(),
+                        details: buy.details.map((detail: any) => ({
+                            id: detail.id,
+                            fecha: new Date(detail.fecha).toLocaleDateString(),
+                            article: {
+                                id: detail.article.id,
+                                nombre: detail.article.nombre,
+                                precio: detail.article.precio ?? null,
+                                descripcion: detail.article.descripcion,
+                                imagenes: detail.article.imagenes || [],
+                            },
+                        })),
+                    }));
 
-    }, []);
-
-    const handleAddOrUpdateComment = () => {
-        if (comment) {
-            const queryParams = new URLSearchParams({
-                id: comment.id.toString(),
-                descripcion: comment.descripcion,
-            }).toString();
-
-            navigate(`/comment?${queryParams}`);
+                    setPurchases(formattedPurchases);
+                })
+                .catch((error) => {
+                    console.error("Error obteniendo compras:", error);
+                });
         }
-    };
-    
+    }, [isLogged]);
+
     useEffect(() => {
         window.scrollTo(0, 0);
     }, []);
@@ -159,7 +107,7 @@ function BuyPage() {
             <BannerImage />
 
             <section className="py-16 bg-white">
-                <h2 className="text-4xl font-bold text-center text-[#2F4F4F] mb-2">
+                <h2 className="text-4xl font-bold text-center text-[#2F4F4F] mb-2" data-translate>
                     Tus Compras
                 </h2>
 
@@ -167,20 +115,14 @@ function BuyPage() {
                     {address ? (
                         <div>
                             <p>
-                                <strong>Dirección de entrega:</strong> {address.calle}, {address.numero}, {address.piso_puerta ? `${address.piso_puerta}, ` : ""}
+                                <strong data-translate>Dirección de entrega:</strong> {address.calle}, {address.numero}, {address.piso_puerta ? `${address.piso_puerta}, ` : ""}
                                 {address.codigo_postal}, {address.ciudad}, {address.provincia}, {address.comunidad_autonoma}, {address.pais}
                             </p>
-                            <button
-                                className="mt-4 bg-blue-500 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-blue-600 transition duration-300"
-                                onClick={handleAddOrUpdateAddress}
-                            >
-                                Actualizar dirección
-                            </button>
                         </div>
                     ) : (
-                        <a href="/address">
+                        <a href="/direccion">
                             <button
-                                className="mt-4 bg-green-500 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-green-600 transition duration-300"
+                                className="mt-4 text-white px-4 py-2 rounded-lg text-sm font-semibold text-white bg-[#6E9475] hover:bg-[#5C8465] transition duration-300" data-translate
                             >
                                 Agregar dirección
                             </button>
@@ -188,83 +130,52 @@ function BuyPage() {
                     )}
                 </div>
 
-                <div className="max-w-6xl mx-auto px-4">
+                <div className="max-w-4xl mx-auto px-4">
                     {purchases.length > 0 ? (
                         purchases.map((purchase) => (
                             <div
                                 key={purchase.id}
-                                className="border border-gray-200 rounded-lg overflow-hidden shadow hover:shadow-lg transition duration-300 mb-6 p-4 relative"
+                                className="bg-white border border-gray-100 rounded-xl shadow-sm hover:shadow-md transition duration-300 mb-6 p-4"
                             >
-                                <div className="flex flex-col sm:flex-row sm:justify-between items-center">
-                                    <h3 className="text-xl font-bold text-[#2F4F4F]">
-                                        Compra - Fecha: {purchase.fecha}
+                                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center border-b pb-2 mb-3">
+                                    Compra del
+                                    <h3 className="text-base sm:text-lg font-semibold text-[#2F4F4F]" data-translate>
+                                        {purchase.fecha}
                                     </h3>
-                                    <a href="https://wa.me/18098820434" target="_blank">
-                                        <button
-                                            className="bg-red-500 text-white px-3 py-1 text-xs sm:text-sm md:text-base rounded-lg font-semibold hover:bg-red-600 transition duration-300 w-auto sm:w-fit mt-2 sm:mt-0"
-                                            onClick={() => console.log(`Iniciar devolución para la compra #${purchase.id}`)}
-                                        >
-                                            Hacer devolución
-                                        </button>
-                                    </a>
+                                    <button
+                                        className="mt-2 sm:mt-0 px-3 py-1 bg-red-500 text-white rounded-md hover:bg-red-600 text-xs font-semibold"
+                                        onClick={() => console.log(`Iniciar devolución para la compra #${purchase.id}`)} data-translate
+                                    >
+                                        Devolver
+                                    </button>
                                 </div>
 
-                                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mt-4">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                     {purchase.details.map((detail) => (
                                         <div
                                             key={detail.id}
-                                            className="border border-gray-200 rounded-lg shadow-sm p-4"
+                                            className="bg-[#F8F8F8] rounded-lg p-3 shadow-sm hover:shadow-md transition text-sm max-w-sm w-full mx-auto"
                                         >
                                             {detail.article.imagenes.length > 0 ? (
                                                 <img
                                                     src={detail.article.imagenes[0].url}
                                                     alt={detail.article.nombre}
-                                                    className="w-full h-40 object-cover rounded-lg"
+                                                    className="w-full h-32 object-cover rounded-md mb-2"
                                                 />
                                             ) : (
-                                                <p className="text-center text-gray-400">Sin imágenes</p>
+                                                <div className="w-full h-32 bg-gray-100 flex items-center justify-center rounded-md text-gray-400 text-xs" data-translate>
+                                                    Sin imágenes
+                                                </div>
                                             )}
-
-                                            <h4 className="text-lg font-semibold text-[#2F4F4F] mt-2">
-                                                {detail.article.nombre}
-                                            </h4>
-                                            <p className="text-sm text-gray-600">
-                                                {detail.article.descripcion}
-                                            </p>
-                                            <p className="text-[#6E9475] font-bold mt-2">
-                                                {detail.article.precio !== null
-                                                    ? `${detail.article.precio.toFixed(2)} €`
-                                                    : "Precio no disponible"}
-                                            </p>
+                                            <h4 className="font-semibold text-[#2F4F4F] truncate" data-translate>{detail.article.nombre}</h4>
+                                            <p className="text-gray-600 line-clamp-2" data-translate>{detail.article.descripcion}</p>
                                         </div>
                                     ))}
-                                </div>
-
-                                <div className="mt-4 text-right">
-                                    {comment ? (
-                                        <div className="flex flex-col items-start space-y-2 sm:space-y-0 sm:flex-row sm:justify-between sm:items-center">
-                                            <p className="text-gray-700 text-sm sm:text-base">
-                                                <strong>Comentario:</strong> {comment.descripcion}
-                                            </p>
-                                            <button
-                                                className="w-full sm:w-auto bg-yellow-500 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-yellow-600 transition duration-300" onClick={handleAddOrUpdateComment}
-                                            >
-                                                Actualizar comentario
-                                            </button>
-                                        </div>
-                                    ) : (
-                                        <button
-                                            className="bg-yellow-500 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-yellow-600 transition duration-300"
-                                            onClick={() => handleComment(purchase.id)}
-                                        >
-                                            Comentar
-                                        </button>
-                                    )}
                                 </div>
                             </div>
                         ))
                     ) : (
-                        <p className="text-center text-gray-500">
+                        <p className="text-center text-gray-500 mt-12 text-sm" data-translate>
                             No tienes compras registradas aún.
                         </p>
                     )}

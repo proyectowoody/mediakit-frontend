@@ -29,6 +29,7 @@ export interface Articulo {
   estado: string;
   imagen: string;
   precio: number;
+  precioActual: number;
   discount: number;
   imagenes: Imagen[];
 }
@@ -66,7 +67,6 @@ export async function handleGetOfertas() {
 export async function handleGetSelling() {
   try {
     const response = await axios.get(`${linkBackend}/detailbuy/top-selling`);
-    console.log(response.data);
     return response.data;
   } catch (error) {
     console.error("Error en la solicitud GET:", error);

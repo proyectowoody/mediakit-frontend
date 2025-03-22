@@ -5,12 +5,13 @@ import { handleDeleteOffer } from "../../../validation/admin/article/handleDelet
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import { FaTrash } from "react-icons/fa";
+import { FaEdit, FaTrash } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
 function OfferTable({
-  toggleModalOffer,
+  toggleModalImagen,
 }: {
-  toggleModalOffer: () => void;
+  toggleModalImagen: () => void;
 }) {
 
   const [search, setSearch] = useState("");
@@ -18,6 +19,7 @@ function OfferTable({
   const [categories, setCategories] = useState<string[]>([]);
   const [category, setCategory] = useState("");
   const [price, setPrice] = useState(0);
+  const navigate = useNavigate();
 
   const [articulos, setArticulos] = useState<
     {
@@ -30,6 +32,7 @@ function OfferTable({
       estado: string;
       imagen: string;
       precio: number;
+      precioActual: number;
       discount: number;
       imagenes: { id: number; url: string }[];
     }[]
@@ -81,7 +84,7 @@ function OfferTable({
       precio,
     };
     localStorage.setItem("articuloOfferSeleccionado", JSON.stringify(offer));
-    toggleModalOffer();
+    navigate('/form-articulo-descuento');
   };
 
   const filteredArticles = articulos.filter((article) =>
@@ -99,6 +102,12 @@ function OfferTable({
 
   const totalPages = Math.ceil(filteredArticles.length / itemsPerPage);
 
+  const handleImagen = (imagen: string) => {
+    const articulo = { imagen };
+    localStorage.setItem("imagenSeleccionado", JSON.stringify(articulo));
+    toggleModalImagen();
+  };
+
   return (
     <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
       <div className="mb-4 flex gap-4">
@@ -114,7 +123,7 @@ function OfferTable({
           value={category}
           onChange={(e) => setCategory(e.target.value)}
         >
-          <option value="">Todas las categorías</option>
+          <option value="" data-translate>Todas las categorías</option>
           {categories.map((cat, idx) => (
             <option key={idx} value={cat}>{cat}</option>
           ))}
@@ -128,53 +137,40 @@ function OfferTable({
         />
       </div>
       {currentItems.length === 0 ? (
-        <p className="text-center text-white">No hay ofertas para mostrar.</p>
+        <p className="text-center text-white" data-translate>No hay ofertas para mostrar.</p>
       ) : (
         <div>
           <table className="w-full text-sm text-left text-[#4E6E5D]">
             <thead className="text-xs uppercase bg-[#6E9475] text-[#FAF3E0]">
               <tr>
-                <th className="px-6 py-3">Nombre</th>
-                <th className="px-6 py-3">Descripción</th>
-                <th className="px-6 py-3">Categoría</th>
-                <th className="px-6 py-3">Fecha</th>
-                <th className="px-6 py-3">Estado</th>
-                <th className="px-6 py-3">Precio anterior</th>
-                <th className="px-6 py-3">Proveedor</th>
-                <th className="px-6 py-3">Precio actual</th>
-                <th scope="col" className="px-6 py-3">Nuevo descuento</th>
-                <th scope="col" className="px-6 py-3">Imágenes</th>
-                <th scope="col" className="px-6 py-3">Opciones</th>
+                <th className="px-6 py-3" data-translate>Nombre</th>
+                <th className="px-6 py-3" data-translate>Descripción</th>
+                <th className="px-6 py-3" data-translate>Categoría</th>
+                <th className="px-6 py-3" data-translate>Estado</th>
+                <th className="px-6 py-3" data-translate>Proveedor</th>
+                <th className="px-6 py-3" data-translate>Fecha</th>
+                <th className="px-6 py-3" data-translate>Precio</th>
+                <th className="px-6 py-3" data-translate>Precio actual</th>
+                <th scope="col" className="px-6 py-3" data-translate>Descuento</th>
+                <th scope="col" className="px-6 py-3" data-translate>Imágenes</th>
+                <th scope="col" className="px-6 py-3" data-translate>Opciones</th>
               </tr>
             </thead>
             <tbody>
-              {currentItems.map((art, index) => (
-                <tr key={index} className="border-b bg-[#FAF3E0] border-[#D4C9B0]">
-                  <th scope="row" className="px-6 py-4 font-medium whitespace-nowrap text-[#2F4F4F]">
+              {currentItems.map((art) => (
+                <tr key={art.id} className="border-b bg-[#FAF3E0] border-[#D4C9B0]">
+                  <th scope="row" className="px-6 py-4 font-medium whitespace-nowrap text-[#2F4F4F]" data-translate>
                     {art.nombre}
                   </th>
-                  <td className="px-6 py-4">{art.descripcion.slice(0, 50)}...</td>
-                  <td className="px-6 py-4">{art.categoria.nombre}</td>
-                  <td className="px-6 py-4">{formatFecha(art.fecha)}</td>
-                  <td className="px-6 py-4">{art.estado}</td>
-                  <td className="px-6 py-4">{art.precio} EUR</td>
-                  <td className="px-6 py-4">{art.supplier.nombre}</td>
-                  <td className="px-6 py-4">{art.discount} EUR</td>
+                  <td className="px-6 py-4" data-translate>{art.descripcion.slice(0, 50)}...</td>
+                  <td className="px-6 py-4" data-translate>{art.categoria.nombre}</td>
+                  <td className="px-6 py-4" data-translate>{art.estado}</td>
+                  <td className="px-6 py-4" data-translate>{art.supplier.nombre}</td>
+                  <td className="px-6 py-4" data-translate>{formatFecha(art.fecha)}</td>
+                  <td className="px-6 py-4">{art.precio} eur</td>
+                  <td className="px-6 py-4">{art.precioActual} eur</td>
+                  <td className="px-6 py-4">{art.discount} %</td>
                   <td className="px-6 py-4">
-                    <a
-                      href="#"
-                      className="ml-8 font-medium text-blue-500 hover:underline"
-                      onClick={() =>
-                        handleOffer(
-                          art.id,
-                          art.precio
-                        )
-                      }
-                    >
-                      Agregar
-                    </a>
-                  </td>
-                  <td className="px-6 py-4 flex gap-2">
                     <div className="w-32">
                       {art.imagenes.length > 2 ? (
                         <Slider
@@ -191,6 +187,7 @@ function OfferTable({
                                 src={imagen.url}
                                 alt={`Imagen ${imagen.id}`}
                                 className="w-12 h-12 rounded cursor-pointer border border-[#D4C9B0]"
+                                onClick={() => handleImagen(imagen.url)}
                               />
                             </div>
                           ))}
@@ -203,17 +200,29 @@ function OfferTable({
                               src={imagen.url}
                               alt={`Imagen ${imagen.id}`}
                               className="w-12 h-12 rounded cursor-pointer border border-[#D4C9B0]"
+                              onClick={() => handleImagen(imagen.url)}
                             />
                           ))}
                         </div>
                       )}
                     </div>
                   </td>
-                  <td className="px-6 py-4">
+                  <td className="px-6 py-4 flex justify-center gap-6">
+                    <FaEdit
+                      size={24}
+                      className="text-green-500 cursor-pointer hover:text-green-700"
+                      onClick={() =>
+                        handleOffer(
+                          art.id,
+                          art.precio
+                        )
+                      }
+                      title="Editar"
+                    />
                     <FaTrash
                       size={24}
                       className="text-red-500 cursor-pointer hover:text-red-700"
-                      onClick={() => showModal(art.id, art.nombre, art.precio, art.discount)}
+                       onClick={() => showModal(art.id, art.nombre, art.precio, art.discount)}
                       title="Eliminar"
                     />
                   </td>
@@ -226,7 +235,7 @@ function OfferTable({
             <button
               disabled={currentPage === 1}
               onClick={() => setCurrentPage(currentPage - 1)}
-              className="px-4 py-2 mx-2 bg-gray-300 rounded disabled:opacity-50"
+              className="px-4 py-2 mx-2 bg-gray-300 rounded disabled:opacity-50" data-translate
             >
               Anterior
             </button>
@@ -234,7 +243,7 @@ function OfferTable({
             <button
               disabled={currentPage === totalPages}
               onClick={() => setCurrentPage(currentPage + 1)}
-              className="px-4 py-2 mx-2 bg-gray-300 rounded disabled:opacity-50"
+              className="px-4 py-2 mx-2 bg-gray-300 rounded disabled:opacity-50" data-translate
             >
               Siguiente
             </button>

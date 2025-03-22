@@ -19,7 +19,7 @@ function Presumir() {
     }
     fetchData();
   }, []);
-  
+
   return (
     <section className="py-16 bg-[#FAF3E0] flex flex-col md:flex-row items-center justify-center px-8">
       <div className="w-full md:w-1/2 mb-8 md:mb-0 flex justify-center">
@@ -27,26 +27,26 @@ function Presumir() {
       </div>
 
       <div className="w-full md:w-1/2 md:pl-12 text-center md:text-left">
-        <h2 className="text-3xl font-bold text-[#2F4F4F] mb-4">
-          Comodidad natural, <span className="text-[#6E9475]">sostenibilidad sin compromisos</span>
+        <h2 className="text-3xl font-bold text-[#2F4F4F] mb-4" data-translate>
+          Comodidad natural, sostenibilidad sin compromisos
         </h2>
-        <p className="text-lg text-[#2F4F4F] leading-relaxed mb-6">
-          En <strong>Respectful Shoes</strong>, cuidamos de cada paso que das. Nuestro calzado combina ergonomía,
+        <p className="text-lg text-[#2F4F4F] leading-relaxed mb-6" data-translate>
+          En Respectful Shoes, cuidamos de cada paso que das. Nuestro calzado combina ergonomía,
           materiales sostenibles y un diseño pensado para el bienestar de toda la familia.
         </p>
 
         <div className="flex justify-center md:justify-start space-x-8">
           <div className="text-center">
             <p className="text-3xl font-bold text-[#6E9475]">+{totalPro}</p>
-            <p className="text-[#2F4F4F]">Marcas</p>
+            <p className="text-[#2F4F4F]" data-translate>Marcas</p>
           </div>
           <div className="text-center">
             <p className="text-3xl font-bold text-[#6E9475]">+{totalArt}</p>
-            <p className="text-[#2F4F4F]">Productos</p>
+            <p className="text-[#2F4F4F]" data-translate>Productos</p>
           </div>
           <div className="text-center">
             <p className="text-3xl font-bold text-[#6E9475]">+{totalCli}</p>
-            <p className="text-[#2F4F4F]">Clientes</p>
+            <p className="text-[#2F4F4F]" data-translate>Clientes</p>
           </div>
         </div>
       </div>

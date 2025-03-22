@@ -1,22 +1,29 @@
 import logoImage from "../../assets/img/logo.png";
-import { FaUser } from "react-icons/fa";
+import { FaUser, FaGlobe } from "react-icons/fa";
 import { useState, useRef, useEffect } from "react";
 
-const NavBar = ({ toggleAside, showModal }: { toggleAside: () => void; showModal: () => void }) => {
+const NavBar = ({ toggleAside, showModal, changeLanguage }: {
+  toggleAside: () => void; showModal: () => void; changeLanguage: (lng: string) => void;
+}) => {
+
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isLanguageDropdownOpen, setIsLanguageDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const languageDropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+      if (
+        dropdownRef.current && !dropdownRef.current.contains(event.target as Node) &&
+        languageDropdownRef.current && !languageDropdownRef.current.contains(event.target as Node)
+      ) {
         setIsDropdownOpen(false);
+        setIsLanguageDropdownOpen(false);
       }
     }
 
     document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   return (
@@ -45,7 +52,7 @@ const NavBar = ({ toggleAside, showModal }: { toggleAside: () => void; showModal
                 ></path>
               </svg>
             </button>
-            <a href="/home-admin" className="flex ml-2 md:mr-24">
+            <a href="/inicio" className="flex ml-2 md:mr-24">
               <img
                 src={logoImage}
                 className="h-12 rounded-full bg-white"
@@ -54,28 +61,70 @@ const NavBar = ({ toggleAside, showModal }: { toggleAside: () => void; showModal
             </a>
           </div>
 
-          <div className="relative" ref={dropdownRef}>
-            <button
-              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-              className="flex items-center space-x-2 text-[#FAF3E0] focus:outline-none"
-            >
-              <FaUser className="h-5 w-5" />
-            </button>
+          <div className="flex items-center space-x-4">
 
-            {isDropdownOpen && (
-              <div className="absolute right-0 mt-2 w-48 bg-[#4E6E5D] rounded-md shadow-lg z-50">
-                <ul className="py-2 text-[#FAF3E0]">
-                  <li>
-                    <button
-                      onClick={showModal}
-                      className="transition duration-300 transform hover:scale-105 flex items-center p-2 text-[#FAF3E0] rounded-lg bg-[#6E9475] hover:bg-[#5C8465] w-full text-left"
-                    >
-                      Cerrar sesión
-                    </button>
-                  </li>
-                </ul>
-              </div>
-            )}
+            <div className="relative">
+              <button
+                onClick={() => setIsLanguageDropdownOpen(!isLanguageDropdownOpen)}
+                className="flex items-center text-[#FAF3E0] hover:text-[#D4C9B0] focus:outline-none"
+              >
+                <FaGlobe className="h-5 w-5" />
+              </button>
+              {isLanguageDropdownOpen && (
+                <div ref={languageDropdownRef} className="absolute right-0 mt-2 w-40 bg-[#4E6E5D] rounded-md shadow-lg">
+                  <button onClick={() => changeLanguage('es')} className="block px-4 py-2 text-left w-full text-[#FAF3E0] hover:bg-[#5C8465]" data-translate>
+                    🇪🇸 Español
+                  </button>
+                  <button onClick={() => changeLanguage('en')} className="block px-4 py-2 text-left w-full text-[#FAF3E0] hover:bg-[#5C8465]" data-translate>
+                    🇺🇸 Inglés
+                  </button>
+                  <button onClick={() => changeLanguage('fr')} className="block px-4 py-2 text-left w-full text-[#FAF3E0] hover:bg-[#5C8465]" data-translate>
+                    🇫🇷 Francés
+                  </button>
+                  <button onClick={() => changeLanguage('de')} className="block px-4 py-2 text-left w-full text-[#FAF3E0] hover:bg-[#5C8465]" data-translate>
+                    🇩🇪 Alemán
+                  </button>
+                  <button onClick={() => changeLanguage('pt')} className="block px-4 py-2 text-left w-full text-[#FAF3E0] hover:bg-[#5C8465]" data-translate>
+                    🇵🇹 Portugués
+                  </button>
+                </div>
+              )}
+            </div>
+
+            <div className="relative" ref={dropdownRef}>
+              <button
+                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                className="flex items-center space-x-2 text-[#FAF3E0] focus:outline-none"
+              >
+                <FaUser className="h-5 w-5" />
+              </button>
+
+              {isDropdownOpen && (
+                <div className="absolute right-0 mt-2 w-48 bg-[#4E6E5D] rounded-md shadow-lg z-50">
+                  <ul className="py-2 text-[#FAF3E0]">
+                    <li className="mb-3">
+                      <a href="cuenta-admin">
+                        <button
+                          className="flex items-center p-2 text-white rounded-lg bg-[#6E9475] w-full text-left transition duration-300 hover:bg-[#4A7A5A] hover:text-[#FAF3E0]"
+                          data-translate
+                        >
+                          Cuenta
+                        </button>
+                      </a>
+                    </li>
+                    <li>
+                      <button
+                        onClick={showModal}
+                        className="flex items-center p-2 text-white rounded-lg bg-[#D9534F] w-full text-left transition duration-300 hover:bg-[#B52A26]"
+                        data-translate
+                      >
+                        Cerrar sesión
+                      </button>
+                    </li>
+                  </ul>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>

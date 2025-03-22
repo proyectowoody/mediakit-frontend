@@ -3,8 +3,6 @@ import { FormEvent, useState } from "react";
 import { SubmitComment } from "./submit";
 
 function HandleComment(
-  id: string,
-  buy_id: string,
   descripcion: string,
 ) {
   const [isLoading, setIsLoading] = useState(false);
@@ -14,20 +12,8 @@ function HandleComment(
     event.preventDefault();
     setIsLoading(true);
 
-    const response = await SubmitComment(
-      event,
-      id,
-      buy_id,
-      descripcion
-    );
-
-    if (response) {
-      setTimeout(() => {
-        navigate("/buy"); 
-      }, 1000);
-      
-      return true;
-    }
+    await SubmitComment(event, descripcion);
+    navigate("/comprar");
 
     setIsLoading(false);
   };

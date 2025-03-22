@@ -2,10 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { FormEvent, useState } from "react";
 import { Submit } from "./submit";
 
-function Handle(
-  email: string,
-  password: string,
-) {
+function Handle(email: string, password: string) {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -13,21 +10,10 @@ function Handle(
     event.preventDefault();
     setIsLoading(true);
 
-    const shipment = await Submit(
-      event,
-      email,
-      password,
-    );
+    const success = await Submit(email, password);
 
-    if (shipment) {
-      const { token } = shipment;
-
-      localStorage.setItem("ACCESS_TOKEN", token);
-
-      setTimeout(() => {
-        navigate("/authguard");
-      }, 1000);
-      
+    if (success) {
+      navigate("/authguard"); 
       return true;
     }
 

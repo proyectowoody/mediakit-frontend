@@ -6,9 +6,9 @@ import { handleDelete } from "../../validation/favorite/handleDelete";
 import Footer from "../../components/footer";
 import BannerImage from "../../components/bannerImage";
 import Header from "../../components/header";
-import { useNavigate } from "react-router-dom";
-import roleAdmin from "../../components/ts/roleAdmin";
-import authRedirectNoToken from "../../validation/autRedirectNoToken";
+import { handleGetUserSession } from "../../components/ts/fetchUser";
+import { handleGetCash } from "../../validation/admin/count/handleGet";
+import useAuthProtection from "../../components/ts/useAutProteccion";
 
 interface Product {
     id: number;
@@ -20,38 +20,53 @@ interface Product {
     fecha: string;
 }
 
-
-
 function FavoriteProducts() {
+    
+    useAuthProtection();
 
-    authRedirectNoToken("/");
-
-    const navigate = useNavigate();
-
-    useEffect(() => {
-        roleAdmin(navigate);
-    }, [navigate]);
+    const [isLogged, setIsLogged] = useState<boolean>(false);
+    
+      useEffect(() => {
+        handleGetUserSession(setIsLogged);
+      }, []);
 
     const [favorites, setFavorites] = useState<Product[]>([]);
+    const [currency, setCurrency] = useState<string>("EUR");
+    const [conversionRate, setConversionRate] = useState<number>(1);
+
+     useEffect(() => {
+            if (isLogged) {
+                handleGetCash()
+                    .then((data) => {
+                        if (data) {
+                            setCurrency(data.currency);
+                            setConversionRate(data.conversionRate);
+                        }
+                    })
+                    .catch((error) => console.error("Error al obtener cash:", error));
+            }
+        }, [isLogged]);
 
     useEffect(() => {
-        handleGetFavorito()
-            .then((data) => {
-                const formattedFavorites = data.map((fav: any) => ({
-                    id: fav.article.id,
-                    name: fav.article.nombre,
-                    price: fav.article.precio,
-                    images: fav.article.imagenes || [],
-                    descripcion: fav.article.descripcion,
-                    estado: fav.article.estado,
-                    fecha: new Date(fav.article.fecha).toLocaleDateString(),
-                }));
-                setFavorites(formattedFavorites);
-            })
-            .catch((error) => {
-                console.error("Error obteniendo favoritos:", error);
-            });
-    }, []);
+        if (isLogged) {
+            handleGetFavorito()
+                .then((data) => {
+                    const formattedFavorites = data.map((fav: any) => ({
+                        id: fav.article.id,
+                        name: fav.article.nombre,
+                        price: parseFloat((fav.article.precio * (currency === "EUR" ? 1 : conversionRate)).toFixed(2)),
+                        images: fav.article.imagenes || [],
+                        descripcion: fav.article.descripcion,
+                        estado: fav.article.estado,
+                        fecha: new Date(fav.article.fecha).toLocaleDateString(),
+                    }));
+                    setFavorites(formattedFavorites);
+                })
+                .catch((error) => {
+                    console.error("Error obteniendo favoritos:", error);
+                });
+        }
+    }, [isLogged]);
 
     const removeFavorite = async (productId: number) => {
         try {
@@ -72,14 +87,14 @@ function FavoriteProducts() {
             <BannerImage />
 
             <section className="py-16 bg-white">
-                <h2 className="text-4xl font-bold text-center text-[#2F4F4F] mb-10">Tus Favoritos</h2>
+                <h2 className="text-4xl font-bold text-center text-[#2F4F4F] mb-10" data-translate>Tus Favoritos</h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 max-w-6xl mx-auto px-4">
                     {favorites.length > 0 ? (
                         favorites.map((product) => (
                             <div key={product.id} className="border border-gray-200 rounded-lg overflow-hidden shadow hover:shadow-lg transition duration-300 relative p-4">
 
                                 <button
-                                    className="absolute top-2 right-2 bg-white p-2 rounded-full shadow-md z-50"
+                                    className="absolute top-2 right-2 bg-white p-2 rounded-full shadow-md z-20"
                                     onClick={() => removeFavorite(product.id)}
                                 >
                                     <FaTrash size={20} className="text-red-500 hover:text-red-600" />
@@ -88,20 +103,20 @@ function FavoriteProducts() {
                                 {product.images.length > 0 ? (
                                     <Carousel images={product.images} />
                                 ) : (
-                                    <p className="text-center text-gray-400">Sin imágenes</p>
+                                    <p className="text-center text-gray-400" data-translate>Sin imágenes</p>
                                 )}
 
                                 <div className="p-4">
-                                    <h3 className="text-lg font-semibold text-[#2F4F4F]">{product.name}</h3>
-                                    <p className="text-sm text-gray-600">{product.descripcion}</p>
-                                    <p className="text-sm text-gray-500">Estado: <span className="font-bold">{product.estado}</span></p>
-                                    <p className="text-sm text-gray-500">Fecha: {product.fecha}</p>
-                                    <p className="text-[#6E9475] font-bold mt-2">{product.price.toFixed(2)} €</p>
+                                    <h3 className="text-lg font-semibold text-[#2F4F4F]" data-translate>{product.name}</h3>
+                                    <p className="text-sm text-gray-600" data-translate>{product.descripcion}</p>
+                                    <p className="text-sm text-gray-500" data-translate>Estado: <span className="font-bold">{product.estado}</span></p>
+                                    <p className="text-sm text-gray-500" data-translate>Fecha: {product.fecha}</p>
+                                    <p className="text-[#6E9475] font-bold mt-2">{product.price} {currency}</p>
                                 </div>
                             </div>
                         ))
                     ) : (
-                        <p className="text-center text-gray-500">No tienes artículos favoritos aún.</p>
+                        <p className="text-center text-gray-500" data-translate>No tienes artículos favoritos aún.</p>
                     )}
                 </div>
             </section>

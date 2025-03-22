@@ -1,26 +1,16 @@
 import { useState, useEffect } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom"; 
 import Footer from "../../components/footer";
 import Header from "../../components/header";
 import Message from "../../components/message";
 import HandleAddress from "../../validation/address/handle";
-import roleAdmin from "../../components/ts/roleAdmin";
-import authRedirectNoToken from "../../validation/autRedirectNoToken";
+import useAuthProtection from "../../components/ts/useAutProteccion";
 
 function Address() {
 
-    authRedirectNoToken("/");
-
-    const navigate = useNavigate();
-
-    useEffect(() => {
-        roleAdmin(navigate);
-    }, [navigate]);
-
-    const [searchParams] = useSearchParams(); 
+    useAuthProtection();
 
     const [formData, setFormData] = useState({
-        id: "", 
+        id: "",
         calle: "",
         numero: "",
         piso_puerta: "",
@@ -33,19 +23,23 @@ function Address() {
     });
 
     useEffect(() => {
-        setFormData({
-            id: searchParams.get("id") || "",
-            calle: searchParams.get("calle") || "",
-            numero: searchParams.get("numero") || "",
-            piso_puerta: searchParams.get("piso_puerta") || "",
-            codigo_postal: searchParams.get("codigo_postal") || "",
-            ciudad: searchParams.get("ciudad") || "",
-            provincia: searchParams.get("provincia") || "",
-            comunidad_autonoma: searchParams.get("comunidad_autonoma") || "",
-            pais: searchParams.get("pais") || "España",
-            termsAccepted: false,
-        });
-    }, [searchParams]);
+        const storedAddress = localStorage.getItem("selected_address");
+        if (storedAddress) {
+            const parsed = JSON.parse(storedAddress);
+            setFormData({
+                id: parsed.id || "",
+                calle: parsed.calle || "",
+                numero: parsed.numero || "",
+                piso_puerta: parsed.piso_puerta || "",
+                codigo_postal: parsed.codigo_postal || "",
+                ciudad: parsed.ciudad || "",
+                provincia: parsed.provincia || "",
+                comunidad_autonoma: parsed.comunidad_autonoma || "",
+                pais: parsed.pais || "España",
+                termsAccepted: false,
+            });
+        }
+    }, []);    
 
     const { handleSubmit, isLoading } = HandleAddress(
         formData.id,
@@ -65,26 +59,27 @@ function Address() {
 
     useEffect(() => {
         window.scrollTo(0, 0);
-      }, []);
-      
+    }, []);
+
     return (
         <div className="font-quicksand">
             <Header />
-            <div className="bg-[#FAF3E0] min-h-screen flex flex-col items-center justify-center px-6">
-                <div className="max-w-lg w-full bg-white border border-[#D4C9B0] rounded-lg shadow-md p-6">
-                    <h2 className="text-3xl font-semibold text-[#6E9475] text-center mb-4">
-                        {formData.id ? "Actualizar Dirección" : "Agregar Dirección"} 
+            <div className="mb-10 mt-32 max-w-6xl mx-auto bg-white shadow-md rounded-lg overflow-hidden relative p-6">
+                <div className="px-6 py-6 lg:px-8">
+                    <h2 className="text-3xl font-semibold text-[#6E9475] text-center mb-4" data-translate>
+                        {formData.id ? "Actualizar Dirección" : "Agregar Dirección"}
                     </h2>
-                    <p className="text-[#2F4F4F] text-center mb-6">
+                    <p className="text-[#2F4F4F] text-center mb-6" data-translate>
                         Completa los datos de tu dirección para futuras compras.
                     </p>
                     <Message />
                     <form onSubmit={handleSubmit}>
+
                         <input type="hidden" name="id" value={formData.id} />
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div className="mb-4">
-                                <label className="block text-[#2F4F4F] font-medium mb-1">Calle*</label>
+                                <label className="block text-[#2F4F4F] font-medium mb-1" data-translate>Calle*</label>
                                 <input
                                     type="text"
                                     name="calle"
@@ -94,7 +89,7 @@ function Address() {
                                 />
                             </div>
                             <div className="mb-4">
-                                <label className="block text-[#2F4F4F] font-medium mb-1">Número*</label>
+                                <label className="block text-[#2F4F4F] font-medium mb-1" data-translate>Número*</label>
                                 <input
                                     type="text"
                                     name="numero"
@@ -106,7 +101,7 @@ function Address() {
                         </div>
 
                         <div className="mb-4">
-                            <label className="block text-[#2F4F4F] font-medium mb-1">Piso / Puerta</label>
+                            <label className="block text-[#2F4F4F] font-medium mb-1" data-translate>Piso / Puerta</label>
                             <input
                                 type="text"
                                 name="piso_puerta"
@@ -118,7 +113,7 @@ function Address() {
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div className="mb-4">
-                                <label className="block text-[#2F4F4F] font-medium mb-1">Código Postal*</label>
+                                <label className="block text-[#2F4F4F] font-medium mb-1" data-translate>Código Postal*</label>
                                 <input
                                     type="text"
                                     name="codigo_postal"
@@ -130,7 +125,7 @@ function Address() {
                                 />
                             </div>
                             <div className="mb-4">
-                                <label className="block text-[#2F4F4F] font-medium mb-1">Ciudad*</label>
+                                <label className="block text-[#2F4F4F] font-medium mb-1" data-translate>Ciudad*</label>
                                 <input
                                     type="text"
                                     name="ciudad"
@@ -142,7 +137,7 @@ function Address() {
                         </div>
 
                         <div className="mb-4">
-                            <label className="block text-[#2F4F4F] font-medium mb-1">Provincia*</label>
+                            <label className="block text-[#2F4F4F] font-medium mb-1" data-translate>Provincia*</label>
                             <input
                                 type="text"
                                 name="provincia"
@@ -153,7 +148,7 @@ function Address() {
                         </div>
 
                         <div className="mb-4">
-                            <label className="block text-[#2F4F4F] font-medium mb-1">Comunidad Autónoma*</label>
+                            <label className="block text-[#2F4F4F] font-medium mb-1" data-translate>Comunidad Autónoma*</label>
                             <input
                                 type="text"
                                 name="comunidad_autonoma"
@@ -166,7 +161,7 @@ function Address() {
                         <button
                             type="submit"
                             className="w-full bg-[#6E9475] text-white py-2 rounded-lg font-medium hover:bg-[#5C8465] transition-all"
-                            disabled={isLoading}
+                            disabled={isLoading} data-translate
                         >
                             {isLoading ? "Guardando..." : formData.id ? "Actualizar Dirección" : "Guardar Dirección"}
                         </button>

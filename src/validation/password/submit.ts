@@ -1,10 +1,10 @@
 import { FormEvent } from "react";
-import axios from "axios";
 import { mostrarMensaje } from "../../components/toast";
 import { linkBackend } from "../url";
+import api from "../axios.config";
 
 export interface upEmailData {
-  tokens: string;
+  token: string;
 }
 
 export const Submit = async (
@@ -12,6 +12,7 @@ export const Submit = async (
   password: string,
   verPassword: string,
 ): Promise<upEmailData | null> => {
+  
   event.preventDefault();
   const MensajeErr = document.getElementById("err");
   const MensajeAct = document.getElementById("success");
@@ -35,30 +36,14 @@ export const Submit = async (
   }
 
   try {
-    const urlParams = new URLSearchParams(window.location.search);
-    const urlToken = urlParams.get("token");
 
-    const localToken = localStorage.getItem("ACCESS_TOKEN");
-
-    const token = urlToken || localToken;
-
-    if (!token) {
-      throw new Error("No se encontró un token válido.");
-    }
-
-    const responseSesion = await axios.patch(
+    const responseSesion = await api.patch(
       `${linkBackend}/users/password`,
-      { password, verPassword },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
+      { password, verPassword }
     );
 
     mostrarMensaje(responseSesion.data.message, MensajeAct);
-    const tokens = responseSesion.data.token;
-    return { tokens };
+    return { token: responseSesion.data.token };
   } catch (error: any) {
     const message =
       error.response?.data.message || "Ocurrió un error inesperado.";

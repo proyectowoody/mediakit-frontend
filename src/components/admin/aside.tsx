@@ -26,7 +26,7 @@ const Sidebar = ({
                             onClick={() => handleNavigation(link.path)}
                             className="transition duration-300 transform hover:scale-105 flex items-center p-2 text-[#FAF3E0] rounded-lg bg-[#6E9475] hover:bg-[#5C8465] w-full text-left"
                         >
-                            <span className="flex-1 ml-3 whitespace-nowrap">{link.label}</span>
+                            <span className="flex-1 ml-3 whitespace-nowrap" data-translate>{link.label}</span>
                         </button>
                     </li>
                 ))}

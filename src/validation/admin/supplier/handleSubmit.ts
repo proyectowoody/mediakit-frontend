@@ -1,7 +1,7 @@
-import axios, { AxiosResponse } from "axios";
+import { AxiosResponse } from "axios";
 import { FormEvent } from "react";
 import { mostrarMensaje } from "../../../components/toast";
-import { linkBackend } from "../../url";
+import api from "../../axios.config";
 
 interface CampanaResponse {
     message: string;
@@ -12,8 +12,9 @@ export const handleSubmit = async (
     id: number,
     nombre: string,
     descripcion: string,
-    imagen: File | null,
+    imagen: File | string | null, 
 ): Promise<AxiosResponse<CampanaResponse> | null> => {
+    
     event.preventDefault();
     const MensajeErr = document.getElementById("err");
     const MensajeAct = document.getElementById("success");
@@ -33,38 +34,37 @@ export const handleSubmit = async (
         return null;
     }
 
-
-    const token = localStorage.getItem("ACCESS_TOKEN");
-
-    if (!token) {
-        mostrarMensaje("No tienes permiso para realizar esta acción", MensajeErr);
-        return null;
-    }
-
-    const headers = {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": id === 0 ? "multipart/form-data" : "application/json",
-    };
-
     try {
         let response: AxiosResponse<CampanaResponse>;
 
         if (id === 0) {
+            
             const formData = new FormData();
             formData.append("nombre", nombre);
-            if (imagen) formData.append("imagen", imagen);
             formData.append("descripcion", descripcion);
+            if (imagen && typeof imagen !== "string") {
+                formData.append("imagen", imagen);
+            }
 
-            response = await axios.post(`${linkBackend}/supplier`, formData, { headers });
-        } else {
-            const updateData = {
-                nombre,
-                descripcion
-            };
-
-            response = await axios.patch(`${linkBackend}/supplier/${id}`, updateData, {
-                headers,
+            response = await api.post("/supplier", formData, {
+                headers: { "Content-Type": "multipart/form-data" },
             });
+        } else {
+
+            const updateData: Record<string, any> = { nombre, descripcion };
+            
+            if (imagen && typeof imagen !== "string") {
+                const formData = new FormData();
+                formData.append("nombre", nombre);
+                formData.append("descripcion", descripcion);
+                formData.append("imagen", imagen);
+                
+                response = await api.patch(`/supplier/${id}`, formData, {
+                    headers: { "Content-Type": "multipart/form-data" },
+                });
+            } else {
+                response = await api.patch(`/supplier/${id}`, updateData);
+            }
         }
 
         mostrarMensaje(response.data.message, MensajeAct);

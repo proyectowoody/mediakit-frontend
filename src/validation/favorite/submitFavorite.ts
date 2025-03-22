@@ -1,21 +1,13 @@
-import axios from "axios";
-import { getUserEmailFromToken } from "../../components/ts/emailFromToken";
 import { linkBackend } from "../url";
+import api from "../axios.config";
 
 export const SubmitFavorite = async (
   articulo_id: number,
-)=> {
-  const email_user = getUserEmailFromToken();
-
-  const headers = {
-    Authorization: `Bearer ${localStorage.getItem("ACCESS_TOKEN")}`,
-  };
+) => {
 
   try {
-   await axios.post(
-      `${linkBackend}/favorito`,
-      { articulo_id, email_user },
-      { headers }
+    await api.post(
+      `${linkBackend}/favorito`, { articulo_id },
     );
   } catch (error: any) {
     alert(error.response?.data?.message);

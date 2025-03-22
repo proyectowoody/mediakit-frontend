@@ -3,11 +3,13 @@ import { handleGet } from "../../../validation/admin/subcategory/handleGet";
 import { Modal } from "../../toast";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import { handleDelete } from "../../../validation/admin/subcategory/handleDelete";
+import { useNavigate } from "react-router-dom";
 
-function SubCategoryTable({ toggleModalAct }: { toggleModalAct: () => void;}) {
+function SubCategoryTable() {
 
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 3;
+  const navigate = useNavigate();
 
   const [subcategorias, setSubCategorias] = useState<
     {
@@ -50,7 +52,7 @@ function SubCategoryTable({ toggleModalAct }: { toggleModalAct: () => void;}) {
   const handleActualizar = (id: number, nombre: string, categoriaId: number) => {
     const categoria = { id, nombre, categoriaId };
     localStorage.setItem("subcategoriaSeleccionado", JSON.stringify(categoria));
-    toggleModalAct();
+    navigate('/form-subcategorias');
   };
 
   const filteredCategories = subcategorias.filter((cat) =>
@@ -77,25 +79,25 @@ function SubCategoryTable({ toggleModalAct }: { toggleModalAct: () => void;}) {
       </div>
       {currentItems.length === 0 ? (
         <div className="flex items-center justify-center h-64 text-center text-white">
-          <p className="text-lg">No hay sub-categorías para mostrar.</p>
+          <p className="text-lg" data-translate>No hay sub-categorías para mostrar.</p>
         </div>
       ) : (
         <>
           <table className="w-full text-sm text-left text-[#4E6E5D]">
             <thead className="text-xs uppercase bg-[#6E9475] text-[#FAF3E0]">
               <tr>
-                <th scope="col" className="px-6 py-3">Nombre</th>
-                <th scope="col" className="px-6 py-3">Categoría</th>
-                <th scope="col" className="px-6 py-3">Opciones</th>
+                <th scope="col" className="px-6 py-3" data-translate>Nombre</th>
+                <th scope="col" className="px-6 py-3" data-translate>Categoría</th>
+                <th scope="col" className="px-6 py-3" data-translate>Opciones</th>
               </tr>
             </thead>
             <tbody>
-              {currentItems.map((cat, index) => (
-                <tr key={index} className="border-b bg-[#FAF3E0] border-[#D4C9B0]">
-                  <th scope="row" className="px-6 py-4 font-medium whitespace-nowrap text-[#2F4F4F]">
+              {currentItems.map((cat) => (
+                <tr key={cat.id} className="border-b bg-[#FAF3E0] border-[#D4C9B0]">
+                  <th scope="row" className="px-6 py-4 font-medium whitespace-nowrap text-[#2F4F4F]" data-translate>
                     {cat.nombre}
                   </th>
-                  <td className="px-6 py-4 text-[#4E6E5D]">{cat.categoria.nombre}</td>
+                  <td className="px-6 py-4 text-[#4E6E5D]" data-translate>{cat.categoria.nombre}</td>
                   <td className="px-6 py-4 flex justify-center gap-6">
                     <FaEdit
                       size={24}
@@ -120,23 +122,25 @@ function SubCategoryTable({ toggleModalAct }: { toggleModalAct: () => void;}) {
               ))}
             </tbody>
           </table>
+
           <div className="flex justify-center mt-4">
             <button
               disabled={currentPage === 1}
               onClick={() => setCurrentPage(currentPage - 1)}
-              className="px-4 py-2 mx-2 bg-gray-300 rounded disabled:opacity-50"
+              className="px-4 py-2 mx-2 bg-gray-300 rounded disabled:opacity-50" data-translate
             >
               Anterior
             </button>
-            <span className="px-4 py-2">Página {currentPage} de {totalPages}</span>
+            <span className="px-4 py-2"> <span data-translate>Página</span> {currentPage} de {totalPages}</span>
             <button
               disabled={currentPage === totalPages}
               onClick={() => setCurrentPage(currentPage + 1)}
-              className="px-4 py-2 mx-2 bg-gray-300 rounded disabled:opacity-50"
+              className="px-4 py-2 mx-2 bg-gray-300 rounded disabled:opacity-50" data-translate
             >
-              Siguiente
+              Siguiente 
             </button>
           </div>
+
         </>
       )}
     </div>

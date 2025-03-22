@@ -3,8 +3,11 @@ import { Modal } from "../../toast";
 import { handleGetSup } from "../../../validation/admin/supplier/handleGet";
 import { handleDelete } from "../../../validation/admin/supplier/handleDelete";
 import { FaEdit, FaTrash } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
-function SupplierTable({ toggleModalAct, toggleModalImagen }: { toggleModalAct: () => void; toggleModalImagen: () => void }) {
+function SupplierTable({ toggleModalImagen }: { toggleModalImagen: () => void }) {
+
+    const navigate = useNavigate();
     const [suppliers, setSuppliers] = useState<
         {
             id: number;
@@ -41,15 +44,15 @@ function SupplierTable({ toggleModalAct, toggleModalImagen }: { toggleModalAct: 
         }
     };
 
-    const handleActualizar = (id: number, nombre: string, descripcion: string) => {
-        const supplier = { id, nombre, descripcion };
+    const handleActualizar = (id: number, nombre: string, descripcion: string, imagen: string) => {
+        const supplier = { id, nombre, descripcion, imagen };
         localStorage.setItem("supplierseleccionado", JSON.stringify(supplier));
-        toggleModalAct();
+        navigate('/form-proveedores')
     };
 
-    const handleImagen = (id: number, imagen: string) => {
-        const categoria = { id, imagen };
-        localStorage.setItem("imagenSupplier", JSON.stringify(categoria));
+    const handleImagen = (imagen: string) => {
+        const categoria = { imagen };
+        localStorage.setItem("imagenSeleccionado", JSON.stringify(categoria));
         toggleModalImagen();
     };
 
@@ -82,39 +85,39 @@ function SupplierTable({ toggleModalAct, toggleModalImagen }: { toggleModalAct: 
 
             {currentItems.length === 0 ? (
                 <div className="flex items-center justify-center h-64 text-center text-white">
-                    <p className="text-lg">No hay proveedores para mostrar.</p>
+                    <p className="text-lg" data-translate>No hay proveedores para mostrar.</p>
                 </div>
             ) : (
                 <div>
                     <table className="w-full text-sm text-left text-[#4E6E5D]">
                         <thead className="text-xs uppercase bg-[#6E9475] text-[#FAF3E0]">
                             <tr>
-                                <th scope="col" className="px-6 py-3">Nombre</th>
-                                <th scope="col" className="px-6 py-3">Descripción</th>
-                                <th scope="col" className="px-6 py-3">Imagen</th>
-                                <th scope="col" className="px-6 py-3">Opciones</th>
+                                <th scope="col" className="px-6 py-3" data-translate>Nombre</th>
+                                <th scope="col" className="px-6 py-3" data-translate>Descripción</th>
+                                <th scope="col" className="px-6 py-3" data-translate>Imagen</th>
+                                <th scope="col" className="px-6 py-3" data-translate>Opciones</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {currentItems.map((sup, index) => (
-                                <tr key={index} className="border-b bg-[#FAF3E0] border-[#D4C9B0]">
-                                    <th scope="row" className="px-6 py-4 font-medium whitespace-nowrap text-[#2F4F4F]">
+                            {currentItems.map((sup) => (
+                                <tr key={sup.id} className="border-b bg-[#FAF3E0] border-[#D4C9B0]">
+                                    <th scope="row" className="px-6 py-4 font-medium whitespace-nowrap text-[#2F4F4F]" data-translate>
                                         {sup.nombre}
                                     </th>
-                                    <td className="px-6 py-4 text-[#4E6E5D]">{sup.descripcion.slice(0, 50)}...</td>
+                                    <td className="px-6 py-4 text-[#4E6E5D]" data-translate>{sup.descripcion.slice(0, 50)}...</td>
                                     <td className="px-6 py-4">
                                         <img
                                             src={sup.imagen}
                                             alt="Imagen"
                                             className="w-12 h-12 rounded-full cursor-pointer border border-[#D4C9B0]"
-                                            onClick={() => handleImagen(sup.id, sup.imagen)}
+                                            onClick={() => handleImagen(sup.imagen)}
                                         />
                                     </td>
                                     <td className="px-6 py-4 flex justify-center gap-6">
                                         <FaEdit
                                             size={24}
                                             className="text-green-500 cursor-pointer hover:text-green-700"
-                                            onClick={() => handleActualizar(sup.id, sup.nombre, sup.descripcion)}
+                                            onClick={() => handleActualizar(sup.id, sup.nombre, sup.descripcion, sup.imagen)}
                                             title="Editar"
                                         />
                                         <FaTrash
@@ -138,15 +141,15 @@ function SupplierTable({ toggleModalAct, toggleModalImagen }: { toggleModalAct: 
                         <button
                             disabled={currentPage === 1}
                             onClick={() => setCurrentPage(currentPage - 1)}
-                            className="px-4 py-2 mx-2 bg-gray-300 rounded disabled:opacity-50"
+                            className="px-4 py-2 mx-2 bg-gray-300 rounded disabled:opacity-50" data-translate
                         >
                             Anterior
                         </button>
-                        <span className="px-4 py-2">Página {currentPage} de {totalPages}</span>
+                        <span className="px-4 py-2"> <span data-translate>Página</span> {currentPage} de {totalPages}</span>
                         <button
                             disabled={currentPage === totalPages}
                             onClick={() => setCurrentPage(currentPage + 1)}
-                            className="px-4 py-2 mx-2 bg-gray-300 rounded disabled:opacity-50"
+                            className="px-4 py-2 mx-2 bg-gray-300 rounded disabled:opacity-50" data-translate
                         >
                             Siguiente
                         </button>

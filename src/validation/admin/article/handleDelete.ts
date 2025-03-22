@@ -1,17 +1,13 @@
-import axios from "axios";
 import { linkBackend } from "../../url";
 import { mostrarMensaje } from "../../../components/toast";
-const token = localStorage.getItem("ACCESS_TOKEN");
+import api from "../../axios.config";
 
 export function handleDelete(art: any) {
 
     const MensajeNegToast = document.getElementById("toast-negative");
 
-    axios
+    api
         .delete(`${linkBackend}/articulos/${art}`, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
         })
         .then(() => {
             window.location.reload();
@@ -26,11 +22,7 @@ export function handleDelete(art: any) {
 export function handleDeleteOffer(art: any) {
     const MensajeNegToast = document.getElementById("toast-negative");
 
-    axios.patch(`${linkBackend}/articulos/offer/${art}`, {}, {
-        headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-        }
+    api.patch(`${linkBackend}/articulos/offer/${art}`, {}, {
     })
     .then(() => {
         window.location.reload();

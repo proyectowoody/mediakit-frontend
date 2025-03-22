@@ -1,35 +1,36 @@
 import { FormEvent, useState } from "react";
 import { handleSubmit, handleSubmitDiscount } from "./handleSubmit";
+import { useNavigate } from "react-router-dom";
 
-function Handle(
-    id: number, nombre: string,  categoria: string | number, 
-    estado: string, imagen: File [] , 
-    descripcion: string, precio:number,  supplier: string | number, 
+export function Handle(
+    id: number, nombre: string, categoria: string | number,
+    estado: string, descripcion: string, precio: number, supplier: string | number,
+    imagenesFile: File[]
 ) {
     const [isLoading, setIsLoading] = useState(false);
+    const navigate = useNavigate();
 
     const handleSubmitForm = async (event: FormEvent) => {
         event.preventDefault();
         setIsLoading(true);
-        const respuesta = await handleSubmit(event, id, nombre, categoria, estado, imagen, descripcion, precio, supplier);
+
+        const respuesta = await handleSubmit(event, id, nombre, categoria, estado, descripcion, precio, supplier, imagenesFile);
 
         if (respuesta?.data?.message) {
-            window.location.reload();
+            navigate('/articulos');
         }
 
         setIsLoading(false);
     };
 
     return { handleSubmitForm, isLoading };
-
 }
 
-export default Handle;
-
 export function HandleDiscount(
-    id: number, discount:number,
+    id: number, discount: number,
 ) {
     const [isLoading, setIsLoading] = useState(false);
+    const navigate = useNavigate();
 
     const handleSubmitForm = async (event: FormEvent) => {
         event.preventDefault();
@@ -37,7 +38,7 @@ export function HandleDiscount(
         const respuesta = await handleSubmitDiscount(event, id, discount);
 
         if (respuesta?.data?.message) {
-            window.location.reload();
+            navigate('/ofertas');
         }
 
         setIsLoading(false);

@@ -19,21 +19,12 @@ function HandleAddress(
     event.preventDefault();
     setIsLoading(true);
 
-    const response = await SubmitAddress(
-      event,
-      id,
-      calle,
-      numero,
-      piso_puerta,
-      codigo_postal,
-      ciudad,
-      provincia,
-      comunidad_autonoma
-    );
+    const response = await SubmitAddress(event, id, calle, numero, piso_puerta, codigo_postal, ciudad,
+      provincia, comunidad_autonoma);
 
     if (response) {
       setTimeout(() => {
-        navigate("/buy"); 
+        navigate("/comprar"); 
       }, 1000);
       
       return true;

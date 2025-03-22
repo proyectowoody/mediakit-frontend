@@ -1,4 +1,7 @@
 import { useEffect, useState } from "react";
+import { translateText } from "../translate/translate";
+import { useTranslation } from "react-i18next";
+import { handleGetComment } from "../validation/comment/handleGet";
 
 interface Testimonial {
     id: number;
@@ -8,27 +11,55 @@ interface Testimonial {
 }
 
 function Testimonios() {
+    
+    const { i18n } = useTranslation(); 
     const [testimonialIndex, setTestimonialIndex] = useState<number>(0);
     const [visibleTestimonials, setVisibleTestimonials] = useState<number>(3);
+    const [translatedTitle, setTranslatedTitle] = useState<string>("Lo que dicen nuestros clientes");
+    const [translatedTestimonials, setTranslatedTestimonials] = useState<Testimonial[]>([]);
 
-    const testimonials: Testimonial[] = [
-        { id: 1, name: "Elena Gutiérrez", role: "Empresaria", comment: "Gracias a Respectful Shoes encontré el calzado perfecto para mi familia. La calidad y el diseño superaron mis expectativas." },
-        { id: 2, name: "Carlos Martínez", role: "Inversionista", comment: "Cada compra ha sido una experiencia premium. Los productos son sinónimo de calidad, confort y sostenibilidad." },
-        { id: 3, name: "Sofía Díaz", role: "CEO de una Startup", comment: "La atención al detalle es impresionante. La selección de productos y la presentación hacen de esta tienda la mejor opción." },
-        { id: 4, name: "Ricardo Fernández", role: "Cliente Frecuente", comment: "El servicio al cliente es excelente. Los zapatos son cómodos y realmente respetan la forma natural del pie." },
-        { id: 5, name: "María López", role: "Diseñadora de Moda", comment: "Me encanta que la tienda combine estilo y sostenibilidad. Es difícil encontrar algo así en el mercado." }
-    ];
+    const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
+    useEffect(() => {
+        const fetchTestimonials = async () => {
+            const data = await handleGetComment();
+            const formatted = data.map((item: any, index: number) => ({
+                id: item.id || index,
+                name: item.name || "Usuario",
+                role: item.role || "Cliente",
+                comment: item.descripcion || "",
+            }));
+            setTestimonials(formatted);
+        };
+    
+        fetchTestimonials();
+    }, []);
+    
+
+    useEffect(() => {
+        async function translateContent() {
+            const translatedTitleText = await translateText("Lo que dicen nuestros clientes", i18n.language);
+            setTranslatedTitle(translatedTitleText);
+    
+            const translated = await Promise.all(
+                testimonials.map(async (testimonial) => ({
+                    ...testimonial,
+                    name: await translateText(testimonial.name, i18n.language),
+                    role: await translateText(testimonial.role, i18n.language),
+                    comment: await translateText(testimonial.comment, i18n.language),
+                }))
+            );
+            setTranslatedTestimonials(translated);
+        }
+    
+        if (testimonials.length > 0) {
+            translateContent();
+        }
+    }, [i18n.language, testimonials]);     
 
     useEffect(() => {
         const updateVisibleTestimonials = () => {
             const width = window.innerWidth;
-            if (width >= 1024) {
-                setVisibleTestimonials(3); 
-            } else if (width >= 768) {
-                setVisibleTestimonials(2); 
-            } else {
-                setVisibleTestimonials(1); 
-            }
+            setVisibleTestimonials(width >= 1024 ? 3 : width >= 768 ? 2 : 1);
         };
 
         updateVisibleTestimonials();
@@ -46,24 +77,29 @@ function Testimonios() {
 
     return (
         <section className="py-16 bg-white text-center">
-            <h2 className="text-4xl font-bold text-[#2F4F4F] mb-10">Lo que dicen nuestros clientes</h2>
+            <h2 className="text-4xl font-bold text-[#2F4F4F] mb-10">
+                {translatedTitle}
+            </h2>
             <div className="flex justify-center space-x-6 max-w-6xl mx-auto overflow-hidden">
-                {testimonials
-                    .slice(testimonialIndex, testimonialIndex + visibleTestimonials)
-                    .map((testimonial) => (
-                        <div key={testimonial.id} className="bg-[#FAF3E0] p-6 rounded-lg shadow-md max-w-sm transition-all duration-500 ease-in-out">
-                            <p className="text-lg italic text-[#2F4F4F]">"{testimonial.comment}"</p>
-                            <p className="font-bold mt-4">{testimonial.name}</p>
-                            <p className="text-sm text-gray-600">{testimonial.role}</p>
-                        </div>
-                    ))}
+                {translatedTestimonials.length > 0 &&
+                    translatedTestimonials
+                        .slice(testimonialIndex, testimonialIndex + visibleTestimonials)
+                        .map((testimonial) => (
+                            <div key={testimonial.id} className="bg-[#FAF3E0] p-6 rounded-lg shadow-md max-w-sm transition-all duration-500 ease-in-out">
+                                <p className="text-lg italic text-[#2F4F4F]">{testimonial.comment}</p>
+                                <p className="font-bold mt-4">{testimonial.name}</p>
+                                <p className="text-sm text-gray-600">{testimonial.role}</p>
+                            </div>
+                        ))}
             </div>
 
             <div className="flex justify-center mt-6 space-x-2">
                 {testimonials.map((_, index) => (
                     <div
                         key={index}
-                        className={`w-3 h-3 rounded-full cursor-pointer ${index === testimonialIndex ? "bg-[#6E9475]" : "bg-gray-300"}`}
+                        className={`w-3 h-3 rounded-full cursor-pointer ${
+                            index === testimonialIndex ? "bg-[#6E9475]" : "bg-gray-300"
+                        }`}
                         onClick={() => setTestimonialIndex(index)}
                     ></div>
                 ))}

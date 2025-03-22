@@ -1,17 +1,19 @@
-import { getUserEmailFromToken } from "../../components/ts/emailFromToken";
+import api from "../axios.config";
 import { linkBackend } from "../url";
-import axios from "axios";
 
 export const handleDelete = async (articulo_id: number): Promise<void> => {
-    const email_user = getUserEmailFromToken();
-    const headers = {
-        Authorization: `Bearer ${localStorage.getItem("ACCESS_TOKEN")}`,
-    };
-
     try {
-        await axios.delete(`${linkBackend}/carrito`, {
-            headers,
-            params: { articulo_id, email_user },
+        await api.delete(`${linkBackend}/carrito`, {params: { articulo_id }});
+    } catch (error: any) {
+        alert(error.response?.data?.message);
+        throw new Error(error.response?.data?.message || "Error desconocido");
+    }
+};
+
+export const handleDeleteCarArticle = async (dat: string, articulo_id: number): Promise<void> => {
+    try {
+        await api.delete(`${linkBackend}/carrito/me`, {
+            params: { dat, articulo_id },
         });
     } catch (error: any) {
         alert(error.response?.data?.message);

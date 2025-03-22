@@ -6,15 +6,12 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { FaEdit, FaTrash } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
 function ArticleTable({
-  toggleModalAct,
   toggleModalImagen,
-  toggleModalOffer,
 }: {
-  toggleModalAct: () => void;
   toggleModalImagen: () => void;
-  toggleModalOffer: () => void;
 }) {
 
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -24,6 +21,7 @@ function ArticleTable({
   const [category, setCategory] = useState("");
   const [price, setPrice] = useState(0);
   const [categories, setCategories] = useState<string[]>([]);
+  const navigate = useNavigate();
 
   const [articulos, setArticulos] = useState<
     {
@@ -91,6 +89,7 @@ function ArticleTable({
     descripcion: string,
     precio: number,
     supplier: string | number,
+    imagenes: { id: number; url: string }[]
   ) => {
     const articulo = {
       id,
@@ -101,11 +100,14 @@ function ArticleTable({
       imagen,
       descripcion,
       precio,
-      supplier
+      supplier,
+      imagenes: imagenes.map(img => img.url)
     };
+
     localStorage.setItem("articuloSeleccionado", JSON.stringify(articulo));
-    toggleModalAct();
+    navigate('/form-articulos');
   };
+
 
   const handleOffer = (
     id: number,
@@ -116,11 +118,11 @@ function ArticleTable({
       precio,
     };
     localStorage.setItem("articuloOfferSeleccionado", JSON.stringify(offer));
-    toggleModalOffer();
+    navigate('/form-articulo-descuento');
   };
 
-  const handleImagen = (id: number, imagen: string) => {
-    const articulo = { id, imagen };
+  const handleImagen = (imagen: string) => {
+    const articulo = { imagen };
     localStorage.setItem("imagenSeleccionado", JSON.stringify(articulo));
     toggleModalImagen();
   };
@@ -149,7 +151,7 @@ function ArticleTable({
           value={category}
           onChange={(e) => setCategory(e.target.value)}
         >
-          <option value="">Todas las categorías</option>
+          <option value="" data-translate>Todas las categorías</option>
           {categories.map((cat, idx) => (
             <option key={idx} value={cat}>
               {cat}
@@ -166,34 +168,34 @@ function ArticleTable({
       </div>
 
       {isLoading ? (
-        <p className="text-center">Cargando artículos...</p>
+        <p className="text-center" data-translate>Cargando artículos...</p>
       ) : (
         <>
           <table className="w-full text-sm text-left text-[#4E6E5D]">
             <thead className="text-xs uppercase bg-[#6E9475] text-[#FAF3E0]">
               <tr>
-                <th scope="col" className="px-6 py-3">Nombre</th>
-                <th scope="col" className="px-6 py-3">Descripción</th>
-                <th scope="col" className="px-6 py-3">Categoría </th>
-                <th scope="col" className="px-6 py-3">Fecha</th>
-                <th scope="col" className="px-6 py-3">Estado</th>
-                <th scope="col" className="px-6 py-3">Precio</th>
-                <th scope="col" className="px-6 py-3">Proveedor</th>
-                <th scope="col" className="px-6 py-3">Agregar a oferta</th>
-                <th scope="col" className="px-6 py-3">Imágenes</th>
-                <th scope="col" className="px-6 py-3">Opciones</th>
+                <th scope="col" className="px-6 py-3" data-translate>Nombre</th>
+                <th scope="col" className="px-6 py-3" data-translate>Descripción</th>
+                <th scope="col" className="px-6 py-3" data-translate>Categoría </th>
+                <th scope="col" className="px-6 py-3" data-translate>Fecha</th>
+                <th scope="col" className="px-6 py-3" data-translate>Estado</th>
+                <th scope="col" className="px-6 py-3" data-translate>Precio</th>
+                <th scope="col" className="px-6 py-3" data-translate>Proveedor</th>
+                <th scope="col" className="px-6 py-3" data-translate>Agregar a oferta</th>
+                <th scope="col" className="px-6 py-3" data-translate>Imágenes</th>
+                <th scope="col" className="px-6 py-3" data-translate>Opciones</th>
               </tr>
             </thead>
             <tbody>
-              {currentItems.map((art, index) => (
-                <tr key={index} className="border-b bg-[#FAF3E0] border-[#D4C9B0]">
-                  <th className="px-6 py-4 font-medium whitespace-nowrap text-[#2F4F4F]">{art.nombre}</th>
-                  <td className="px-6 py-4">{art.descripcion.slice(0, 50)}...</td>
-                  <td className="px-6 py-4">{art.categoria.nombre}</td>
-                  <td className="px-6 py-4">{new Date(art.fecha).toLocaleDateString("es-ES")}</td>
-                  <td className="px-6 py-4">{art.estado}</td>
-                  <td className="px-6 py-4">{art.precio}</td>
-                  <td className="px-6 py-4">{art.supplier.nombre}</td>
+              {currentItems.map((art) => (
+                <tr key={art.id} className="border-b bg-[#FAF3E0] border-[#D4C9B0]">
+                  <th className="px-6 py-4 font-medium whitespace-nowrap text-[#2F4F4F]" data-translate>{art.nombre}</th>
+                  <td className="px-6 py-4" data-translate>{art.descripcion.slice(0, 50)}...</td>
+                  <td className="px-6 py-4" data-translate>{art.categoria.nombre}</td>
+                  <td className="px-6 py-4" data-translate>{new Date(art.fecha).toLocaleDateString("es-ES")}</td>
+                  <td className="px-6 py-4" data-translate>{art.estado}</td>
+                  <td className="px-6 py-4">{art.precio} eur</td>
+                  <td className="px-6 py-4" data-translate>{art.supplier.nombre}</td>
                   <td className="px-6 py-4">
                     <a
                       href="#"
@@ -203,11 +205,12 @@ function ArticleTable({
                           art.id,
                           art.precio
                         )
-                      }
+                      } data-translate
                     >
                       Agregar
                     </a>
                   </td>
+
                   <td className="px-6 py-4">
                     <div className="w-32">
                       {art.imagenes.length > 2 ? (
@@ -225,7 +228,7 @@ function ArticleTable({
                                 src={imagen.url}
                                 alt={`Imagen ${imagen.id}`}
                                 className="w-12 h-12 rounded cursor-pointer border border-[#D4C9B0]"
-                                onClick={() => handleImagen(art.id, imagen.url)}
+                                onClick={() => handleImagen(imagen.url)}
                               />
                             </div>
                           ))}
@@ -238,13 +241,14 @@ function ArticleTable({
                               src={imagen.url}
                               alt={`Imagen ${imagen.id}`}
                               className="w-12 h-12 rounded cursor-pointer border border-[#D4C9B0]"
-                              onClick={() => handleImagen(art.id, imagen.url)}
+                              onClick={() => handleImagen(imagen.url)}
                             />
                           ))}
                         </div>
                       )}
                     </div>
                   </td>
+                  
                   <td className="px-6 py-4 flex justify-center gap-6">
                     <FaEdit
                       size={24}
@@ -259,7 +263,8 @@ function ArticleTable({
                           art.imagen,
                           art.descripcion,
                           art.precio,
-                          art.supplier.id
+                          art.supplier.id,
+                          art.imagenes
                         )
                       }
                       title="Editar"
@@ -287,7 +292,7 @@ function ArticleTable({
             <button
               disabled={currentPage === 1}
               onClick={() => setCurrentPage(currentPage - 1)}
-              className="px-4 py-2 mx-2 bg-gray-300 rounded disabled:opacity-50"
+              className="px-4 py-2 mx-2 bg-gray-300 rounded disabled:opacity-50" data-translate
             >
               Anterior
             </button>
@@ -295,7 +300,7 @@ function ArticleTable({
             <button
               disabled={currentPage === totalPages}
               onClick={() => setCurrentPage(currentPage + 1)}
-              className="px-4 py-2 mx-2 bg-gray-300 rounded disabled:opacity-50"
+              className="px-4 py-2 mx-2 bg-gray-300 rounded disabled:opacity-50" data-translate
             >
               Siguiente
             </button>

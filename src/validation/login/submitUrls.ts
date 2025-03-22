@@ -1,26 +1,15 @@
-import axios from "axios";
-import { mostrarMensaje } from "../../components/toast";
-import { linkBackend } from "../url";
+import api from "../axios.config";
 
-export interface TokensData {
-    token: any;
-}
+export interface SesionData {
+    token: string;
+  }
 
-export const submitUrls = async (tokens: any): Promise<TokensData | null> => {
-    const MensajeErrUsuario = document.getElementById("MensajeErrUsuario");
-
+export const submitUrls = async (token: string): Promise<SesionData | null> =>  {
     try {
-        const responseToken = await axios.patch(`${linkBackend}/users/tokens`, {}, {
-            headers: {
-                Authorization: `Bearer ${tokens}`,
-            },
-        });
-        const token = responseToken.data.token;
-        return { token };
+        const response = await api.patch("/users/tokens", { token });
+        return { token: response.data.token };
     } catch (error: any) {
-        console.error("Error in submitUrls:", error);
-        const message = error.response?.data.message;
-        mostrarMensaje(message, MensajeErrUsuario);
+        console.error("Error en submitUrls:", error);
         return null;
     }
-}
+};

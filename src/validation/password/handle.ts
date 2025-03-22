@@ -13,19 +13,17 @@ function Handle(
     event.preventDefault();
     setIsLoading(true);
 
-    const shipment = await Submit(
+    const success = await Submit(
       event,
       password,
       verPassword
     );
 
-    if (shipment) {
-      const { tokens } = shipment;
-      localStorage.setItem("ACCESS_TOKEN", tokens);
-      setTimeout(() => {
-        navigate("/home");
-      }, 3000);
+    if (success) {
+      navigate("/");
+      return true;
     }
+
     setIsLoading(false);
   };
 
@@ -33,3 +31,25 @@ function Handle(
 }
 
 export default Handle;
+
+export function HandleData(
+  password: string,
+  verPassword: string
+) {
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleSubmit = async (event: FormEvent) => {
+    event.preventDefault();
+    setIsLoading(true);
+
+    await Submit(
+      event,
+      password,
+      verPassword
+    );
+
+    setIsLoading(false);
+  };
+
+  return { handleSubmit, isLoading };
+}

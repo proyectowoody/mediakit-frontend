@@ -1,7 +1,8 @@
-import axios, { AxiosResponse } from "axios";
+import { AxiosResponse } from "axios";
 import { FormEvent } from "react";
 import { mostrarMensaje } from "../../../components/toast";
 import { linkBackend } from "../../url";
+import api from "../../axios.config";
 
 interface CampanaResponse {
     message: string;
@@ -27,18 +28,6 @@ export const handleSubmit = async (
         return null;
     }
 
-    const token = localStorage.getItem("ACCESS_TOKEN");
-
-    if (!token) {
-        mostrarMensaje("No tienes permiso para realizar esta acción", MensajeErr);
-        return null;
-    }
-
-    const headers = {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-    };
-
     try {
         let response: AxiosResponse<CampanaResponse>;
 
@@ -48,9 +37,9 @@ export const handleSubmit = async (
         };
 
         if (id === 0) {
-            response = await axios.post(`${linkBackend}/subcategorias`, requestData, { headers });
+            response = await api.post(`${linkBackend}/subcategorias`, requestData);
         } else {
-            response = await axios.patch(`${linkBackend}/subcategorias/${id}`, requestData, { headers });
+            response = await api.patch(`${linkBackend}/subcategorias/${id}`, requestData);
         }
 
         mostrarMensaje(response.data.message, MensajeAct);

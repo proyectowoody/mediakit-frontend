@@ -24,35 +24,61 @@ import OfferAdmin from "../view/admin/article/offerAdmin";
 import Buy from "../view/buy/buy";
 import Address from "../view/address/address";
 import Comment from "../view/comment/comment";
-import SubCategoryAdmin from "../view/admin/adminSubCategory";
+import SubCategoryAdmin from "../view/admin/subcategory/adminSubCategory";
 import Category from "../view/category";
+import Guarantee from "../view/guarantee/guarantee";
+import ShippingPolicies from "../view/shippingPolicies/shippingPolicies";
+import ReturnPolicies from "../view/returnPolicies/returnPolicies";
+import LegalNotice from "../view/legalNotice/legalNotice";
+import CookiesPolicy from "../view/cookies/cookies";
+import TermsOfSale from "../view/termsOfSale/termsOfSale";
+import Count from "../view/count/count";
+import Account from "../view/admin/count/count";
+import SubCategoryForm from "../components/admin/subcategory/subCategoryForm";
+import CategoryForm from "../components/admin/category/categoryForm";
+import SupplierForm from "../components/admin/supplier/supplierForm";
+import ArticleForm from "../components/admin/article/articleForm";
+import ArticleFormOffer from "../components/admin/article/articleFormOffer";
+import BlogAdmin from "../view/admin/blog/adminBlog";
+import FormBlog from "../components/admin/blog/formBlog";
+import OtherCar from "../view/cart/otherCar";
+import ThankYou from "../view/thank/thank";
 
 const router = createBrowserRouter(
   [
-    // ruta semi comun
+    // Rutas principales
     { path: "/", element: <Home /> },
     { path: "/tienda/:categoria?/:subcategoria?", element: <Category /> },
 
-    //ruta de autenticacion
-    { path: "/login", element: <Login /> },
-    { path: "/register", element: <Register /> },
-    { path: "/email", element: <Email /> },
-    { path: "/password", element: <Password /> },
-    { path: "/verification", element: <Verification /> },
+    // Rutas de autenticación
+    { path: "/iniciar-sesion", element: <Login /> },
+    { path: "/registro", element: <Register /> },
+    { path: "/verificacion", element: <Verification /> },
+    { path: "/correo", element: <Email /> },
+    { path: "/recuperar-contrasena", element: <Password /> },
+    { path: "/otro-carrito", element: <OtherCar /> },
 
-    // rutas de usuario
-    { path: "/favorite", element: <Favorite /> },
-    { path: "/cart", element: <Cart /> },
-    { path: "/buy", element: <Buy /> },
-    { path: "/address", element: <Address /> },
-    { path: "/comment", element: <Comment /> },
+    // Rutas de usuario
+    { path: "/favoritos", element: <Favorite /> },
+    { path: "/carrito", element: <Cart /> },
+    { path: "/comprar", element: <Buy /> },
+    { path: "/direccion", element: <Address /> },
+    { path: "/comentarios", element: <Comment /> },
+    { path: "/cuenta", element: <Count /> },
+    { path: "/thank", element: <ThankYou /> },
 
-    // rutas de informacion
-    { path: "/contact", element: <Contact /> },
-    { path: "/terms", element: <Terms /> },
-    { path: "/privacy", element: <Privacy /> },
-    { path: "/faqs", element: <Faqs /> },
-    { path: "/history", element: <History /> },
+    // Rutas de información
+    { path: "/contacto", element: <Contact /> },
+    { path: "/garantia", element: <Guarantee /> },
+    { path: "/politicas-envio", element: <ShippingPolicies /> },
+    { path: "/politicas-devoluciones", element: <ReturnPolicies /> },
+    { path: "/aviso-legal", element: <LegalNotice /> },
+    { path: "/cookies", element: <CookiesPolicy /> },
+    { path: "/terminos-venta", element: <TermsOfSale /> },
+    { path: "/terminos", element: <Terms /> },
+    { path: "/privacidad", element: <Privacy /> },
+    { path: "/preguntas-frecuentes", element: <Faqs /> },
+    { path: "/historial", element: <History /> },
     { path: "/blog", element: <Blog /> },
 
     // Rutas del admin
@@ -60,20 +86,27 @@ const router = createBrowserRouter(
       path: "/",
       element: <Admin />,
       children: [
-        { path: "/home-admin", element: <HomeAdmin /> },
-        { path: "/category-admin", element: <CategoryAdmin /> },
-        { path: "/sub-category-admin", element: <SubCategoryAdmin /> },
-        { path: "/supplier-admin", element: <SupplierAdmin /> },
-        { path: "/article-admin", element: <ArticleAdmin /> },
-        { path: "/offer-admin", element: <OfferAdmin /> },
+        { path: "inicio", element: <HomeAdmin /> },
+        { path: "categorias", element: <CategoryAdmin /> },
+        { path: "form-categorias", element: <CategoryForm/> },
+        { path: "subcategorias", element: <SubCategoryAdmin /> },
+        { path: "form-subcategorias", element: <SubCategoryForm /> },
+        { path: "proveedores", element: <SupplierAdmin /> },
+        { path: "form-proveedores", element: <SupplierForm /> },
+        { path: "articulos", element: <ArticleAdmin /> },
+        { path: "form-articulos", element: <ArticleForm /> },
+        { path: "form-articulo-descuento", element: <ArticleFormOffer /> },
+        { path: "ofertas", element: <OfferAdmin /> },
+        { path: "blog-admin", element: <BlogAdmin /> },
+        { path: "form-blog", element: <FormBlog /> },
+        { path: "cuenta-admin", element: <Account /> },
       ]
     },
 
-    // ruta de error
+    // Ruta de error
     { path: "/authguard", element: <AuthGuard /> },
     { path: "*", element: <NotFound /> }
   ],
-
   {
     future: {
       v7_startTransition: true,

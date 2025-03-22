@@ -4,7 +4,7 @@ import { Submit } from './submit';
 
 function Handle(
     name: string,
-    lastName:string,
+    lastName: string,
     email: string,
     password: string
 ) {
@@ -15,13 +15,8 @@ function Handle(
         event.preventDefault();
         setIsLoading(true);
 
-        const shipment = await Submit(event, name, lastName, email, password)
-        if (shipment) {
-            setTimeout(() => {
-                navigate("/verification");
-            }, 1000);
-        }
-
+        await Submit(event, name, lastName, email, password)
+        navigate("/verificacion");
         setIsLoading(false);
     };
 

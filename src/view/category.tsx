@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import roleAdmin from "../components/ts/roleAdmin";
 import VerificationUrls from "../validation/login/verificationUrls";
 import { handleGetFavorito } from "../validation/favorite/handle";
 import { handleDelete } from "../validation/favorite/handleDelete";
@@ -10,6 +9,7 @@ import Footer from "../components/footer";
 import BannerImage from "../components/bannerImage";
 import CategoryArticle from "../components/categoryArticle";
 import SearchBar from "../components/searchBar";
+import { handleGetUserSession } from "../components/ts/fetchUser";
 
 export interface Product {
     id: number;
@@ -24,20 +24,22 @@ export interface Product {
 
 function Category() {
 
+    const [isLogged, setIsLogged] = useState<boolean>(false);
+
+    useEffect(() => {
+        handleGetUserSession(setIsLogged);
+    }, []);
+
     const navigate = useNavigate();
 
     const { categoria, subcategoria } = useParams();
-
-    useEffect(() => {
-        roleAdmin(navigate);
-    }, [navigate]);
 
     const tokens = new URLSearchParams(window.location.search).get("token");
 
     useEffect(() => {
         if (tokens) {
             const verify = async () => {
-                await VerificationUrls(tokens, navigate);
+                await VerificationUrls();
             };
             verify();
         }
@@ -46,10 +48,12 @@ function Category() {
     const [favorites, setFavorites] = useState<number[]>([]);
 
     useEffect(() => {
-        handleGetFavorito()
-            .then((favoritos) => setFavorites(favoritos.map((fav: any) => fav.article.id)))
-            .catch((error) => console.error("Error al obtener favoritos:", error));
-    }, []);
+        if (isLogged) {
+            handleGetFavorito()
+                .then((favoritos) => setFavorites(favoritos.map((fav: any) => fav.article.id)))
+                .catch((error) => console.error("Error al obtener favoritos:", error));
+        }
+    }, [isLogged]);
 
     const toggleFavorite = async (productId: number) => {
         const isFavorito = favorites.includes(productId);
@@ -70,6 +74,7 @@ function Category() {
     useEffect(() => {
         window.scrollTo(0, 0);
     }, []);
+
     return (
         <div>
             <Header />
@@ -78,7 +83,7 @@ function Category() {
             <CategoryArticle
                 favorites={favorites}
                 toggleFavorite={toggleFavorite}
-                categoria={categoria} 
+                categoria={categoria}
                 subcategoria={subcategoria}
             />
             <Footer />

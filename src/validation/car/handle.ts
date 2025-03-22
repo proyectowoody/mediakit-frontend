@@ -1,21 +1,10 @@
-import axios from "axios";
 import { linkBackend } from "../url";
-import { getUserEmailFromToken } from "../../components/ts/emailFromToken";
+import api from "../axios.config";
 
 export const handleGetCountCar = async () => {
-  const email = getUserEmailFromToken();
-  const token = localStorage.getItem("ACCESS_TOKEN");
-
-  if (!email || !token) {
-    return [];
-  }
 
   try {
-    const response = await axios.get(`${linkBackend}/carrito/count/${email}`, {
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
-    });
+    const response = await api.get(`${linkBackend}/carrito/count`);
     return response.data.total;
   } catch (error: any) {
     console.error("Error del carrito:", error);
@@ -23,23 +12,23 @@ export const handleGetCountCar = async () => {
   }
 };
 
-export const handleGetCar = async () => {
-  const email = getUserEmailFromToken();
-  const token = localStorage.getItem("ACCESS_TOKEN");
-
-  if (!email || !token) {
-    return [];
-  }
-
+export const handleGetGuestCartCount = () => {
   try {
-    const response = await axios.get(`${linkBackend}/carrito/${email}`, {
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
-    });
+    const stored = localStorage.getItem("guest_cart");
+    const guestCart = stored ? JSON.parse(stored) : [];
+    return guestCart.length;
+  } catch (error) {
+    console.error("Error al contar carrito de invitado:", error);
+    return 0;
+  }
+};
+
+export const handleGetCar = async () => {
+  try {
+    const response = await api.get(`${linkBackend}/carrito`);
     return response.data;
   } catch (error: any) {
-    console.error("Error al obtener los favoritos:", error);
+    console.error("Error en el carrito:", error);
     return [];
   }
 };

@@ -1,21 +1,34 @@
 import { useEffect, useState } from "react";
-import authRedirectToken from "../../validation/authRedirectToken";
 import Handle from "../../validation/register/handle";
 import Message from "../../components/message";
 import Footer from "../../components/footer";
 import Header from "../../components/header";
 import { FcGoogle } from "react-icons/fc";
 import { linkBackend } from "../../validation/url";
+import { handleGetUserSession } from "../../components/ts/fetchUser";
+import { useNavigate } from "react-router-dom";
 
 function Register() {
+
+  const navigate = useNavigate();
+  const [isLogged, setIsLogged] = useState<boolean>(false);
+
+  useEffect(() => {
+    handleGetUserSession(setIsLogged);
+  }, []);
+
+  useEffect(() => {
+    if (isLogged) {
+      navigate("/"); 
+    }
+  }, [isLogged, navigate]);
+
   const [showPassword, setShowPassword] = useState(false);
   const [isTermsAccepted, setIsTermsAccepted] = useState(false);
   const [name, setName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
-  authRedirectToken("/");
 
   const { handleSubmit, isLoading } = Handle(
     name,
@@ -33,10 +46,10 @@ function Register() {
       <Header />
       <div className="min-h-screen flex items-center justify-center bg-[#F5F5DC]">
         <div className="mt-20 w-full max-w-md bg-[#FAF3E0] p-6 rounded-lg shadow-lg">
-          <h2 className="text-2xl font-bold text-[#2F4F4F] text-center">
+          <h2 className="text-2xl font-bold text-[#2F4F4F] text-center" data-translate>
             Registrarse
           </h2>
-          <p className="text-sm text-[#4E6E5D] mt-2 text-center">
+          <p className="text-sm text-[#4E6E5D] mt-2 text-center" data-translate>
             Completa los campos para crear una cuenta.
           </p>
           <Message />
@@ -44,7 +57,7 @@ function Register() {
             <div className="mb-4">
               <label
                 htmlFor="nombre"
-                className="block text-sm font-medium text-[#4E6E5D]"
+                className="block text-sm font-medium text-[#4E6E5D]" data-translate
               >
                 Nombre
               </label>
@@ -61,7 +74,7 @@ function Register() {
             <div className="mb-4">
               <label
                 htmlFor="apellido"
-                className="block text-sm font-medium text-[#4E6E5D]"
+                className="block text-sm font-medium text-[#4E6E5D]" data-translate
               >
                 Apellido
               </label>
@@ -78,7 +91,7 @@ function Register() {
             <div className="mb-4">
               <label
                 htmlFor="email"
-                className="block text-sm font-medium text-[#4E6E5D]"
+                className="block text-sm font-medium text-[#4E6E5D]" data-translate
               >
                 Correo Electrónico
               </label>
@@ -95,7 +108,7 @@ function Register() {
             <div className="mb-4">
               <label
                 htmlFor="password"
-                className="block text-sm font-medium text-[#4E6E5D]"
+                className="block text-sm font-medium text-[#4E6E5D]" data-translate
               >
                 Contraseña
               </label>
@@ -110,7 +123,7 @@ function Register() {
                 />
                 <button
                   type="button"
-                  className="absolute right-2 top-2 text-sm text-[#6E9475] hover:text-[#4E6E5D]"
+                  className="absolute right-2 top-2 text-sm text-[#6E9475] hover:text-[#4E6E5D]" data-translate
                   onClick={() => setShowPassword(!showPassword)}
                 >
                   {showPassword ? "Ocultar" : "Mostrar"}
@@ -122,14 +135,14 @@ function Register() {
               <label className="flex items-center text-sm text-[#4E6E5D]">
                 <input
                   type="checkbox"
-                  className="mr-2 h-4 w-4 border-[#B2C9AB] rounded focus:ring-[#6E9475]"
+                  className="mr-2 h-4 w-4 border-[#B2C9AB] rounded focus:ring-[#6E9475]" data-translate
                   checked={isTermsAccepted}
                   onChange={(e) => setIsTermsAccepted(e.target.checked)}
                 />
                 Acepto los{" "}
                 <a
-                  href="/terms"
-                  className="text-[#6E9475] hover:text-[#4E6E5D] ml-1"
+                  href="/terminos"
+                  className="text-[#6E9475] hover:text-[#4E6E5D] ml-1" data-translate
                 >
                   términos y condiciones
                 </a>
@@ -142,14 +155,14 @@ function Register() {
               className={`w-full py-2 px-4 text-white font-medium rounded-md focus:outline-none focus:ring-2 ${isTermsAccepted && !isLoading
                 ? "bg-[#6E9475] hover:bg-[#5C8465] focus:ring-[#6E9475]"
                 : "bg-gray-400 cursor-not-allowed"
-                }`}
+                }`} data-translate
             >
               {isLoading ? "Registrando..." : "Regístrate"}
             </button>
           </form>
 
           <a href={`${linkBackend}/google`}
-            className="mt-4 w-full flex items-center justify-center py-2 px-4 border border-[#B2C9AB] rounded-md hover:bg-[#F5F5DC] focus:outline-none focus:ring-2 focus:ring-[#6E9475]"
+            className="mt-4 w-full flex items-center justify-center py-2 px-4 border border-[#B2C9AB] rounded-md hover:bg-[#F5F5DC] focus:outline-none focus:ring-2 focus:ring-[#6E9475]" data-translate
           >
             <FcGoogle className="mr-2 text-xl" />
             Registrate con Google
@@ -161,15 +174,16 @@ function Register() {
             <div className="flex-grow border-t border-[#B2C9AB]"></div>
           </div>
 
-          <p className="mt-6 text-sm text-center text-[#4E6E5D]">
-            ¿Ya tienes una cuenta?{" "}
-            <a
-              href="/login"
-              className="font-medium text-[#6E9475] hover:text-[#4E6E5D]"
-            >
-              Inicia sesión aquí
-            </a>
+          <p className="mt-6 text-sm text-center text-[#4E6E5D]" data-translate>
+            ¿Ya tienes una cuenta?
+
           </p>
+
+          <a href="/iniciar-sesion"
+            className="mt-4 w-full flex items-center justify-center py-2 px-4 border border-[#B2C9AB] rounded-md hover:bg-[#F5F5DC] focus:outline-none focus:ring-2 focus:ring-[#6E9475]" data-translate
+          >
+            Inicia sesión aquí
+          </a>
         </div>
       </div>
       <Footer />

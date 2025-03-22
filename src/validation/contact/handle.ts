@@ -1,24 +1,21 @@
-import { FormEvent, useState } from "react";
+import { useState, FormEvent } from "react";
 import { SubmitSuscribe } from "./submit";
 
-export function HandleSuscribe(
-    email: string,
-    setEmail: (value: string) => void,
-) {
-    const [isLoading, setIsLoading] = useState(false);
+export function useHandleSuscribe(email: string, setEmail: (value: string) => void) {
+  const [isLoading, setIsLoading] = useState(false);
 
-    const handleSubmitSuscribe = async (event: FormEvent) => {
-        event.preventDefault();
-        setIsLoading(true);
+  const handleSubmitSuscribe = async (event: FormEvent) => {
+    event.preventDefault();
+    setIsLoading(true);
 
-        const success = await SubmitSuscribe(event, email);
+    const success = await SubmitSuscribe(event, email);
 
-        setIsLoading(false);
+    setIsLoading(false);
 
-        if (success) {
-            setEmail("");
-        }
-    };
+    if (success) {
+      setEmail("");
+    }
+  };
 
-    return { handleSubmitSuscribe, isLoading };
+  return { handleSubmitSuscribe, isLoading };
 }

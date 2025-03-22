@@ -3,6 +3,7 @@ import { FaSearch, FaTimes } from "react-icons/fa";
 import { handleGetSearch } from "../validation/admin/article/handleGet";
 import { SubmitCar } from "../validation/car/submit";
 import AuthModal from "./toast";
+import { handleGetUserSession } from "./ts/fetchUser";
 
 interface SearchItem {
   id: number;
@@ -15,6 +16,13 @@ interface SearchItem {
 }
 
 function SearchBar() {
+
+  const [isLogged, setIsLogged] = useState<boolean>(false);
+
+  useEffect(() => {
+    handleGetUserSession(setIsLogged);
+  }, []);
+
   const [query, setQuery] = useState<string>("");
   const [results, setResults] = useState<SearchItem[]>([]);
   const [selectedProduct, setSelectedProduct] = useState<SearchItem | null>(null);
@@ -36,7 +44,7 @@ function SearchBar() {
         id: articulo.id,
         type: "product",
         name: articulo.nombre,
-        price: articulo.precio ? `${articulo.precio} €` : "Precio no disponible",
+        price: articulo.precioActual ? `${articulo.precioActual} €` : "Precio no disponible",
         estado: articulo.estado,
         image: articulo.imagenes?.length > 0 ? articulo.imagenes[0].url : "https://via.placeholder.com/100",
         description: articulo.descripcion,
@@ -58,25 +66,22 @@ function SearchBar() {
     setSelectedProduct(null);
   };
 
-  const [cartItem, setCartItem] = useState<number | null>(null);
-  const [isAuth, setIsAuth] = useState<boolean>(false);
   const [showAuthModal, setShowAuthModal] = useState<boolean>(false);
 
-  useEffect(() => {
-    const userToken = localStorage.getItem("ACCESS_TOKEN");
-    setIsAuth(!!userToken);
-  }, []);
+  const [addedToCart, setAddedToCart] = useState<{ [key: number]: boolean }>({});
 
-  useEffect(() => {
-    SubmitCar(cartItem);
-  }, [cartItem]);
-
-  const handleAddToCart = (product: number) => {
-    if (!isAuth) {
+  const handleAddToCart = (productId: number) => {
+    if (!isLogged) {
       setShowAuthModal(true);
       return;
     }
-    setCartItem(product);
+
+    SubmitCar(productId);
+    setAddedToCart((prev) => ({ ...prev, [productId]: true }));
+
+    setTimeout(() => {
+      setAddedToCart((prev) => ({ ...prev, [productId]: false }));
+    }, 2000);
   };
 
   return (
@@ -98,7 +103,7 @@ function SearchBar() {
 
       {results.length > 0 && (
         <div className="absolute z-50 bg-white border border-gray-300 mt-2 rounded-md w-full max-h-56 overflow-y-auto text-sm">
-          <div className="p-2 border-b font-semibold text-gray-700">PRODUCTOS</div>
+          <div className="p-2 border-b font-semibold text-gray-700" data-translate>PRODUCTOS</div>
           {results.map((item) => (
             <div
               key={item.id}
@@ -107,7 +112,7 @@ function SearchBar() {
             >
               <img src={item.image} alt={item.name} className="w-8 h-8 object-cover rounded mr-2" />
               <div>
-                <p className="font-medium">{item.name}</p>
+                <p className="font-medium" data-translate>{item.name}</p>
                 <p className="text-xs text-gray-500">{item.price}</p>
               </div>
             </div>
@@ -125,21 +130,57 @@ function SearchBar() {
                 className="w-24 h-24 object-contain rounded bg-gray-100"
               />
             </div>
-            <h3 className="text-md font-semibold text-center mt-2 text-gray-800">
+            <h3 className="text-md font-semibold text-center mt-2 text-gray-800" data-translate>
               {selectedProduct.name}
             </h3>
-            <p className="text-center text-gray-700 font-bold">{selectedProduct.price}</p>
-            <p className="text-center text-gray-600">Estado: {selectedProduct.estado}</p>
+            <p className="text-center text-gray-700 font-bold" data-translate>{selectedProduct.price}</p>
+            <p className="text-center text-gray-600">Estado: <span data-translate>{selectedProduct.estado}</span></p>
 
-            <p className="text-xs text-gray-500 mt-2 text-center">
+            <p className="text-xs text-gray-500 mt-2 text-center" data-translate>
               {selectedProduct.description}
             </p>
 
-            <button
-              className="w-full mt-3 bg-[#6E9475] text-white py-2 rounded-md text-sm hover:bg-[#5C8465] transition duration-300"
-              onClick={() => handleAddToCart(selectedProduct.id)}>
-              Añadir al Carrito
-            </button>
+            {isLogged ? (
+              <button
+                className={`w-full mt-3 py-2 rounded-md text-sm transition duration-300 ${addedToCart[selectedProduct.id] ? "bg-gray-500 cursor-not-allowed" : "bg-[#6E9475] hover:bg-[#5C8465] text-white"}`}
+                disabled={addedToCart[selectedProduct.id]}
+                onClick={() => handleAddToCart(selectedProduct.id)}
+                data-translate
+              >
+                {addedToCart[selectedProduct.id] ? "Agregado ✅" : "Añadir al Carrito"}
+              </button>
+            ) : (
+              <button
+                className={`w-full mt-3 py-2 rounded-md text-sm transition duration-300 ${addedToCart[selectedProduct.id] ? "bg-gray-500 cursor-not-allowed" : "bg-[#6E9475] hover:bg-[#5C8465] text-white"
+                  }`}
+                disabled={addedToCart[selectedProduct.id]}
+                onClick={() => {
+                  const stored = localStorage.getItem("guest_cart");
+                  let guestCart = stored ? JSON.parse(stored) : [];
+
+                  const existingProductIndex = guestCart.findIndex((item: any) => item.id === selectedProduct.id);
+
+                  if (existingProductIndex !== -1) {
+                    guestCart[existingProductIndex].cantidad += 1;
+                    guestCart[existingProductIndex].subtotal = guestCart[existingProductIndex].cantidad * guestCart[existingProductIndex].price;
+                  } else {
+                    guestCart.push({ ...selectedProduct, cantidad: 1, subtotal: selectedProduct.price });
+                  }
+
+                  localStorage.setItem("guest_cart", JSON.stringify(guestCart));
+
+                  setAddedToCart((prev) => ({ ...prev, [selectedProduct.id]: true }));
+
+                  setTimeout(() => {
+                    setAddedToCart((prev) => ({ ...prev, [selectedProduct.id]: false }));
+                  }, 2000);
+                }}
+                data-translate
+              >
+                {addedToCart[selectedProduct.id] ? "Agregado ✅" : "Añadir al Carrito"}
+              </button>
+            )}
+
           </div>
         </div>
       )}
@@ -149,19 +190,19 @@ function SearchBar() {
           onClose={() => setShowAuthModal(false)}
           title="¡Debes registrarte!"
           message="Para usar esta funcionalidad, necesitas iniciar sesión o registrarte.">
-          <p className="text-center text-[#2F4F4F] my-4">
+          <p className="text-center text-[#2F4F4F] my-4" data-translate>
             Para usar esta funcionalidad, necesitas iniciar sesión o registrarte.
           </p>
           <div className="flex justify-center gap-4">
             <button
-              className="bg-[#6E9475] text-white px-4 py-2 rounded hover:bg-[#5C8465] transition"
+              className="bg-[#6E9475] text-white px-4 py-2 rounded hover:bg-[#5C8465] transition" data-translate
               onClick={() => window.location.href = "/login"}
             >
               Iniciar sesión
             </button>
             <button
               className="bg-[#D4C9B0] text-[#2F4F4F] px-4 py-2 rounded hover:bg-[#BBA98A] transition"
-              onClick={() => window.location.href = "/register"}
+              onClick={() => window.location.href = "/register"} data-translate
             >
               Registrarse
             </button>
@@ -171,6 +212,7 @@ function SearchBar() {
 
     </div>
   );
+
 }
 
 export default SearchBar;

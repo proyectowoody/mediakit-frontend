@@ -1,7 +1,7 @@
 import { FormEvent } from "react";
-import axios from "axios";
 import { linkBackend } from "../url";
 import { mostrarMensaje } from "../../components/toast";
+import api from "../axios.config";
 
 export const Submit = async (
     event: FormEvent,
@@ -36,7 +36,7 @@ export const Submit = async (
     }
 
     try {
-        const responseRegister = await axios.post(`${linkBackend}/users/register`, { name, lastName, email, password });
+        const responseRegister = await api.post(`${linkBackend}/users/register`, { name, lastName, email, password });
         const mensaje = responseRegister.data.message;
         mostrarMensaje(mensaje, MensajeActUsuario);
         return true;

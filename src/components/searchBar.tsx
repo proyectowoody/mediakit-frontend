@@ -11,7 +11,7 @@ interface SearchItem {
   type: "category" | "product";
   name: string;
   price?: number;
-  image?: string;
+  imagenes?: string;
   description?: string;
   estado?: string;
 }
@@ -62,8 +62,8 @@ function SearchBar() {
         name: articulo.nombre,
         price: parseFloat((articulo.precioActual * (currency === "EUR" ? 1 : conversionRate)).toFixed(2)),
         estado: articulo.estado,
-        image: articulo.imagenes?.length > 0 ? articulo.imagenes[0].url : "https://via.placeholder.com/100",
-        description: articulo.descripcion,
+        imagenes: articulo.imagenes?.length > 0 ? articulo.imagenes[0].url : "https://via.placeholder.com/100",
+        description: articulo.descripcion
       }));
 
       setResults(formattedResults);
@@ -126,7 +126,7 @@ function SearchBar() {
               className="flex items-center p-2 hover:bg-gray-100 cursor-pointer"
               onClick={() => handleSelectProduct(item)}
             >
-              <img src={item.image} alt={item.name} className="w-8 h-8 object-cover rounded mr-2" />
+              <img src={item.imagenes} alt={item.name} className="w-8 h-8 object-cover rounded mr-2" />
               <div>
                 <p className="font-medium" data-translate>{item.name}</p>
                 <p className="text-xs text-gray-500">{item.price} {currency}</p>
@@ -141,7 +141,7 @@ function SearchBar() {
           <div className="bg-white border border-gray-300 rounded-md shadow-lg p-3 text-sm">
             <div className="flex justify-center">
               <img
-                src={selectedProduct.image}
+                src={selectedProduct.imagenes}
                 alt={selectedProduct.name}
                 className="w-24 h-24 object-contain rounded bg-gray-100"
               />

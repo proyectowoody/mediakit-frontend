@@ -14,7 +14,7 @@ interface Product {
     price: number;
     priceAct: number;
     discount: number;
-    imagenes: string[];
+    imagenes: string[] | string;
     cantidad: number;
     subtotal: number;
 }
@@ -118,7 +118,11 @@ function OtherCar() {
 
                                         <div className="flex items-center col-span-2">
                                             <img
-                                                src={product.imagenes.length > 0 ? product.imagenes[0] : "/placeholder.png"}
+                                                src={
+                                                    Array.isArray(product.imagenes)
+                                                        ? product.imagenes[0]
+                                                        : product.imagenes || "/placeholder.png"
+                                                }
                                                 alt={product.name}
                                                 className="w-14 h-14 md:w-20 md:h-20 object-cover rounded-md border border-gray-300"
                                             />

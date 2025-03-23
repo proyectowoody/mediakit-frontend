@@ -133,7 +133,7 @@ function CategoryArticle({ favorites, toggleFavorite, categoria, subcategoria }:
                             {product.imagenes.length > 0 ? <Carousel images={product.imagenes} /> : <p className="text-center text-gray-400" data-translate>Sin imágenes</p>}
                             <div className="p-4">
                                 <h3 className="text-lg font-semibold text-[#2F4F4F]" data-translate>{product.name}</h3>
-                                <p className="text-[#6E9475] font-bold">{product.price.toFixed(2)} €</p>
+                                <p className="text-[#6E9475] font-bold">{product.price.toFixed(2)} {currency}</p>
                                 {isLogged ? (
                                     <button
                                         className={`w-full mt-3 py-2 rounded-md text-sm transition duration-300 ${addedToCart[product.id] ? "bg-gray-500 cursor-not-allowed" : "bg-[#6E9475] hover:bg-[#5C8465] text-white"}`}

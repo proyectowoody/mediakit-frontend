@@ -4,12 +4,13 @@ import { handleGetSearch } from "../validation/admin/article/handleGet";
 import { SubmitCar } from "../validation/car/submit";
 import AuthModal from "./toast";
 import { handleGetUserSession } from "./ts/fetchUser";
+import { handleGetCash } from "../validation/admin/count/handleGet";
 
 interface SearchItem {
   id: number;
   type: "category" | "product";
   name: string;
-  price?: string;
+  price?: number;
   image?: string;
   description?: string;
   estado?: string;
@@ -26,6 +27,8 @@ function SearchBar() {
   const [query, setQuery] = useState<string>("");
   const [results, setResults] = useState<SearchItem[]>([]);
   const [selectedProduct, setSelectedProduct] = useState<SearchItem | null>(null);
+  const [currency, setCurrency] = useState<string>("EUR");
+  const [conversionRate, setConversionRate] = useState<number>(1);
 
   useEffect(() => {
     if (query.length > 1) {
@@ -36,6 +39,19 @@ function SearchBar() {
     }
   }, [query]);
 
+  useEffect(() => {
+    if (isLogged) {
+      handleGetCash()
+        .then((data) => {
+          if (data) {
+            setCurrency(data.currency);
+            setConversionRate(data.conversionRate);
+          }
+        })
+        .catch((error) => console.error("Error al obtener cash:", error));
+    }
+  }, [isLogged]);
+
   const fetchResults = async (searchTerm: string): Promise<void> => {
     try {
       const data = await handleGetSearch(searchTerm);
@@ -44,7 +60,7 @@ function SearchBar() {
         id: articulo.id,
         type: "product",
         name: articulo.nombre,
-        price: articulo.precioActual ? `${articulo.precioActual} €` : "Precio no disponible",
+        price: parseFloat((articulo.precioActual * (currency === "EUR" ? 1 : conversionRate)).toFixed(2)),
         estado: articulo.estado,
         image: articulo.imagenes?.length > 0 ? articulo.imagenes[0].url : "https://via.placeholder.com/100",
         description: articulo.descripcion,
@@ -113,7 +129,7 @@ function SearchBar() {
               <img src={item.image} alt={item.name} className="w-8 h-8 object-cover rounded mr-2" />
               <div>
                 <p className="font-medium" data-translate>{item.name}</p>
-                <p className="text-xs text-gray-500">{item.price}</p>
+                <p className="text-xs text-gray-500">{item.price} {currency}</p>
               </div>
             </div>
           ))}
@@ -133,7 +149,7 @@ function SearchBar() {
             <h3 className="text-md font-semibold text-center mt-2 text-gray-800" data-translate>
               {selectedProduct.name}
             </h3>
-            <p className="text-center text-gray-700 font-bold" data-translate>{selectedProduct.price}</p>
+            <p className="text-center text-gray-700 font-bold" data-translate>{selectedProduct.price} {currency}</p>
             <p className="text-center text-gray-600">Estado: <span data-translate>{selectedProduct.estado}</span></p>
 
             <p className="text-xs text-gray-500 mt-2 text-center" data-translate>

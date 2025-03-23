@@ -229,7 +229,6 @@ function AccountSettings() {
                         </div>
                     )}
 
-
                     {selectedSection === "direccion" && (
                         <div className="p-6 rounded-2xl bg-gradient-to-r from-[#fdfdfd] to-[#f0f4f2] shadow-xl border border-[#e6e6e6]">
                             <Message />

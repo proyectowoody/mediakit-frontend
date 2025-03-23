@@ -4,7 +4,10 @@ export interface SesionData {
     token: string;
   }
 
-export const submitUrls = async (token: string): Promise<SesionData | null> =>  {
+export const submitUrls = async (tokens: string) =>  {
+
+    const token = decodeURIComponent(tokens.replace(/\s/g, '+'));
+
     try {
         const response = await api.patch("/users/tokens", { token });
         return { token: response.data.token };
@@ -12,4 +15,5 @@ export const submitUrls = async (token: string): Promise<SesionData | null> =>  
         console.error("Error en submitUrls:", error);
         return null;
     }
+    
 };

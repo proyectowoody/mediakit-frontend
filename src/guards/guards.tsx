@@ -35,7 +35,7 @@ export const AuthGuard = () => {
           const cartItems: { id: number; cantidad?: number }[] = JSON.parse(guestCart);
           if (cartItems.length > 0) {
             cartItems.forEach((item) => {
-              const cantidad = item.cantidad || 1; // Asegurar que si no tiene cantidad, sea 1
+              const cantidad = item.cantidad || 1; 
               for (let i = 0; i < cantidad; i++) {
                 SubmitCar(item.id);
               }

@@ -54,6 +54,16 @@ export async function handleGet(): Promise<Articulo[]> {
   }
 }
 
+export async function handleGetAllArticle(): Promise<Articulo[]> {
+  try {
+    const response = await axios.get<Articulo[]>(`${linkBackend}/articulos/all`);
+    return response.data;
+  } catch (error) {
+    console.error("Error en la solicitud GET:", error);
+    throw error;
+  }
+}
+
 export async function handleGetOfertas() {
   try {
     const response = await axios.get(`${linkBackend}/articulos/ofertas`);

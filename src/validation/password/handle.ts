@@ -34,7 +34,9 @@ export default Handle;
 
 export function HandleData(
   password: string,
-  verPassword: string
+  setPassword:any,
+  verPassword: string,
+  setVerPassword: any
 ) {
   const [isLoading, setIsLoading] = useState(false);
 
@@ -49,6 +51,8 @@ export function HandleData(
     );
 
     setIsLoading(false);
+    setPassword('');
+    setVerPassword('');
   };
 
   return { handleSubmit, isLoading };

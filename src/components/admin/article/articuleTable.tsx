@@ -5,7 +5,7 @@ import { handleDelete } from "../../../validation/admin/article/handleDelete";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import { FaEdit, FaTrash } from "react-icons/fa";
+import { FaEdit, FaTrash, FaPlus } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
 function ArticleTable({
@@ -197,18 +197,13 @@ function ArticleTable({
                   <td className="px-6 py-4">{art.precio} eur</td>
                   <td className="px-6 py-4" data-translate>{art.supplier.nombre}</td>
                   <td className="px-6 py-4">
-                    <a
-                      href="#"
-                      className="ml-8 font-medium text-blue-500 hover:underline"
-                      onClick={() =>
-                        handleOffer(
-                          art.id,
-                          art.precio
-                        )
-                      } data-translate
+                    <button
+                      onClick={() => handleOffer(art.id, art.precio)}
+                      className="flex items-center gap-2 text-blue-500 hover:underline ml-6"
+                      data-translate
                     >
-                      Agregar
-                    </a>
+                      <FaPlus size={24} />
+                    </button>
                   </td>
 
                   <td className="px-6 py-4">
@@ -248,7 +243,7 @@ function ArticleTable({
                       )}
                     </div>
                   </td>
-                  
+
                   <td className="px-6 py-4 flex justify-center gap-6">
                     <FaEdit
                       size={24}

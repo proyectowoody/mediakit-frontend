@@ -1,34 +1,41 @@
-import { useNavigate } from "react-router-dom";
+
+
 import { FormEvent, useState } from "react";
 import { SubmitAddress } from "../address/submit";
 
 function HandleAddress(
-  id: string,
-  calle: string,
-  numero: string,
-  piso_puerta: string,
-  codigo_postal: string,
-  ciudad: string,
+  id: number,
+  pais: string,
   provincia: string,
-  comunidad_autonoma: string
+  localidad: string,
+  codigo_postal: string,
+  tipo_via: string,
+  envio: boolean,
+  facturacion: boolean,
+  adicional: string,
+  indicacion: string,
+  ruta: string
 ) {
   const [isLoading, setIsLoading] = useState(false);
-  const navigate = useNavigate();
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
     setIsLoading(true);
 
-    const response = await SubmitAddress(event, id, calle, numero, piso_puerta, codigo_postal, ciudad,
-      provincia, comunidad_autonoma);
-
-    if (response) {
-      setTimeout(() => {
-        navigate("/comprar"); 
-      }, 1000);
-      
-      return true;
-    }
+    await SubmitAddress(
+      event,
+      id,
+      pais,
+      provincia,
+      localidad,
+      codigo_postal,
+      tipo_via,
+      envio,
+      facturacion,
+      adicional,
+      indicacion,
+      ruta
+    );
 
     setIsLoading(false);
   };

@@ -4,7 +4,6 @@ import { handleGetSearch } from "../validation/admin/article/handleGet";
 import { SubmitCar } from "../validation/car/submit";
 import AuthModal from "./toast";
 import { handleGetUserSession } from "./ts/fetchUser";
-import { handleGetCash } from "../validation/admin/count/handleGet";
 
 interface SearchItem {
   id: number;
@@ -40,16 +39,15 @@ function SearchBar() {
   }, [query]);
 
   useEffect(() => {
-    if (isLogged) {
-      handleGetCash()
-        .then((data) => {
-          if (data) {
-            setCurrency(data.currency);
-            setConversionRate(data.conversionRate);
-          }
-        })
-        .catch((error) => console.error("Error al obtener cash:", error));
+    if (!isLogged) return;
+
+    const stored = localStorage.getItem("cashData");
+    if (stored) {
+      const data = JSON.parse(stored);
+      setCurrency(data.currency);
+      setConversionRate(data.conversionRate);
     }
+
   }, [isLogged]);
 
   const fetchResults = async (searchTerm: string): Promise<void> => {
@@ -100,6 +98,14 @@ function SearchBar() {
     }, 2000);
   };
 
+  const formatPrice = (value: number): string => {
+    return new Intl.NumberFormat("de-DE", {
+      style: "currency",
+      currency: currency,
+      minimumFractionDigits: 2,
+    }).format(value);
+  };
+
   return (
     <div className="relative w-full max-w-md mx-auto mt-4">
       <div className="flex items-center border border-gray-300 rounded-md overflow-hidden">
@@ -124,12 +130,13 @@ function SearchBar() {
             <div
               key={item.id}
               className="flex items-center p-2 hover:bg-gray-100 cursor-pointer"
-              onClick={() => handleSelectProduct(item)}
+              onClick={() => { handleSelectProduct(item) }}
             >
               <img src={item.imagenes} alt={item.name} className="w-8 h-8 object-cover rounded mr-2" />
               <div>
                 <p className="font-medium" data-translate>{item.name}</p>
-                <p className="text-xs text-gray-500">{item.price} {currency}</p>
+                <p className="text-xs text-gray-500">{formatPrice(item.price!)}
+                </p>
               </div>
             </div>
           ))}
@@ -149,7 +156,7 @@ function SearchBar() {
             <h3 className="text-md font-semibold text-center mt-2 text-gray-800" data-translate>
               {selectedProduct.name}
             </h3>
-            <p className="text-center text-gray-700 font-bold" data-translate>{selectedProduct.price} {currency}</p>
+            <p className="text-center text-gray-700 font-bold">{formatPrice(selectedProduct.price!)} </p>
             <p className="text-center text-gray-600">Estado: <span data-translate>{selectedProduct.estado}</span></p>
 
             <p className="text-xs text-gray-500 mt-2 text-center" data-translate>

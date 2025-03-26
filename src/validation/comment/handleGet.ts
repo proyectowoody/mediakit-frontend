@@ -11,6 +11,26 @@ export const handleGetComment = async () => {
     }
 };
 
+export const handleGetCommentAdmin = async () => {
+    try {
+        const response = await api.get(`${linkBackend}/commentarticle/`);
+        return response.data;
+    } catch (error: any) {
+        console.error("Error al obtener los comentarios:", error);
+        return [];
+    }
+};
+
+export const handleGetCommentBuy = async () => {
+    try {
+        const response = await api.get(`${linkBackend}/comment/`);
+        return response.data;
+    } catch (error: any) {
+        console.error("Error al obtener los comentarios:", error);
+        return [];
+    }
+};
+
 
 
 

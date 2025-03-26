@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { FaSave, FaEye, FaEyeSlash } from "react-icons/fa";
 import Message from "../../../components/message";
-import { HandleData } from "../../../validation/password/handle";
+import Handle from "../../../validation/password/handle";
 
 function Account() {
 
@@ -11,7 +11,7 @@ function Account() {
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-    const { handleSubmit, isLoading } = HandleData(
+    const { handleSubmit, isLoading } = Handle(
         password,
         verPassword
     );

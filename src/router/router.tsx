@@ -43,12 +43,19 @@ import BlogAdmin from "../view/admin/blog/adminBlog";
 import FormBlog from "../components/admin/blog/formBlog";
 import OtherCar from "../view/cart/otherCar";
 import ThankYou from "../view/thank/thank";
+import Discount from "../view/admin/discount/discount";
+import FormDescuento from "../components/admin/discount/formDescuento";
+import OurCategories from "../view/ourCategories/ourCategories";
+import ComentarioAdmin from "../view/admin/comment/comment";
+import Order from "../view/order/order";
+import DataUser from "../view/dataUser/dataUser";
 
 const router = createBrowserRouter(
   [
     // Rutas principales
     { path: "/", element: <Home /> },
-    { path: "/tienda/:categoria?/:subcategoria?", element: <Category /> },
+    { path: "/tienda", element: <Category /> },
+    { path: "/nuestas-categorias", element: <OurCategories /> },
 
     // Rutas de autenticación
     { path: "/iniciar-sesion", element: <Login /> },
@@ -61,10 +68,12 @@ const router = createBrowserRouter(
     // Rutas de usuario
     { path: "/favoritos", element: <Favorite /> },
     { path: "/carrito", element: <Cart /> },
+    { path: "/order/:accion?/:subaccion?", element: <Order/> },
     { path: "/comprar", element: <Buy /> },
     { path: "/direccion", element: <Address /> },
+    { path: "/datos-personales", element: <DataUser /> },
     { path: "/comentarios", element: <Comment /> },
-    { path: "/cuenta", element: <Count /> },
+    { path: "/cuenta/:accion?", element: <Count /> },
     { path: "/thank", element: <ThankYou /> },
 
     // Rutas de información
@@ -88,7 +97,7 @@ const router = createBrowserRouter(
       children: [
         { path: "inicio", element: <HomeAdmin /> },
         { path: "categorias", element: <CategoryAdmin /> },
-        { path: "form-categorias", element: <CategoryForm/> },
+        { path: "form-categorias", element: <CategoryForm /> },
         { path: "subcategorias", element: <SubCategoryAdmin /> },
         { path: "form-subcategorias", element: <SubCategoryForm /> },
         { path: "proveedores", element: <SupplierAdmin /> },
@@ -99,7 +108,10 @@ const router = createBrowserRouter(
         { path: "ofertas", element: <OfferAdmin /> },
         { path: "blog-admin", element: <BlogAdmin /> },
         { path: "form-blog", element: <FormBlog /> },
+        { path: 'codigo-descuento', element: <Discount /> },
+        { path: 'form-descuento', element: <FormDescuento /> },
         { path: "cuenta-admin", element: <Account /> },
+        { path: "comentario-admin", element: <ComentarioAdmin /> },
       ]
     },
 

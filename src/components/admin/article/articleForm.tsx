@@ -186,7 +186,6 @@ function ArticleForm() {
               <input
                 type="text"
                 className="bg-[#FFFFFF] border border-[#D4C9B0] text-[#2F4F4F] text-sm rounded-lg focus:ring-[#6E9475] focus:border-[#6E9475] block w-full p-2.5 placeholder-[#D4C9B0]"
-                placeholder="Nombre"
                 value={precio}
                 onChange={(e) => setPrecio(Number(e.target.value))}
               />

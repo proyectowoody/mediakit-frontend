@@ -88,6 +88,22 @@ function OtherCar() {
         }
     };
 
+    const formatPrice = (value: number): string => {
+        return new Intl.NumberFormat("de-DE", {
+            minimumFractionDigits: 2,
+        }).format(value);
+    };
+
+    const handleClearCart = () => {
+        localStorage.removeItem("guest_cart");
+        window.location.reload();
+        setTotal(0);
+    };
+
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, []);
+
     return (
         <div className="font-quicksand bg-gray-100 min-h-screen">
             <Header />
@@ -129,7 +145,7 @@ function OtherCar() {
                                             <div className="ml-2 md:ml-4 text-left text-xs md:text-sm">
                                                 <h3 className="font-semibold text-[#2F4F4F]" data-translate>{product.name}</h3>
                                                 <p className="text-gray-500" data-translate>{product.description}</p>
-                                                <p className="text-gray-500" data-translate>Estado: <span className="font-bold">{product.estatus}</span></p>
+                                                <p className="text-gray-500"><span className="font-bold" data-translate>{product.estatus}</span></p>
                                             </div>
                                         </div>
 
@@ -151,7 +167,7 @@ function OtherCar() {
 
                                         <div className="flex flex-col items-center">
                                             <span className="text-xs font-semibold text-gray-500 md:hidden">Precio</span>
-                                            <p className="text-gray-700 font-medium">{product.price.toFixed(2)} EUR</p>
+                                            <p className="text-gray-700 font-medium">{formatPrice(product.price)} EUR</p>
                                         </div>
 
                                         <div className="flex flex-col items-center">
@@ -161,12 +177,12 @@ function OtherCar() {
 
                                         <div className="flex flex-col items-center">
                                             <span className="text-xs font-semibold text-gray-500 md:hidden">Precio Actual</span>
-                                            <p className="text-blue-500 font-bold">{product.priceAct.toFixed(2)} EUR</p>
+                                            <p className="text-blue-500 font-bold">{formatPrice(product.priceAct)} EUR</p>
                                         </div>
 
                                         <div className="flex flex-col items-center">
                                             <span className="text-xs font-semibold text-gray-500 md:hidden">Subtotal</span>
-                                            <p className="text-[#6E9475] font-bold">{product.subtotal.toFixed(2)} EUR</p>
+                                            <p className="text-[#6E9475] font-bold">{formatPrice(product.subtotal)} EUR</p>
                                         </div>
 
                                         <div className="flex flex-col items-center">
@@ -182,16 +198,25 @@ function OtherCar() {
 
                             <div className="mt-6 p-6 border-t border-gray-300 bg-gray-50 flex flex-col md:flex-row justify-between items-center gap-4">
 
-                                <h3 className="text-lg md:text-2xl font-bold text-[#2F4F4F]">
-                                    Total: {total.toFixed(2)} EUR
+                                <h3 className="text-base md:text-lg font-semibold text-[#2F4F4F]">
+                                    Total: {formatPrice(total)} EUR
                                 </h3>
 
-                                <button
-                                    onClick={handleAddToCart}
-                                    className="flex items-center justify-center px-6 py-3 text-lg font-bold rounded-lg text-white bg-[#6E9475] hover:bg-[#5C8465] w-full md:w-auto"
-                                >
-                                    <FaShoppingCart className="text-xl" /> <span>Comprar ahora</span>
-                                </button>
+                                <div className="flex gap-2 w-full md:w-auto">
+                                    <button
+                                        onClick={handleClearCart}
+                                        className="px-4 py-2 text-sm font-semibold rounded-md text-[#2F4F4F] bg-[#E2E8F0] hover:bg-[#CBD5E1] w-full md:w-auto"
+                                    >
+                                        Vaciar carrito
+                                    </button>
+
+                                    <button
+                                        onClick={handleAddToCart}
+                                        className="flex items-center justify-center px-4 py-2 text-sm font-semibold rounded-md text-white bg-[#6E9475] hover:bg-[#5C8465] w-full md:w-auto"
+                                    >
+                                        <FaShoppingCart className="text-base mr-2" /> Comprar ahora
+                                    </button>
+                                </div>
 
                             </div>
 

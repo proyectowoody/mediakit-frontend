@@ -1,5 +1,6 @@
 import { FormEvent, useState } from "react";
 import { SubmitCash } from "./submit";
+import { handleGetCash } from "./handleGet";
 
 export function HandleCash(
     cash: string,
@@ -11,6 +12,7 @@ export function HandleCash(
         setIsLoadingCount(true);
 
         await SubmitCash(event, cash);
+        handleGetCash();
 
         setIsLoadingCount(false);
     };

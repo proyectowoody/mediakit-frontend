@@ -13,7 +13,7 @@ function CierreSesion() {
 
     const [showModal, setShowModal] = useState(false);
     const navigate = useNavigate();
-    const INACTIVITY_TIME = 30 * 60 * 1000;
+    const INACTIVITY_TIME = 60 * 60 * 1000;
     // const INACTIVITY_TIME = 5 * 1000; 
     const inactivityTimer = useRef<number | null>(null);
 
@@ -54,6 +54,7 @@ function CierreSesion() {
                     isVisible={showModal}
                     onClose={() => {
                         localStorage.clear();
+                        localStorage.removeItem("guest_cart");
                         setIsLogged(false);
                         navigate("/iniciar-sesion");
                         setShowModal(false);

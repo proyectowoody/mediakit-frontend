@@ -6,15 +6,15 @@ import { SubmitCar } from "../validation/car/submit";
 import { motion, AnimatePresence } from "framer-motion";
 import { Product } from "../view/home";
 import AuthModal from "./toast";
-import { handleGetCash } from "../validation/admin/count/handleGet";
 import { handleGetUserSession } from "./ts/fetchUser";
 
 interface TopProductProps {
     favorites: number[];
     toggleFavorite: (productId: number) => void;
+    setProductoSeleccionado: (producto: any) => void;
 }
 
-function Offers({ favorites, toggleFavorite }: TopProductProps) {
+function Offers({ favorites, toggleFavorite, setProductoSeleccionado }: TopProductProps) {
 
     const [isLogged, setIsLogged] = useState<boolean>(false);
 
@@ -75,16 +75,15 @@ function Offers({ favorites, toggleFavorite }: TopProductProps) {
     }, []);
 
     useEffect(() => {
-        if (isLogged) {
-            handleGetCash()
-                .then((data) => {
-                    if (data) {
-                        setCurrency(data.currency);
-                        setConversionRate(data.conversionRate);
-                    }
-                })
-                .catch((error) => console.error("Error al obtener cash:", error));
+        if (!isLogged) return;
+
+        const stored = localStorage.getItem("cashData");
+        if (stored) {
+            const data = JSON.parse(stored);
+            setCurrency(data.currency);
+            setConversionRate(data.conversionRate);
         }
+
     }, [isLogged]);
 
     const products: Product[] = articulos.map((articulo) => ({
@@ -104,6 +103,21 @@ function Offers({ favorites, toggleFavorite }: TopProductProps) {
         setTopProducts((prev) => (JSON.stringify(prev) === JSON.stringify(sortedProducts) ? prev : sortedProducts));
     }, [products]);
 
+    const formatPrice = (value: number): string => {
+        return new Intl.NumberFormat("de-DE", {
+            style: "currency",
+            currency: currency,
+            minimumFractionDigits: 2,
+        }).format(value);
+    };
+
+    const Animated = (product: Product) => {
+        setAnimatedProduct(product);
+        setTimeout(() => {
+            setAnimatedProduct(null);
+        }, 2000);
+    };
+
     return (
         <section id="mejores-ofertas" className="py-16 bg-white">
             <h2 className="text-4xl font-bold text-center text-[#2F4F4F] mb-10" data-translate>Ofertas</h2>
@@ -121,9 +135,9 @@ function Offers({ favorites, toggleFavorite }: TopProductProps) {
                             >
                                 <FaHeart size={24} className={favorites.includes(product.id) ? "fill-red-500" : "fill-gray-500"} />
                             </button>
-
-                            {product.imagenes.length > 0 ? <Carousel images={product.imagenes} /> : <p className="text-center text-gray-400" data-translate>Sin imágenes</p>}
-
+                            <div onClick={() => setProductoSeleccionado(product)}>
+                                {product.imagenes.length > 0 ? <Carousel images={product.imagenes} /> : <p className="text-center text-gray-400">Sin imágenes</p>}
+                            </div>
                             <div className="p-4">
                                 <h3 className="text-lg font-semibold text-[#2F4F4F]" data-translate>{product.name}</h3>
                                 <h3 className="text-sm text-[#2F4F4F]" data-translate>
@@ -132,8 +146,8 @@ function Offers({ favorites, toggleFavorite }: TopProductProps) {
                                 <h3 className="text-sm text-[#2F4F4F]" data-translate>{product.estatus}</h3>
 
                                 <div className="flex items-center gap-2">
-                                    <p className="text-red-500 line-through font-bold">{product.price} {currency}</p>
-                                    <p className="text-[#6E9475] font-bold">{product.priceAct} {currency}</p>
+                                    <p className="text-red-500 line-through font-bold">{formatPrice(product.price)}</p>
+                                    <p className="text-[#6E9475] font-bold">{formatPrice(product.priceAct)}</p>
                                 </div>
 
                                 {isLogged ? (
@@ -151,6 +165,7 @@ function Offers({ favorites, toggleFavorite }: TopProductProps) {
                                             }`}
                                         disabled={addedToCart[product.id]}
                                         onClick={() => {
+                                            Animated(product);
                                             const stored = localStorage.getItem("guest_cart");
                                             let guestCart = stored ? JSON.parse(stored) : [];
 
@@ -194,17 +209,38 @@ function Offers({ favorites, toggleFavorite }: TopProductProps) {
 
             <AnimatePresence>
                 {animatedProduct && animatedProduct.imagenes.length > 0 && (
-                    <motion.img
-                        src={animatedProduct.imagenes[0]}
-                        initial={{ scale: 1, x: 0, y: 0, opacity: 1 }}
-                        animate={{ scale: 0.1, x: 300, y: -300, opacity: 0 }}
-                        exit={{ opacity: 0 }}
-                        transition={{ duration: 1.2 }}
-                        className="fixed w-32 h-32 object-cover top-1/2 left-1/2 z-50"
-                        alt="Animación producto"
-                    />
+                    <motion.div
+                        initial={{ opacity: 0, y: -100, scale: 1 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ scale: 0.2, opacity: 0, y: 50 }}
+                        transition={{ duration: 1, ease: "easeInOut" }}
+                        className="fixed inset-0 flex items-center justify-center z-50"
+                    >
+                        <div className="w-56 h-44 bg-[#F3F4F6] rounded-xl border border-gray-300 shadow-xl flex flex-col items-center justify-center overflow-hidden">
+                            <motion.img
+                                src={animatedProduct.imagenes[0]}
+                                alt="Producto"
+                                initial={{ y: -100, opacity: 1, scale: 1 }}
+                                animate={{ y: 0, opacity: 1 }}
+                                exit={{ y: 30, scale: 0.5, opacity: 0 }}
+                                transition={{ duration: 0.6, delay: 0.2 }}
+                                className="w-20 h-20 object-cover rounded shadow-md"
+                            />
+
+                            <motion.div
+                                initial={{ height: 0 }}
+                                animate={{ height: "20px" }}
+                                exit={{ height: 0 }}
+                                transition={{ duration: 0.4, delay: 0.6 }}
+                                className="absolute bottom-0 left-0 w-full bg-[#D1D5DB] rounded-b-xl"
+                            />
+
+                            <p className="text-xs text-gray-700 mt-3 font-semibold">Producto agregado</p>
+                        </div>
+                    </motion.div>
                 )}
             </AnimatePresence>
+
         </section>
     );
 }

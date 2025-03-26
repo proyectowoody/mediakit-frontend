@@ -1,18 +1,20 @@
 import { useState, useEffect } from "react";
 
 const CookieModal = () => {
-
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
-    const acceptedCookies = localStorage.getItem("cookiesAccepted");
-    if (!acceptedCookies) {
+    const cookiesAccepted = document.cookie.includes("cookiesAccepted=true");
+    if (!cookiesAccepted) {
       setIsOpen(true);
     }
   }, []);
 
   const handleAccept = () => {
-    localStorage.setItem("cookiesAccepted", "true");
+    const expireDate = new Date();
+    expireDate.setFullYear(expireDate.getFullYear() + 1);
+    document.cookie = `cookiesAccepted=true; expires=${expireDate.toUTCString()}; path=/`;
+
     setIsOpen(false);
   };
 
@@ -27,7 +29,8 @@ const CookieModal = () => {
         </p>
         <button
           className="mt-4 bg-[#6E9475] text-white px-4 py-2 rounded hover:bg-[#5C8465]"
-          onClick={handleAccept} data-translate
+          onClick={handleAccept}
+          data-translate
         >
           Aceptar
         </button>

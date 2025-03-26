@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Footer from "../components/footer";
 import Header from "../components/header";
 import SearchBar from "../components/searchBar";
@@ -15,6 +15,7 @@ import { SubmitFavorite } from "../validation/favorite/submitFavorite";
 import VerificationUrls from "../validation/login/verificationUrls";
 import { handleGetUserSession } from "../components/ts/fetchUser";
 import { useAdminRedirect } from "../components/ts/useAutProteccion";
+import DetaillsProduct from "../components/detailsProduct";
 
 export interface Product {
   id: number;
@@ -68,25 +69,51 @@ function Home() {
     window.scrollTo(0, 0);
   }, []);
 
+  const descripcionRef = useRef<HTMLDivElement | null>(null);
+  const [productoSeleccionado, setProductoSeleccionado] = useState<any | null>(null);
+
+  const handleProductoSeleccionado = (producto: any) => {
+    setProductoSeleccionado(producto);
+    setTimeout(() => {
+      if (descripcionRef.current) {
+        const offsetTop = descripcionRef.current.offsetTop;
+        window.scrollTo({
+          top: offsetTop - 50,
+          behavior: "smooth",
+        });
+      }
+    }, 100);
+  };
+
   return (
     <div className="font-quicksand">
       <Header />
       <BannerImage />
       <Nosotros />
-      <SearchBar />
+      <DetaillsProduct
+        productoSeleccionado={productoSeleccionado}
+        setProductoSeleccionado={setProductoSeleccionado}
+        descripcionRef={descripcionRef}
+      />
+      <SearchBar/>
       <TopProduct
         favorites={favorites}
         toggleFavorite={toggleFavorite}
+        setProductoSeleccionado={handleProductoSeleccionado}
       />
       <Presumir />
       <Offers
         favorites={favorites}
         toggleFavorite={toggleFavorite}
+        setProductoSeleccionado={handleProductoSeleccionado}
       />
       <Testimonios />
       <Sold
         favorites={favorites}
-        toggleFavorite={toggleFavorite} />
+        toggleFavorite={toggleFavorite}
+        setProductoSeleccionado={handleProductoSeleccionado}
+      />
+
       <Footer />
     </div>
   );

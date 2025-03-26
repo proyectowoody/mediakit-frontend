@@ -1,15 +1,16 @@
-import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import VerificationUrls from "../validation/login/verificationUrls";
 import { handleGetFavorito } from "../validation/favorite/handle";
 import { handleDelete } from "../validation/favorite/handleDelete";
 import { SubmitFavorite } from "../validation/favorite/submitFavorite";
 import Header from "../components/header";
 import Footer from "../components/footer";
-import BannerImage from "../components/bannerImage";
 import CategoryArticle from "../components/categoryArticle";
 import SearchBar from "../components/searchBar";
 import { handleGetUserSession } from "../components/ts/fetchUser";
+import BannerImage from "../components/bannerImage";
+import DetaillsProduct from "../components/detailsProduct";
 
 export interface Product {
     id: number;
@@ -31,8 +32,11 @@ function Category() {
     }, []);
 
     const navigate = useNavigate();
-
-    const { categoria, subcategoria } = useParams();
+    const urlParams = new URLSearchParams(window.location.search);
+    const categoria = urlParams.get("categoria");
+    const subcategoria = urlParams.get("subcategoria");
+    const descripcion = urlParams.get('descripcion');
+    const imagenUrl = urlParams.get("imagen");
 
     const tokens = new URLSearchParams(window.location.search).get("token");
 
@@ -75,16 +79,52 @@ function Category() {
         window.scrollTo(0, 0);
     }, []);
 
+    const descripcionRef = useRef<HTMLDivElement | null>(null);
+    const [productoSeleccionado, setProductoSeleccionado] = useState<any | null>(null);
+
+    const handleProductoSeleccionado = (producto: any) => {
+        setProductoSeleccionado(producto);
+        setTimeout(() => {
+            if (descripcionRef.current) {
+                const offsetTop = descripcionRef.current.offsetTop;
+                window.scrollTo({
+                    top: offsetTop - 50,
+                    behavior: "smooth",
+                });
+            }
+        }, 100);
+    };
+
     return (
         <div>
             <Header />
-            <BannerImage />
+            {!imagenUrl ? (
+                <BannerImage />
+            ) : (
+                <div className="relative w-full h-[50vh] overflow-hidden">
+                    <img
+                        src={imagenUrl}
+                        className="absolute inset-0 w-full h-full object-cover"
+                    />
+                    <div className="absolute left-1/2 top-[70%] transform -translate-x-1/2 -translate-y-1/2 text-white z-10 bg-black/50 px-4 py-2 rounded text-center">
+                        <h2 className="text-xl font-bold">{categoria}</h2>
+                        <p className="text-base">{subcategoria}</p>
+                        <p className="text-sm">{descripcion}</p>
+                    </div>
+                </div>
+            )}
             <SearchBar />
+            <DetaillsProduct
+                productoSeleccionado={productoSeleccionado}
+                setProductoSeleccionado={setProductoSeleccionado}
+                descripcionRef={descripcionRef}
+            />
             <CategoryArticle
                 favorites={favorites}
                 toggleFavorite={toggleFavorite}
-                categoria={categoria}
-                subcategoria={subcategoria}
+                categoria={categoria ?? undefined}
+                subcategoria={subcategoria ?? undefined}
+                setProductoSeleccionado={handleProductoSeleccionado}
             />
             <Footer />
         </div>

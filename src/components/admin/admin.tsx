@@ -4,7 +4,6 @@ import NavBar from "./navBar";
 import Sidebar from "./aside";
 import Footer from "./footer";
 import { Modal } from "../toast";
-import { useLanguage } from "../../translate/useLanguage";
 import CierreSesion from "../cierreSesion";
 import api from "../../validation/axios.config";
 import useAuthProtection from "../ts/useAutProteccion";
@@ -55,15 +54,15 @@ function Admin() {
     { path: "/articulos", label: "Artículos" },
     { path: "/ofertas", label: "Ofertas" },
     { path: "/blog-admin", label: "Blog" },
+    { path: "/codigo-descuento", label: "Código descuento" },
+    { path: "/comentario-admin", label: "Comentarios" },
   ];
-
-  const { changeLanguage } = useLanguage();
 
   return (
     <div className="flex flex-col min-h-screen font-quicksand">
       <CierreSesion />
 
-      <NavBar toggleAside={toggleAside} showModal={showModal} changeLanguage={changeLanguage} />
+      <NavBar toggleAside={toggleAside} showModal={showModal} />
 
       <div className="flex flex-1">
         <Sidebar

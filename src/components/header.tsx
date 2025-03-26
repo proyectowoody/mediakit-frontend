@@ -11,7 +11,11 @@ import { useLanguage } from "../translate/useLanguage";
 import CierreSesion from "./cierreSesion";
 import api from "../validation/axios.config";
 import { handleGetUserSession } from "./ts/fetchUser";
-
+import Español from '../assets/img/idioma-español.png';
+import Ingles from '../assets/img/idioma-ingles.png';
+import Frances from '../assets/img/idioma-frances.png';
+import Protugues from '../assets/img/idioma-portugal.png';
+import Aleman from '../assets/img/idioma-aleman.png';
 
 function Header() {
 
@@ -40,6 +44,8 @@ function Header() {
         {
             id: number;
             nombre: string;
+            descripcion: string;
+            imagen: string;
             subcategorias: { id: number; nombre: string }[];
         }[]
     >([]);
@@ -83,7 +89,7 @@ function Header() {
     }, [lastScrollY]);
 
     const showModal = () => setIsModalVisible(!isModalVisible);
-    
+
     useEffect(() => {
         const updateCartCount = () => {
             if (isLogged) {
@@ -93,14 +99,14 @@ function Header() {
             } else {
                 const stored = localStorage.getItem("guest_cart");
                 const guestCart: { cantidad?: number }[] = stored ? JSON.parse(stored) : [];
-    
+
                 const totalQuantity = guestCart.reduce((acc: number, item: { cantidad?: number }) => acc + (item.cantidad || 1), 0);
-    
+
                 setCartItemCount(totalQuantity);
             }
         };
-    
-        updateCartCount(); 
+
+        updateCartCount();
         const interval = setInterval(updateCartCount, 500);
         return () => clearInterval(interval);
     }, [isLogged]);
@@ -129,7 +135,6 @@ function Header() {
 
                     <nav className="hidden md:flex space-x-8 absolute left-1/2 transform -translate-x-1/2">
                         <a href="/" className="text-[#2F4F4F] hover:text-[#6E9475]" data-translate>Inicio</a>
-
                         <div
                             className="relative group"
                         >
@@ -149,8 +154,9 @@ function Header() {
                                                 {categoria.subcategorias.map((sub) => (
                                                     <a
                                                         key={sub.id}
-                                                        href={`/tienda/${categoria.nombre.toLowerCase()}/${sub.nombre.toLowerCase()}`}
-                                                        className="block px-6 py-1 text-sm text-[#2F4F4F] hover:bg-[#FAF3E0]" data-translate
+                                                        href={`/tienda?categoria=${categoria.nombre.toLowerCase()}&descripcion=${encodeURIComponent(categoria.descripcion.toLowerCase())}&subcategoria=${sub.nombre.toLowerCase()}&imagen=${encodeURIComponent(categoria.imagen)}`}
+                                                        className="block px-6 py-1 text-sm text-[#2F4F4F] hover:bg-[#FAF3E0]"
+                                                        data-translate
                                                     >
                                                         {sub.nombre}
                                                     </a>
@@ -161,6 +167,7 @@ function Header() {
                                 ))}
                             </div>
                         </div>
+                        <a href="/nuestas-categorias" className="text-[#2F4F4F] hover:text-[#6E9475]" data-translate>Categorias</a>
                     </nav>
 
                     <div className="flex items-center space-x-4 relative">
@@ -196,21 +203,26 @@ function Header() {
                                 </button>
 
                                 {dropdownOpen2 && (
-                                    <div className="absolute right-0 -mt-2 w-32 bg-white border rounded-lg shadow-lg">
-                                        <button onClick={() => changeLanguage('es')} className="block px-4 py-2 w-full text-left hover:bg-[#F0E6D6]" data-translate>
-                                            🇪🇸 Español
+                                    <div className="absolute right-0 -mt-2 w-48 bg-white border rounded-lg shadow-lg">
+                                        <button onClick={() => changeLanguage('es')} className="flex items-center px-4 py-2 w-full text-left hover:bg-[#F0E6D6]" data-translate>
+                                            <img src={Español} alt="ES" className="w-5 h-5 mr-2" />
+                                            Español
                                         </button>
-                                        <button onClick={() => changeLanguage('en')} className="block px-4 py-2 w-full text-left hover:bg-[#F0E6D6]" data-translate>
-                                            🇺🇸 Inglés
+                                        <button onClick={() => changeLanguage('en')} className="flex items-center px-4 py-2 w-full text-left hover:bg-[#F0E6D6]" data-translate>
+                                            <img src={Ingles} alt="ES" className="w-5 h-5 mr-2" />
+                                            Inglés
                                         </button>
-                                        <button onClick={() => changeLanguage('fr')} className="block px-4 py-2 w-full text-left hover:bg-[#F0E6D6]" data-translate>
-                                            🇫🇷 Francés
+                                        <button onClick={() => changeLanguage('fr')} className="flex items-center px-4 py-2 w-full text-left hover:bg-[#F0E6D6]" data-translate>
+                                            <img src={Frances} alt="ES" className="w-5 h-5 mr-2" />
+                                            Francés
                                         </button>
-                                        <button onClick={() => changeLanguage('de')} className="block px-4 py-2 w-full text-left hover:bg-[#F0E6D6]" data-translate>
-                                            🇩🇪 Alemán
+                                        <button onClick={() => changeLanguage('de')} className="flex items-center px-4 py-2 w-full text-left hover:bg-[#F0E6D6]" data-translate>
+                                            <img src={Aleman} alt="ES" className="w-5 h-5 mr-2" />
+                                            Alemán
                                         </button>
-                                        <button onClick={() => changeLanguage('pt')} className="block px-4 py-2 w-full text-left hover:bg-[#F0E6D6]" data-translate>
-                                            🇵🇹 Portugués
+                                        <button onClick={() => changeLanguage('pt')} className="flex items-center px-4 py-2 w-full text-left hover:bg-[#F0E6D6]" data-translate>
+                                            <img src={Protugues} alt="ES" className="w-5 h-5 mr-2" />
+                                            Portugués
                                         </button>
                                     </div>
                                 )}
@@ -225,12 +237,6 @@ function Header() {
                                 </button>
                                 {userMenuOpen && (
                                     <div className="absolute right-0 mt-2 w-40 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
-                                        <a href="/favoritos" className="block px-4 py-2 text-[#2F4F4F] hover:bg-[#FAF3E0]" data-translate>
-                                            Favoritos
-                                        </a>
-                                        <a href="/comprar" className="block px-4 py-2 text-[#2F4F4F] hover:bg-[#FAF3E0]" data-translate>
-                                            Compras
-                                        </a>
                                         <a href="/cuenta" className="block px-4 py-2 text-[#2F4F4F] hover:bg-[#FAF3E0]" data-translate>
                                             Cuenta
                                         </a>
@@ -285,10 +291,9 @@ function Header() {
                                     </div>
                                 )}
                             </li>
+                            <li><a href="/nuestas-categorias" className="text-[#2F4F4F] hover:text-[#6E9475]" data-translate>Categorias</a></li>
                             {isLogged ? (
                                 <>
-                                    <li><a href="/favoritos" className=" text-[#2F4F4F] hover:text-[#6E9475]" data-translate>Favoritos</a></li>
-                                    <li><a href="/comprar" className=" text-[#2F4F4F] hover:text-[#6E9475]" data-translate>Compras</a></li>
                                     <li><a href="/cuenta" className=" text-[#2F4F4F] hover:text-[#6E9475]" data-translate>Cuenta</a></li>
                                     <li>
                                         <button
